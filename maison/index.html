@@ -14,8 +14,14 @@ CUE LIST (Team 10 · Maison Laurent · live skit, ~40 s). Advance: click / Space
  7  click: Buy the Brand. Leave the debt. .......... Ryan: "No, babe. Buy the Brand, Leave the debt."
  8  click: 2005 bankruptcy law, gavel, label free .. Michael: "Brazil's 2005 bankruptcy law lets the court sell the brand..."
  9  click: Now $0 -> Bankruptcy -> Relaunch ........ Kayee: "So we buy nothing now. When it goes bankrupt..."
-10  click: $0 spent. (end card follows by itself after 2.3 s; a click skips ahead)  Ryan: "If it never does, we've spent nothing."
+10  click: $0 spent. (end card follows by itself after 2.5 s; a click skips ahead)  Ryan: "If it never does, we've spent nothing."
 11  (auto) Cheers, Len. / TEAM 10 · MAISON LAURENT . Ryan: "Cheers, Len."
+
+HOW IT MOVES: one continuous stage, not separate slides. Every element is an "actor" with a state per cue
+(position, scale, rotation, opacity, blur, grey). A click glides each actor from where it is to where it
+belongs next (CSS transitions, so a fast double-click retargets smoothly instead of jumping). Actors that
+carry over (cover, bottle, label, ball, $0) move; actors that leave fade up and soften; new ones rise in.
+Going back plays a quick reverse. ?still=N renders cue N's final frame.
 -->
 <link rel="preload" href="fonts/bm.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/bmi.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,13 +36,10 @@ CUE LIST (Team 10 · Maison Laurent · live skit, ~40 s). Advance: click / Space
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#000;overflow:hidden;cursor:default;-webkit-user-select:none;user-select:none}
 body.idle{cursor:none}
-#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;opacity:0;transition:opacity .4s;
-  background:radial-gradient(ellipse 58% 62% at 50% 47%,rgb(60,48,35) 0%,rgb(44,35,26) 38%,rgb(26,21,16) 72%,rgb(16,13,10) 100%);
-  font-family:BM,Didot,"Bodoni 72",Georgia,serif;font-variation-settings:"opsz" 34;color:var(--cream)}
-.num{font-variation-settings:"opsz" 7!important}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;opacity:0;transition:opacity 1.4s cubic-bezier(.4,0,.2,1);
+  background:#100d0a;font-family:BM,Didot,"Bodoni 72",Georgia,serif;font-variation-settings:"opsz" 34;color:var(--cream)}
 #stage.ready{opacity:1}
-.slide{position:absolute;inset:0;visibility:hidden}
-.slide.on{visibility:visible}
+.num{font-variation-settings:"opsz" 7!important}
 .a{position:absolute}
 .gold{color:var(--gold)} .cream{color:var(--cream)} .red{color:var(--red)}
 .b{font-weight:700;line-height:1;white-space:nowrap;letter-spacing:-.01em}
@@ -44,13 +47,31 @@ body.idle{cursor:none}
 .i{font-style:italic;font-weight:400;line-height:1.1;white-space:nowrap}
 .sans{font-family:Jost,"Avenir Next",Helvetica,sans-serif;font-weight:500;letter-spacing:.28em;white-space:nowrap}
 .ctr{text-align:center}
-/* cover photos */
-.cover{box-shadow:0 50px 90px rgba(0,0,0,.6),0 6px 18px rgba(0,0,0,.45)}
+.ib{display:inline-block}
+.act{visibility:hidden;opacity:0}
+
+/* ---------- atmosphere ---------- */
+#bg{position:absolute;inset:0;background:radial-gradient(ellipse 58% 62% at 50% 47%,rgb(60,48,35) 0%,rgb(44,35,26) 38%,rgb(26,21,16) 72%,rgb(16,13,10) 100%)}
+#cool{position:absolute;inset:0;background:radial-gradient(ellipse 62% 66% at 36% 54%,rgb(46,46,47) 0%,rgb(30,30,31) 40%,rgb(17,17,18) 72%,rgb(9,9,10) 100%)}
+#light{position:absolute;left:-800px;top:-800px;width:1600px;height:1600px}
+#light .drift{position:absolute;inset:0;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.16),rgba(255,214,150,.06) 45%,rgba(255,214,150,0));
+  animation:drift 19s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate(-50px,20px) scale(1)}50%{transform:translate(40px,-30px) scale(1.06)}100%{transform:translate(60px,30px) scale(.97)}}
+#dust{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+#cam,#shake{position:absolute;inset:0}
+#cam{transform-origin:960px 540px}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 75% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.42) 100%)}
+#grain{position:absolute;inset:-60px;pointer-events:none;opacity:.07;mix-blend-mode:overlay;animation:grain 1s steps(8) infinite}
+@keyframes grain{0%{transform:translate(0,0)}12%{transform:translate(-22px,14px)}25%{transform:translate(18px,-26px)}37%{transform:translate(-30px,-8px)}50%{transform:translate(26px,22px)}
+  62%{transform:translate(-12px,30px)}75%{transform:translate(32px,-14px)}87%{transform:translate(-26px,-28px)}100%{transform:translate(0,0)}}
+#flash{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 960px 540px,rgba(255,249,238,.95),rgba(255,249,238,.55) 38%,rgba(255,249,238,0) 78%)}
+
+/* ---------- objects ---------- */
+.cover{box-shadow:0 50px 90px rgba(0,0,0,.6),0 6px 18px rgba(0,0,0,.45);overflow:hidden}
 .cover img{position:absolute;inset:0;width:100%;height:100%;display:block}
-/* bottle + label */
-.btl{position:absolute;width:300px;height:1000px;transform-origin:150px 1000px}
+#gloss{position:absolute;inset:-10%;background:linear-gradient(105deg,rgba(255,250,235,0) 38%,rgba(255,250,235,.32) 49%,rgba(255,250,235,0) 60%);transform:translateX(-120%);pointer-events:none}
+.btl{width:300px;height:1000px;transform-origin:150px 1000px}
 .btl>svg{position:absolute;left:0;top:0;overflow:visible}
-.dead>svg{filter:grayscale(1) brightness(2.1) contrast(.88)}
 .lab{position:absolute;width:250px;height:206px;background:#f3e8d2;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
   color:#1b1610;text-align:center;font-family:BM,Didot,serif;
   box-shadow:inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 3px 0 rgba(0,0,0,.25)}
@@ -60,82 +81,37 @@ body.idle{cursor:none}
 .lab .t3{width:110px;height:1.5px;background:#a9843f;margin:0 auto 7px}
 .lab .t4{font:600 13px Jost,sans-serif;letter-spacing:.38em;margin-left:.38em;color:#7d5f2c}
 .glow{box-shadow:inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 0 70px 16px rgba(246,212,140,.55),0 3px 0 rgba(0,0,0,.25)}
-.ball{position:absolute;width:250px;height:250px}
-.chain{position:absolute;left:0;top:0;overflow:visible}
-#stamp{padding:22px 44px 14px;border:10px double var(--red);border-radius:6px;color:var(--red);font:700 132px BM,Didot,serif;letter-spacing:.05em;line-height:1;white-space:nowrap;filter:url(#rough)}
-.seal{position:absolute;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#f8e6b4,#d6b066 45%,#9b7536 100%);
+#lab{width:250px;height:206px;transform-origin:125px 103px}
+#lab .lfx,#lab .bob{position:absolute;inset:0;transform-origin:125px 103px}
+#lab .lab{left:0;top:0}
+.halo{position:absolute;left:-130px;top:-130px;width:510px;height:466px;transform-origin:255px 233px;
+  background:radial-gradient(closest-side,rgba(246,212,140,.62) 45%,rgba(246,212,140,.22) 70%,rgba(246,212,140,0) 100%)}
+#stage[data-step="5"] #lab .bob{animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(.6deg)}}
+.ball{width:250px;height:250px;transform-origin:0 0}
+.chain{left:0;top:0;overflow:visible}
+#stamp{padding:20px 40px 12px;border:10px double var(--red);border-radius:6px;color:var(--red);font:700 120px BM,Didot,serif;letter-spacing:.05em;line-height:1;white-space:nowrap;filter:url(#rough)}
+.seal{width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#f8e6b4,#d6b066 45%,#9b7536 100%);
   box-shadow:inset 0 0 0 6px rgba(255,240,200,.35),inset 0 0 0 9px rgba(90,60,20,.45),0 12px 26px rgba(0,0,0,.45);
   display:flex;align-items:center;justify-content:center;flex-direction:column;color:#33230c}
 .seal .s1{font:800 44px Jost,sans-serif;letter-spacing:.03em;line-height:.92;text-align:center}
 .seal .s2{font:600 13px Jost,sans-serif;letter-spacing:.1em;margin-top:6px}
-.node{position:absolute;width:40px;height:40px;border-radius:50%;border:5px solid var(--gold);background:var(--ink)}
+.node{width:40px;height:40px;border-radius:50%;border:5px solid var(--gold);background:var(--ink)}
 .node.lit{background:var(--gold);box-shadow:0 0 30px 6px rgba(246,212,140,.45)}
+.node.future::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:3px solid var(--gold);animation:ping 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.6);opacity:0}}
 .ini{display:inline-block;color:var(--gold);transform-origin:0 0}
 .rest{display:inline-block}
-#debt{display:inline-block;position:absolute;color:var(--red);transform-origin:20% 90%;transform:translate(-170px,262px) rotate(9deg);opacity:.8}
-.flute{position:absolute;width:200px;height:520px;transform-origin:100px 280px}
-
-/* ---------- entrances: only when a slide is entered going forward (.play). Going back shows the still final state. ---------- */
-@keyframes up{from{opacity:0;transform:translateY(46px)}}
-@keyframes fade{from{opacity:0}}
-@keyframes rise{from{opacity:0;transform:translateY(70px)}}
-@keyframes flash{from{opacity:.85}to{opacity:0}}
-@keyframes out{to{opacity:0}}
-@keyframes coverMove{from{transform:translate(405px,-50px) scale(1.1111)}}
-@keyframes die{from{filter:none}}
-@keyframes drop{0%{opacity:0;transform:translateY(-520px)}70%{opacity:1;transform:translateY(10px)}85%{transform:translateY(-14px)}100%{transform:none}}
-@keyframes slam{0%{opacity:0;transform:rotate(-8deg) scale(2.3)}70%{opacity:1;transform:rotate(-8deg) scale(.94)}100%{transform:rotate(-8deg) scale(1)}}
-@keyframes shake{0%,100%{transform:none}30%{transform:translate(-8px,5px)}60%{transform:translate(6px,-4px)}}
-@keyframes tilt{from{transform:rotate(0)}}
-@keyframes glowIn{from{box-shadow:inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 0 0 0 rgba(246,212,140,0),0 3px 0 rgba(0,0,0,.25)}}
-@keyframes pop{from{opacity:0;transform:scale(1.18)}}
-@keyframes popIn{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.08)}100%{transform:scale(1)}}
-@keyframes zoomIn{from{opacity:0;transform:scale(.88)}}
-@keyframes gavel{0%{transform:rotate(32deg)}75%{transform:rotate(-3deg)}100%{transform:rotate(0)}}
-@keyframes labFree{from{transform:translate(-345px,319px) scale(.47)}}
-@keyframes draw{from{transform:scaleX(0)}}
-@keyframes fluteL{from{opacity:0;transform:translateX(-280px) rotate(-10deg)}}
-@keyframes fluteR{from{opacity:0;transform:translateX(280px) rotate(10deg)}}
-
-.play .k-up{animation:up .5s cubic-bezier(.2,.7,.2,1) both}
-.play .k-fade{animation:fade .45s ease-out both}
-.play .k-rise{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
-.d1{animation-delay:.08s!important}.d2{animation-delay:.16s!important}.d3{animation-delay:.24s!important}.d4{animation-delay:.32s!important}.d5{animation-delay:.45s!important}
-/* 1: the name */
-.play #flash{animation:flash .4s ease-out both}
-.play #s1 .cover{animation:coverMove .55s cubic-bezier(.4,0,.2,1) both}
-.play #s1 .kimfade{animation:out .45s ease-in .1s both}
-/* 3: debt */
-.play #s3 .btl>svg{animation:die .5s ease-out both}
-.play #s3 .ball{animation:drop .5s cubic-bezier(.5,0,.6,1) .1s both}
-.play #s3 .chain{animation:fade .3s .45s both}
-.play #s3 .lab{animation:glowIn .6s ease-out both}
-/* 4: value trap */
-.play #stamp{animation:slam .32s cubic-bezier(.6,0,.9,.6) both}
-.play #s4 .btl{animation:tilt .55s cubic-bezier(.3,0,.2,1) both}
-.play #s4 .shk{animation:shake .25s .3s both}
-/* 5: the name, without the debt */
-.play #s5 .btl>.lab{animation:lift .6s cubic-bezier(.3,1.3,.5,1) both,glowIn .6s ease-out both}
-#s5 .btl>.lab{transform:translate(46px,-78px) rotate(-9deg) scale(1.12)}
-@keyframes lift{from{transform:none}}
-.bar2{transform-box:fill-box;transform-origin:50% 100%}
-@keyframes grow{from{transform:scaleY(.33)}}
-.play #s2 .bar2{animation:grow .5s cubic-bezier(.3,1.2,.5,1) .25s both}
-.play #s5 .spot{animation:fade .6s both}
-/* 6: BBL? */
-.play #bblw{animation:pop .3s cubic-bezier(.2,.7,.2,1) both}
-/* 8: the law */
-.play #gav{animation:gavel .32s cubic-bezier(.6,0,.9,.6) .05s both}
-.play #s8 .free{animation:labFree .5s cubic-bezier(.3,1.35,.5,1) .32s both}
-.play #s8 .seal{animation:popIn .3s ease-out .7s both}
-.play #s8 .shock{animation:flash .5s ease-out .35s both}
-/* 9: steps */
-.play #s9 .line{animation:draw .6s cubic-bezier(.4,0,.2,1) both}
-/* 10/11 */
-.play #zero{animation:zoomIn .45s cubic-bezier(.2,.7,.2,1) both}
-.play #fl{animation:fluteL .55s cubic-bezier(.2,.7,.2,1) both}
-.play #fr{animation:fluteR .55s cubic-bezier(.2,.7,.2,1) both}
-.play #spark{animation:fade .3s .5s both}
+#debt{display:inline-block;position:absolute;color:var(--red);transform-origin:0% 90%;transform:translate(-169px,248px) rotate(9deg);opacity:.85}
+.flute{width:200px;height:520px;transform-origin:100px 280px}
+.flute .ffx{position:absolute;inset:0;transform-origin:100px 280px}
+.flute svg{overflow:visible}
+.bub{transform-box:fill-box;transform-origin:50% 50%;animation:bub 2.2s ease-in infinite}
+@keyframes bub{0%{transform:translateY(30px);opacity:0}25%{opacity:.9}100%{transform:translateY(-70px);opacity:0}}
+.glint{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;animation:twinkle 2.6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{transform:scale(0) rotate(0);opacity:0}45%{transform:scale(1) rotate(45deg);opacity:1}70%{transform:scale(.2) rotate(80deg);opacity:0}}
+.bar{transform-box:fill-box;transform-origin:50% 100%}
+.zglow{position:absolute;left:-35%;top:-25%;width:170%;height:150%;z-index:-1;opacity:0;pointer-events:none;background:radial-gradient(closest-side,rgba(246,212,140,.34),rgba(246,212,140,.12) 55%,rgba(246,212,140,0))}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute">
@@ -162,6 +138,7 @@ body.idle{cursor:none}
     <linearGradient id="woodh" x1="0" x2="1"><stop offset="0" stop-color="#4a2a14"/><stop offset=".35" stop-color="#b98450"/><stop offset=".6" stop-color="#7e5030"/><stop offset="1" stop-color="#3a200e"/></linearGradient>
     <linearGradient id="bandg" x1="0" x2="1"><stop offset="0" stop-color="#7a5a26"/><stop offset=".4" stop-color="#f0d696"/><stop offset="1" stop-color="#6d4f20"/></linearGradient>
     <linearGradient id="fizz" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f6e0a2"/><stop offset="1" stop-color="#c99d48"/></linearGradient>
+    <linearGradient id="barg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2dca6"/><stop offset="1" stop-color="#b8924a"/></linearGradient>
     <linearGradient id="reflg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <mask id="reflm" maskUnits="userSpaceOnUse" x="-50" y="990" width="400" height="500"><rect x="-50" y="994" width="400" height="420" fill="url(#reflg)"/></mask>
     <path id="bodyPath" d="M126 40 L174 40 L176 300 C178 380 282 418 284 530 L284 955 Q284 992 248 994 L52 994 Q16 992 16 955 L16 530 C18 418 122 380 124 300 Z"/>
@@ -200,149 +177,139 @@ body.idle{cursor:none}
       <circle cx="145" cy="145" r="138" fill="none" stroke="#fff1d2" stroke-opacity=".28" stroke-width="3"/>
       <ellipse cx="100" cy="80" rx="34" ry="20" fill="#fff" opacity=".14" transform="rotate(-30 100 80)"/>
       <text x="145" y="178" text-anchor="middle" font-family="BM,Didot,serif" font-weight="700" font-size="100" fill="#f3e6d0" style="font-variation-settings:'opsz' 7">$16M</text></g>
-    <g id="fluteArt">
-      <path d="M-52 -212 C-52 -110 -36 -16 0 -2 C36 -16 52 -110 52 -212 Z" fill="url(#fizz)"/>
-      <circle cx="-14" cy="-60" r="4" fill="#fff8e2" opacity=".8"/><circle cx="10" cy="-100" r="3" fill="#fff8e2" opacity=".8"/>
-      <circle cx="-6" cy="-140" r="4.5" fill="#fff8e2" opacity=".8"/><circle cx="22" cy="-170" r="3" fill="#fff8e2" opacity=".8"/>
-      <circle cx="-26" cy="-190" r="3.5" fill="#fff8e2" opacity=".8"/><circle cx="4" cy="-30" r="2.5" fill="#fff8e2" opacity=".8"/>
-      <path d="M-62 -262 C-62 -120 -42 -10 0 4 C42 -10 62 -120 62 -262" fill="none" stroke="#e2c27c" stroke-width="7" stroke-linejoin="round"/>
-      <ellipse cx="0" cy="-262" rx="62" ry="11" fill="none" stroke="#f6e2ae" stroke-width="5"/>
-      <path d="M-5 4 L-4 196 L4 196 L5 4 Z" fill="#e2c27c"/>
-      <path d="M-84 210 Q0 182 84 210 Q0 224 -84 210 Z" fill="#e2c27c"/>
-    </g>
+    <path id="star" d="M0 -22 C3 -5 5 -3 22 0 C5 3 3 5 0 22 C-3 5 -5 3 -22 0 C-5 -3 -3 -5 0 -22 Z" fill="#fbe7b5"/>
   </defs>
 </svg>
 
 <div id="stage">
+  <div id="bg"></div>
+  <div id="cool" class="act"></div>
+  <div id="light" class="act"><div class="drift"></div></div>
+  <canvas id="dust" width="1920" height="1080"></canvas>
 
-  <!-- 0 · the photo (up before we start) -->
-  <section class="slide" id="s0">
-    <div class="a cover" style="left:545px;top:40px;width:831px;height:1000px"><img src="img/kim.jpg" alt=""></div>
-  </section>
+  <div id="cam" class="act"><div id="shake">
 
-  <!-- 1 · the name -->
-  <section class="slide" id="s1">
-    <div class="a cover" style="left:140px;top:90px;width:748px;height:900px;transform-origin:0 0"><img src="img/ryan.jpg" alt=""><img class="kimfade" src="img/kim.jpg" alt="" style="opacity:0"></div>
-    <div class="a ctr k-up d2" style="left:900px;top:400px;width:960px"><span class="b gold" style="font-size:240px">Kim K.</span><span class="r gold" style="font-size:80px;vertical-align:130px;margin-left:8px">™</span></div>
-    <div id="flash" class="a" style="inset:0;background:#fff8ec;opacity:0;pointer-events:none"></div>
-  </section>
+    <!-- 5 · spotlight behind the lifted label -->
+    <div id="spot" class="a act" style="left:186px;top:309px;width:720px;height:720px;background:radial-gradient(circle,rgba(246,212,140,.26),rgba(246,212,140,0) 65%)"></div>
 
-  <!-- 2 · the numbers -->
-  <section class="slide" id="s2">
-    <div class="btl k-rise" style="left:300px;top:22px" data-b="green"></div>
-    <div class="a ctr k-up d2" style="left:880px;top:250px;width:680px"><span class="b gold num" style="font-size:440px">×3</span></div>
-    <svg class="a k-fade d2" width="270" height="370" viewBox="0 0 190 260" style="left:1570px;top:340px;overflow:visible">
-      <rect x="8" y="170" width="70" height="80" fill="#f3e6d0" opacity=".45"/><rect class="bar2" x="108" y="10" width="70" height="240" fill="#d9b66c"/>
+    <!-- 0-1 · the cover -->
+    <div id="cover" class="a act cover" style="left:545px;top:40px;width:831px;height:1000px;transform-origin:0 0">
+      <img src="img/ryan.jpg" alt="">
+      <img id="kim" class="act" src="img/kim.jpg" alt="">
+      <div id="gloss"></div>
+    </div>
+    <div class="a" style="left:900px;top:400px;width:960px;clip-path:inset(-400px -300px -70px -300px)">
+      <div id="kimk" class="act ctr"><span class="b gold" style="font-size:240px">Kim K.</span><span class="r gold" style="font-size:80px;vertical-align:130px;margin-left:8px">™</span></div>
+    </div>
+
+    <!-- 2-5 / 8 · the bottle, ball and chain -->
+    <svg id="chainA" class="a act chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
+    <svg id="chainB" class="a act chain" width="1920" height="1080" data-chain="590,1026,700,990,18"></svg>
+    <div id="bottle" class="a act btl" style="left:300px;top:22px"><svg width="300" height="1000" viewBox="0 0 300 1000"><use href="#bottleArt"/></svg></div>
+    <div id="ball" class="a act ball" style="left:690px;top:776px"><div class="bfx"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div></div>
+
+    <!-- 2 · x3 -->
+    <div id="x3" class="a act ctr" style="left:880px;top:250px;width:680px"><span class="b gold num" style="font-size:440px">×3</span></div>
+    <svg id="bars" class="a act" width="270" height="370" viewBox="0 0 190 260" style="left:1570px;top:340px;overflow:visible">
+      <rect id="bar1" class="bar" x="8" y="170" width="70" height="80" fill="#f3e6d0" opacity=".45"/>
+      <rect id="bar2" class="bar" x="108" y="10" width="70" height="240" fill="url(#barg)"/>
       <line x1="0" y1="251" x2="186" y2="251" stroke="#f3e6d0" stroke-opacity=".6" stroke-width="3"/></svg>
-  </section>
 
-  <!-- 3 · the debt -->
-  <section class="slide" id="s3">
-    <svg class="chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
-    <div class="btl dead" style="left:300px;top:22px" data-b="green" data-glow="1"></div>
-    <div class="ball" style="left:690px;top:776px"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
-    <div class="a k-up d3" style="left:990px;top:400px"><span class="b red num" style="font-size:240px">−$1M</span><span class="r red num" style="font-size:120px">/yr</span></div>
-  </section>
+    <!-- 3 · -$1M/yr -->
+    <div id="loss" class="a act" style="left:990px;top:400px"><span class="b red num" style="font-size:240px">−$1M</span><span class="r red num" style="font-size:120px">/yr</span></div>
 
-  <!-- 4 · value trap -->
-  <section class="slide" id="s4">
-<div class="shk a" style="inset:0">
-    <svg class="chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
-    <div class="btl dead" style="left:300px;top:22px;transform:rotate(8deg)" data-b="green" data-glow="1"></div>
-    <div class="ball" style="left:690px;top:776px"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
-    <div class="a" style="left:900px;top:420px;width:980px;display:flex;justify-content:center"><div id="stamp" style="transform:rotate(-8deg)">VALUE TRAP</div></div>
-  </div>
-  </section>
+    <!-- 4 · VALUE TRAP -->
+    <div class="a" style="left:880px;top:430px;width:980px;display:flex;justify-content:center">
+      <div id="stampA" class="act"><div class="sfx"><div id="stamp" style="transform:rotate(-8deg)">VALUE TRAP</div></div></div>
+    </div>
 
-  <!-- 5 · the name, without the debt? -->
-  <section class="slide" id="s5">
-    <div class="a spot" style="left:130px;top:330px;width:720px;height:720px;background:radial-gradient(circle,rgba(246,212,140,.24),rgba(246,212,140,0) 65%)"></div>
-    <svg class="chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
-    <div class="btl dead" style="left:300px;top:22px;transform:rotate(8deg)" data-b="green" data-glow="2"></div>
-    <div class="ball" style="left:690px;top:776px;opacity:.75"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
-  </section>
+    <!-- 5 · glints around the name -->
+    <div id="glints" class="a act" style="left:0;top:0;width:1920px;height:1080px">
+      <svg class="glint" style="left:712px;top:548px;animation-delay:.2s" viewBox="-22 -22 44 44"><use href="#star"/></svg>
+      <svg class="glint" style="left:404px;top:610px;animation-delay:1.1s;width:30px;height:30px;margin:-15px 0 0 -15px" viewBox="-22 -22 44 44"><use href="#star"/></svg>
+      <svg class="glint" style="left:668px;top:790px;animation-delay:1.8s;width:34px;height:34px;margin:-17px 0 0 -17px" viewBox="-22 -22 44 44"><use href="#star"/></svg>
+    </div>
 
-  <!-- 6 · BBL? -->
-  <section class="slide" id="s6">
-    <div class="a ctr" style="left:0;top:250px;width:1920px"><div id="bblw" style="display:inline-block"><span class="b cream" style="font-size:520px"><span id="g1" style="display:inline-block">B</span><span id="g2" style="display:inline-block">B</span><span id="g3" style="display:inline-block">L</span></span><span class="i gold" style="font-size:470px;line-height:1">?</span></div></div>
-  </section>
+    <!-- 6 · BBL? -->
+    <div class="a ctr" style="left:0;top:250px;width:1920px"><div style="display:inline-block"><span class="b cream" style="font-size:520px"><span id="g1" class="act ib">B</span><span id="g2" class="act ib">B</span><span id="g3" class="act ib">L</span></span><span id="qm" class="act ib i gold" style="font-size:470px;line-height:1;transform-origin:30% 88%">?</span></div></div>
 
-  <!-- 7 · PUNCHLINE: Buy the Brand. Leave the debt. -->
-  <section class="slide" id="s7">
-    <div class="a" style="left:0;top:150px;width:1920px;display:flex;justify-content:center">
+    <!-- 7 · Buy the Brand. Leave the debt. -->
+    <div id="btb" class="a act" style="left:0;top:150px;width:1920px;display:flex;justify-content:center">
       <div class="b cream" style="font-size:196px;line-height:1.06;position:relative">
         <div><span class="ini" id="i1">B</span><span class="rest">uy the</span></div>
         <div><span class="ini" id="i2">B</span><span class="rest">rand.</span></div>
         <div><span class="ini" id="i3">L</span><span class="rest">eave the&nbsp;</span><span id="debt">debt.</span></div>
       </div>
     </div>
-  </section>
 
-  <!-- 8 · the law -->
-  <section class="slide" id="s8">
-    <div class="a ctr b cream num k-up" style="left:0;top:58px;width:1920px;font-size:112px">Brazil’s 2005 bankruptcy law</div>
-    <div class="a ctr k-up d2" style="left:0;top:200px;width:1920px"><span class="i cream" style="font-size:76px">The court sells the brand on its own, </span><span class="i gold" style="font-size:76px">debt-free.</span></div>
-    <svg class="chain" width="1920" height="1080" data-chain="590,1026,700,990,18" style="opacity:.8"></svg>
-    <div class="btl dead" style="left:470px;top:30px;transform:scale(.66);opacity:.8" data-b="green" data-nolab="1"></div>
-    <div class="ball" style="left:690px;top:880px;width:160px;height:160px;opacity:.8"><svg width="160" height="160" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
-    <div class="a free" style="left:840px;top:420px;width:250px;height:206px;transform-origin:50% 50%">
-      <div class="lab glow" style="left:0;top:0;transform:scale(1.4);transform-origin:50% 50%"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div>
-      <div class="seal" style="left:220px;top:150px"><div class="s1">DEBT<br>FREE</div><div class="s2">LEI 11.101/2005</div></div>
+    <!-- 8 · the law -->
+    <div class="a" style="left:0;top:58px;width:1920px;clip-path:inset(-200px -100px -40px -100px)">
+      <div id="lawT" class="act ctr b cream num" style="font-size:112px">Brazil’s 2005 bankruptcy law</div>
     </div>
-    <div class="a" style="left:1240px;top:960px;width:240px;height:66px"><svg width="240" height="66" viewBox="0 0 240 66"><ellipse cx="120" cy="50" rx="114" ry="14" fill="#000" opacity=".5"/><rect x="12" y="14" width="216" height="34" rx="8" fill="url(#woodh)"/><ellipse cx="120" cy="15" rx="108" ry="10" fill="#8a5833"/></svg></div>
-    <svg class="a shock" width="300" height="120" viewBox="0 0 300 120" style="left:1210px;top:900px;opacity:0;overflow:visible"><g stroke="#f2dca6" stroke-width="6" stroke-linecap="round">
+    <div class="a" style="left:0;top:200px;width:1920px;clip-path:inset(-200px -100px -36px -100px)">
+      <div id="lawS" class="act ctr"><span class="i cream" style="font-size:76px">The court sells the brand on its own, </span><span class="i gold" style="font-size:76px">debt-free.</span></div>
+    </div>
+    <div id="block" class="a act" style="left:1240px;top:960px;width:240px;height:66px"><svg width="240" height="66" viewBox="0 0 240 66"><ellipse cx="120" cy="50" rx="114" ry="14" fill="#000" opacity=".5"/><rect x="12" y="14" width="216" height="34" rx="8" fill="url(#woodh)"/><ellipse cx="120" cy="15" rx="108" ry="10" fill="#8a5833"/></svg></div>
+    <svg id="shock" class="a" width="300" height="120" viewBox="0 0 300 120" style="left:1210px;top:900px;opacity:0;overflow:visible;transform-origin:150px 80px"><g stroke="#f2dca6" stroke-width="6" stroke-linecap="round">
       <line x1="40" y1="70" x2="-6" y2="44"/><line x1="40" y1="90" x2="-10" y2="98"/><line x1="260" y1="70" x2="306" y2="44"/><line x1="260" y1="90" x2="310" y2="98"/></g></svg>
-    <div id="gav" class="a" style="left:1312px;top:795px;width:420px;height:180px;transform-origin:405px 90px">
+    <div id="gavel" class="a act" style="left:1312px;top:795px;width:420px;height:180px">
+      <div class="gfx" style="position:absolute;inset:0;transform-origin:405px 90px">
       <svg width="420" height="180" viewBox="0 0 560 240" style="overflow:visible">
         <rect x="128" y="104" width="420" height="32" rx="16" fill="url(#wood)"/><circle cx="540" cy="120" r="24" fill="url(#wood)"/>
         <rect x="0" y="0" width="128" height="240" rx="22" fill="url(#woodh)"/>
         <rect x="-4" y="30" width="136" height="16" rx="5" fill="url(#bandg)"/><rect x="-4" y="194" width="136" height="16" rx="5" fill="url(#bandg)"/></svg>
+      </div>
     </div>
-  </section>
 
-  <!-- 9 · the plan -->
-  <section class="slide" id="s9">
-    <div class="a line" style="left:330px;top:327px;width:1260px;height:6px;background:var(--gold);transform-origin:0 50%"></div>
-    <svg class="a k-fade d3" width="1920" height="60" style="left:0;top:300px;overflow:visible"><g fill="none" stroke="#d9b66c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M630 312 L652 330 L630 348" transform="translate(0 -300)"/><path d="M1260 312 L1282 330 L1260 348" transform="translate(0 -300)"/></g></svg>
-    <div class="node lit" style="left:310px;top:310px"></div><div class="node lit" style="left:940px;top:310px"></div><div class="node" style="left:1570px;top:310px"></div>
-    <div class="a k-up" style="left:30px;top:160px;width:600px"><div class="ctr b cream" style="font-size:92px">Now</div></div>
-    <div class="a k-up d2" style="left:660px;top:160px;width:600px"><div class="ctr b cream" style="font-size:92px">Bankruptcy</div></div>
-    <div class="a k-up d4" style="left:1290px;top:160px;width:600px"><div class="ctr b gold" style="font-size:92px">Relaunch</div></div>
-    <div class="a k-up d1" style="left:30px;top:410px;width:600px"><div class="ctr b gold num" style="font-size:260px">$0</div></div>
-    <div class="a k-up d1" style="left:30px;top:740px;width:600px"><div class="ctr i cream" style="font-size:76px">buy nothing</div></div>
-    <div class="a k-up d3" style="left:835px;top:450px;width:250px;height:206px"><div class="lab glow" style="left:0;top:0;transform:scale(1.15)"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div></div>
-    <div class="a k-up d3" style="left:660px;top:740px;width:600px"><div class="ctr i cream" style="font-size:76px">bid for the name</div></div>
-    <div class="btl k-fade d5" style="left:1440px;top:40px;transform:scale(.62)" data-b="gold" data-glow="1"></div>
-  </section>
+    <!-- 9 · the plan -->
+    <div id="line9" class="a act" style="left:330px;top:327px;width:1260px;height:6px;border-radius:3px;background:var(--gold);transform-origin:0 50%"></div>
+    <svg id="arr1" class="a act" width="40" height="60" viewBox="620 300 40 60" style="left:620px;top:300px;overflow:visible"><path d="M630 312 L652 330 L630 348" fill="none" stroke="#d9b66c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg id="arr2" class="a act" width="40" height="60" viewBox="1250 300 40 60" style="left:1250px;top:300px;overflow:visible"><path d="M1260 312 L1282 330 L1260 348" fill="none" stroke="#d9b66c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div id="n1" class="a act node lit" style="left:310px;top:310px"></div>
+    <div id="n2" class="a act node lit" style="left:940px;top:310px"></div>
+    <div id="n3" class="a act node future" style="left:1570px;top:310px"></div>
+    <div id="h1" class="a act" style="left:30px;top:160px;width:600px"><div class="ctr b cream" style="font-size:92px">Now</div></div>
+    <div id="h2" class="a act" style="left:660px;top:160px;width:600px"><div class="ctr b cream" style="font-size:92px">Bankruptcy</div></div>
+    <div id="h3" class="a act" style="left:1290px;top:160px;width:600px"><div class="ctr b gold" style="font-size:92px">Relaunch</div></div>
+    <div id="zero9" class="a act ctr" style="left:30px;top:410px;width:600px"><span id="zero9t" class="b gold num ib" style="font-size:260px">$0</span></div>
+    <div id="bn" class="a act" style="left:30px;top:740px;width:600px"><div class="ctr i cream" style="font-size:76px">buy nothing</div></div>
+    <div id="bid" class="a act" style="left:660px;top:740px;width:600px"><div class="ctr i cream" style="font-size:76px">bid for the name</div></div>
+    <div id="goldb" class="a act btl" style="left:1440px;top:40px"><svg width="300" height="1000" viewBox="0 0 300 1000"><use href="#goldArt"/></svg>
+      <div class="lab glow"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div></div>
 
-  <!-- 10 · $0 spent. -->
-  <section class="slide" id="s10">
-    <div class="a ctr" style="left:0;top:330px;width:1920px"><div id="zero" style="display:inline-block"><span class="b gold num" style="font-size:400px">$0</span><span class="i cream" style="font-size:220px;margin-left:40px">spent.</span></div></div>
-  </section>
+    <!-- the label: one object from the bottle (2) to the plan (9) -->
+    <div id="lab" class="a act" style="left:325px;top:634px">
+      <div class="lfx">
+        <div id="halo" class="act halo"></div>
+        <div class="bob"><div class="lab"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div></div>
+      </div>
+    </div>
+    <div id="seal" class="a act seal" style="left:1060px;top:570px"><div class="s1">DEBT<br>FREE</div><div class="s2">LEI 11.101/2005</div></div>
 
-  <!-- 11 · Cheers, Len. -->
-  <section class="slide" id="s11">
-    <div id="fl" class="flute" style="left:740px;top:60px;transform:rotate(14deg)"><svg width="200" height="520" viewBox="-100 -280 200 520" style="overflow:visible"><use href="#fluteArt"/></svg></div>
-    <div id="fr" class="flute" style="left:980px;top:60px;transform:rotate(-14deg)"><svg width="200" height="520" viewBox="-100 -280 200 520" style="overflow:visible"><use href="#fluteArt"/></svg></div>
-    <svg id="spark" class="a" width="1920" height="300" style="left:0;top:0;overflow:visible"><g stroke="#f2dca6" stroke-width="5" stroke-linecap="round" id="sparkg"></g></svg>
-    <div class="a ctr k-up d4" style="left:0;top:575px;width:1920px"><span class="i cream" style="font-size:196px;line-height:1.05">Cheers, Len.</span></div>
-    <div class="a k-fade d5" style="left:870px;top:842px;width:180px;height:3px;background:var(--gold)"></div>
-    <div class="a ctr sans cream k-fade d5" style="left:0;top:872px;width:1920px;font-size:60px;letter-spacing:.2em">TEAM 10 · MAISON LAURENT</div>
-  </section>
+    <!-- 10 · $0 spent. -->
+    <div class="a ctr" style="left:0;top:330px;width:1920px"><div style="display:inline-block"><span id="z0" class="act ib b gold num" style="font-size:400px;transform-origin:0 0;position:relative">$0<span class="zglow"></span></span><span id="zsp" class="act ib i cream" style="font-size:220px;margin-left:40px">spent.</span></div></div>
 
+    <!-- 11 · Cheers, Len. -->
+    <div id="fl" class="a act flute" style="left:740px;top:60px"><div class="ffx"></div></div>
+    <div id="fr" class="a act flute" style="left:980px;top:60px"><div class="ffx"></div></div>
+    <svg id="spark" class="a" width="1920" height="300" style="left:0;top:0;overflow:visible;opacity:0;transform-origin:960px 78px"><g stroke="#f2dca6" stroke-width="5" stroke-linecap="round" id="sparkg"></g></svg>
+    <div class="a" style="left:0;top:575px;width:1920px;clip-path:inset(-300px -100px -60px -100px)">
+      <div id="cheers" class="act ctr"><span class="i cream" style="font-size:196px;line-height:1.05">Cheers, Len.</span></div>
+    </div>
+    <div id="rule" class="a act" style="left:870px;top:842px;width:180px;height:3px;background:var(--gold)"></div>
+    <div id="team" class="a act ctr sans cream" style="left:0;top:872px;width:1920px;font-size:60px;letter-spacing:.2em">TEAM 10 · MAISON LAURENT</div>
+
+  </div></div>
+
+  <div id="flash"></div>
+  <div id="vig"></div>
+  <div id="grain"></div>
 </div>
 <script>
 (function () {
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-  const LAB = '<div class="lab"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div>';
-  // bottles
-  $$(".btl").forEach(el => {
-    el.innerHTML = `<svg width="300" height="1000" viewBox="0 0 300 1000"><use href="#${el.dataset.b === "gold" ? "goldArt" : "bottleArt"}"/></svg>` + (el.dataset.nolab ? "" : LAB);
-    if (el.dataset.glow) { const l = el.querySelector(".lab"); l.classList.add("glow");
-      if (el.dataset.glow === "2") l.style.boxShadow = "inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 0 110px 34px rgba(246,212,140,.7),0 3px 0 rgba(0,0,0,.25)"; }
-  });
-  // chains
+
+  /* ---------- build art ---------- */
   $$(".chain").forEach(svg => {
     const [ax, ay, bx, by, sag] = svg.dataset.chain.split(",").map(Number);
     const mx = (ax + bx) / 2, my = Math.max(ay, by) + sag;
@@ -359,50 +326,261 @@ body.idle{cursor:none}
     }
     svg.innerHTML = h;
   });
-  // clink sparks
+  const BUBS = [[-14,-60,4,0],[10,-100,3,.6],[-6,-140,4.5,1.2],[22,-170,3,.3],[-26,-190,3.5,1.5],[4,-30,2.5,.9],[16,-50,2.5,1.8],[-20,-110,3,.45]];
+  const fluteSVG = `<svg width="200" height="520" viewBox="-100 -280 200 520">
+      <path d="M-52 -212 C-52 -110 -36 -16 0 -2 C36 -16 52 -110 52 -212 Z" fill="url(#fizz)"/>
+      ${BUBS.map(([x, y, r, d]) => `<circle class="bub" cx="${x}" cy="${y}" r="${r}" fill="#fff8e2" style="animation-delay:${d}s"/>`).join("")}
+      <path d="M-62 -262 C-62 -120 -42 -10 0 4 C42 -10 62 -120 62 -262" fill="none" stroke="#e2c27c" stroke-width="7" stroke-linejoin="round"/>
+      <ellipse cx="0" cy="-262" rx="62" ry="11" fill="none" stroke="#f6e2ae" stroke-width="5"/>
+      <path d="M-5 4 L-4 196 L4 196 L5 4 Z" fill="#e2c27c"/>
+      <path d="M-84 210 Q0 182 84 210 Q0 224 -84 210 Z" fill="#e2c27c"/></svg>`;
+  $$(".flute .ffx").forEach(f => f.innerHTML = fluteSVG);
   let sh = ""; for (let i = 0; i < 7; i++) { const a = (-90 + (i - 3) * 26) * Math.PI / 180, r0 = 46, r1 = 92;
     sh += `<line x1="${960 + Math.cos(a) * r0}" y1="${78 + Math.sin(a) * r0}" x2="${960 + Math.cos(a) * r1}" y2="${78 + Math.sin(a) * r1}"/>`; }
   $("#sparkg").innerHTML = sh;
+  // film grain tile
+  (() => { const c = document.createElement("canvas"); c.width = c.height = 220; const x = c.getContext("2d"), im = x.createImageData(220, 220);
+    for (let i = 0; i < im.data.length; i += 4) { const v = Math.random() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+    x.putImageData(im, 0, 0); $("#grain").style.backgroundImage = `url(${c.toDataURL()})`; })();
 
-  // fit 1920x1080 into the window, letterboxed on black
-  const stage = $("#stage"); let K = 1;
-  function fit() { K = Math.min(innerWidth / 1920, innerHeight / 1080);
+  /* ---------- fit 1920x1080 into the window ---------- */
+  const stage = $("#stage");
+  function fit() { const K = Math.min(innerWidth / 1920, innerHeight / 1080);
     stage.style.transform = `translate(${(innerWidth - 1920 * K) / 2}px,${(innerHeight - 1080 * K) / 2}px) scale(${K})`; }
   addEventListener("resize", fit); fit();
 
-  const slides = $$(".slide"), LAST = slides.length - 1;
-  let cur = -1, timer = null, lastNav = 0;
-  function punch() {   // BBL -> Buy the Brand. Leave the debt.
-    const ease = "cubic-bezier(.5,0,.15,1)";
-    ["1", "2", "3"].forEach((k, j) => {
-      const g = $("#g" + k).getBoundingClientRect(), it = $("#i" + k), r = it.getBoundingClientRect();
-      const s = g.height / r.height, dx = (g.left - r.left) / K, dy = (g.top - r.top) / K;
-      it.animate([{ transform: `translate(${dx}px,${dy}px) scale(${s})`, color: "#f3e6d0" }, { transform: "none", color: "#d9b66c" }],
-        { duration: 560, delay: j * 40, easing: ease, fill: "backwards" });
-    });
-    $$("#s7 .rest").forEach((el, j) => el.animate([{ clipPath: "inset(-20% 100% -20% 0)", opacity: 0 }, { clipPath: "inset(-20% 0 -20% 0)", opacity: 1 }],
-      { duration: 380, delay: 420 + j * 90, easing: "cubic-bezier(.3,0,.2,1)", fill: "backwards" }));
-    const d = $("#debt");
-    d.animate([{ clipPath: "inset(-20% 100% -20% 0)", opacity: 0, transform: "none", color: "#f3e6d0" },
-               { clipPath: "inset(-20% 0 -20% 0)", opacity: 1, transform: "none", color: "#f3e6d0", offset: .4 },
-               { clipPath: "inset(-20% 0 -20% 0)", opacity: 1, transform: "none", color: "#f0644a", offset: .62 },
-               { clipPath: "inset(-200% -200% -200% -200%)", opacity: .8, transform: "translate(-170px,262px) rotate(9deg)", color: "#f0644a" }],
-      { duration: 1250, delay: 600, easing: "cubic-bezier(.55,0,.75,.45)", fill: "backwards" });
+  /* ---------- motion vocabulary ---------- */
+  const E = {
+    out: "cubic-bezier(.16,1,.3,1)",       // expo out: arrivals
+    move: "cubic-bezier(.65,0,.25,1)",     // magic move between cues
+    inn: "cubic-bezier(.5,0,.75,0)",       // exits
+    soft: "cubic-bezier(.4,0,.2,1)",
+    spring: "cubic-bezier(.3,1.5,.5,1)",
+    grav: "cubic-bezier(.32,0,.67,0)",     // falling
+  };
+  const ENTER = { d: 0, dur: 1050, ease: E.out }, MOVE = { d: 0, dur: 1150, ease: E.move },
+        EXIT = { d: 0, dur: 480, ease: E.inn }, BACK = { d: 0, dur: 560, ease: E.soft };
+  const RISE = { y: 60, o: 0, blur: 12 }, LEAVE = { y: -36, o: 0, blur: 10 };
+  const ALL = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const at = (list, st) => Object.fromEntries(list.map(n => [n, typeof st === "function" ? st(n) : st]));
+  const DEAD = { gray: 1, br: 2.1, ct: .88 };
+
+  // Each actor: steps {cue: state}. State: x y (px), s sx sy, r (deg), o, blur, gray br ct,
+  // t (timing for this cue), te (timing only when arriving), tm (only when moving), en/ex (enter/exit offsets for this cue).
+  const A = {};
+  const def = (id, cfg) => { A[id] = { id, el: document.getElementById(id), enter: RISE, exit: LEAVE, ...cfg }; };
+
+  // atmosphere + camera
+  def("cool", { steps: { 3: { o: .85, t: { dur: 1800, ease: E.soft } }, 4: { o: 1 }, 5: { o: .7 }, 8: { o: .45 } }, enter: { o: 0, t: { dur: 1800, ease: E.soft } }, exit: { o: 0, t: { dur: 1600, ease: E.soft } } });
+  const LP = { 0: [960, 520], 1: [1300, 520], 2: [760, 560], 3: [520, 640], 4: [520, 640], 5: [530, 660], 6: [960, 520], 7: [900, 480], 8: [960, 470], 9: [960, 520], 10: [960, 560], 11: [960, 430] };
+  def("light", { steps: at(ALL, n => ({ x: LP[n][0], y: LP[n][1], o: [3, 4].includes(n) ? .35 : 1, t: { dur: 2600, ease: E.soft } })), enter: { o: 0, t: { dur: 2000 } } });
+  def("cam", { steps: at(ALL, n => n === 5 ? { s: 1.06, x: 110, y: 16, t: { dur: 2400, ease: "cubic-bezier(.45,0,.2,1)" } } : { t: { dur: 1600, ease: E.move } }), enter: {} });
+
+  // 0-1 the cover
+  def("cover", { steps: { 0: {}, 1: { x: -405, y: 50, s: .9, tm: { d: 240, dur: 1350, ease: "cubic-bezier(.65,0,.2,1)" } } },
+                 enter: { y: 24, o: 0, s: 1.02, t: { d: 300, dur: 1800 } }, exit: { x: -220, o: 0, blur: 12, s: .97, t: { dur: 420, ease: "cubic-bezier(.4,0,.9,.6)" } } });
+  def("kim", { steps: { 0: {} }, enter: { o: 0 }, exit: { o: 0, t: { d: 70, dur: 240, ease: "linear" } } });
+  def("kimk", { steps: { 1: { te: { d: 760, dur: 1400 } } }, enter: { y: 470 } });
+
+  // 2-5, 8 the bottle
+  const B_IN = { y: 170, o: 0, t: { d: 480, dur: 1400 } };
+  def("bottle", { steps: { 2: {}, 3: { ...DEAD, t: { dur: 1700, ease: E.soft } }, 4: { ...DEAD, r: 8, tm: { d: 470, dur: 1200, ease: "cubic-bezier(.3,0,.15,1)" } }, 5: { ...DEAD, r: 8 },
+                           8: { ...DEAD, x: 170, y: 8, s: .66, o: .8, en: { y: 40, o: 0 }, te: { d: 450, dur: 1000 } } }, enter: B_IN, exit: { y: 40, o: 0, blur: 10 } });
+  def("lab", { steps: { 2: {}, 3: {}, 4: { x: 39.7, y: 2.8, r: 8, tm: { d: 470, dur: 1200, ease: "cubic-bezier(.3,0,.15,1)" } },
+                        5: { x: 96, y: -68, r: -1, s: 1.12, tm: { d: 160, dur: 1500, ease: E.out } },
+                        8: { x: 515, y: -214, s: 1.4, en: { y: 40, o: 0 }, te: { d: 450, dur: 1000 } },
+                        9: { x: 510, y: -184, s: 1.15, tm: { d: 700, dur: 1250, ease: E.move } } }, enter: B_IN, exit: { y: 30, o: 0, blur: 10 } });
+  def("halo", { steps: { 3: { o: .8, te: { d: 700, dur: 1600, ease: E.soft } }, 4: { o: .8 }, 5: { o: 1, s: 1.18, tm: { d: 160, dur: 1500, ease: E.out } },
+                         8: { o: 1, s: 1.1, te: { d: 1230, dur: 1100, ease: E.soft } }, 9: { o: .8 } }, enter: { o: 0, s: .8 }, exit: { o: 0 } });
+  def("ball", { steps: { 3: {}, 4: {}, 5: { o: .7, t: { dur: 1100, ease: E.soft } }, 8: { y: 104, s: .64, o: .8, en: { y: 40, o: 0 }, te: { d: 480, dur: 1000 } } },
+                enter: { y: -980, o: 1, t: { d: 140, dur: 660, ease: E.grav } }, exit: { y: 40, o: 0, blur: 8 } });
+  def("chainA", { steps: { 3: {}, 4: {}, 5: { o: .7, t: { dur: 1100 } } }, enter: { o: 0, t: { dur: 0 } }, exit: { o: 0 } });
+  def("chainB", { steps: { 8: { o: .8 } }, enter: { o: 0, t: { d: 650, dur: 900 } }, exit: { o: 0 } });
+  def("spot", { steps: { 5: { te: { d: 200, dur: 1800, ease: E.out } } }, enter: { o: 0, s: .7 }, exit: { o: 0, s: 1.1 } });
+  def("glints", { steps: { 5: { te: { d: 1100, dur: 800 } } }, enter: { o: 0 }, exit: { o: 0 } });
+
+  // 2 x3 / 3 loss / 4 stamp
+  def("x3", { steps: { 2: { te: { d: 780, dur: 1400 } } }, enter: { y: 90, o: 0, blur: 18, s: .96 } });
+  def("bars", { steps: { 2: { te: { d: 860, dur: 700 } } }, enter: { o: 0 } });
+  def("loss", { steps: { 3: { te: { d: 900, dur: 1200 } } }, enter: { y: 70, o: 0, blur: 14 }, exit: { y: -30, o: 0, blur: 10, t: { dur: 300 } } });
+  def("stampA", { steps: { 4: {} }, enter: { o: 0, t: { dur: 0 } }, exit: { o: 0, s: 1.05, blur: 6, t: { dur: 520 } } });
+
+  // 6 BBL? / 7 punchline
+  [1, 2, 3].forEach(i => def("g" + i, { steps: { 6: { te: { d: 240 + i * 95, dur: 1250 } } }, enter: { y: 110, o: 0, blur: 14 }, exit: { o: 0, t: { dur: 0 } } }));
+  def("qm", { steps: { 6: { te: { d: 640, dur: 1300, ease: "cubic-bezier(.25,1.35,.45,1)" } } }, enter: { r: -38, y: 40, o: 0 }, exit: { y: 190, r: 32, o: 0, t: { dur: 620, ease: E.grav } } });
+  def("btb", { steps: { 7: {} }, enter: { o: 0, t: { dur: 0 } }, exit: { y: -50, o: 0, blur: 12, t: { dur: 380 } } });
+
+  // 8 the law
+  def("lawT", { steps: { 8: { te: { d: 420, dur: 1250 } } }, enter: { y: 190 } });
+  def("lawS", { steps: { 8: { te: { d: 600, dur: 1250 } } }, enter: { y: 140 } });
+  def("block", { steps: { 8: { te: { d: 500, dur: 1000 } } }, enter: { y: 30, o: 0 } });
+  def("gavel", { steps: { 8: { te: { d: 540, dur: 900 } } }, enter: { x: 90, o: 0 } });
+  def("seal", { steps: { 8: { te: { d: 1650, dur: 800, ease: E.spring } } }, enter: { s: .2, r: -30, o: 0 } });
+
+  // 9 the plan (the line draws left to right; each stop lands as the line reaches it)
+  def("line9", { steps: { 9: { te: { d: 200, dur: 1500, ease: E.move } } }, enter: { sx: 0 }, exit: { o: 0 } });
+  def("arr1", { steps: { 9: { te: { d: 760, dur: 700 } } }, enter: { x: -18, o: 0 } });
+  def("arr2", { steps: { 9: { te: { d: 1160, dur: 700 } } }, enter: { x: -18, o: 0 } });
+  def("n1", { steps: { 9: { te: { d: 200, dur: 700, ease: E.spring } } }, enter: { s: 0, o: 0 } });
+  def("n2", { steps: { 9: { te: { d: 950, dur: 700, ease: E.spring } } }, enter: { s: 0, o: 0 } });
+  def("n3", { steps: { 9: { te: { d: 1680, dur: 700, ease: E.spring } } }, enter: { s: 0, o: 0 } });
+  def("h1", { steps: { 9: { te: { d: 240 } } } });
+  def("h2", { steps: { 9: { te: { d: 960 } } } });
+  def("h3", { steps: { 9: { te: { d: 1660 } } } });
+  def("zero9", { steps: { 9: { te: { d: 380, dur: 1200 } } }, enter: { y: 80, o: 0, blur: 14 }, exit: { o: 0, t: { dur: 0 } } });
+  def("bn", { steps: { 9: { te: { d: 540 } } } });
+  def("bid", { steps: { 9: { te: { d: 1180 } } } });
+  def("goldb", { steps: { 9: { s: .62, te: { d: 1620, dur: 1600 } } }, enter: { y: 150, o: 0, blur: 10 } });
+
+  // 10 / 11
+  def("z0", { steps: { 10: {} }, enter: { o: 0, t: { dur: 0 } } });
+  def("zsp", { steps: { 10: { te: { d: 760, dur: 1300 } } }, enter: { x: -40, o: 0, blur: 10 } });
+  def("fl", { steps: { 11: { r: 14 } }, enter: { x: -440, r: -30, o: 0, t: { d: 440, dur: 1200 } } });
+  def("fr", { steps: { 11: { r: -14 } }, enter: { x: 440, r: 30, o: 0, t: { d: 440, dur: 1200 } } });
+  def("cheers", { steps: { 11: { te: { d: 940, dur: 1500 } } }, enter: { y: 330 } });
+  def("rule", { steps: { 11: { te: { d: 1330, dur: 1000, ease: E.move } } }, enter: { sx: 0 } });
+  def("team", { steps: { 11: { te: { d: 1480, dur: 1600 } } }, enter: { o: 0, y: 12, blur: 6 } });
+
+  const FK = ["blur", "gray", "br", "ct"], FD = { blur: 0, gray: 0, br: 1, ct: 1 },
+        FN = { blur: v => `blur(${v}px)`, gray: v => `grayscale(${v})`, br: v => `brightness(${v})`, ct: v => `contrast(${v})` };
+  const META = ["t", "te", "tm", "en", "ex"];
+  Object.values(A).forEach(a => {
+    const all = [...Object.values(a.steps), a.enter, a.exit, ...Object.values(a.steps).flatMap(s => [s.en || {}, s.ex || {}])];
+    a.fk = FK.filter(f => all.some(s => f in s));
+  });
+  function merge(b, o) {
+    const r = {}; for (const k in b) if (!META.includes(k)) r[k] = b[k];
+    for (const k in o) { if (META.includes(k)) continue; const v = o[k];
+      if (k === "x" || k === "y" || k === "r") r[k] = (b[k] || 0) + v;
+      else if (k === "s" || k === "sx" || k === "sy") r[k] = (b[k] ?? 1) * v;
+      else r[k] = v; }
+    return r;
   }
-  function go(n, play) {
+  function apply(a, st, tm) {
+    const s = a.el.style, hide = !!st.hide;
+    if (tm && tm.dur + tm.d > 0) {
+      const p = `${tm.dur}ms ${tm.ease} ${tm.d}ms`;
+      s.transition = `translate ${p},scale ${p},rotate ${p},opacity ${p},filter ${p},visibility 0s linear ${hide ? tm.d + tm.dur : 0}ms`;
+    } else s.transition = "none";
+    s.translate = `${st.x || 0}px ${st.y || 0}px`;
+    const k = st.s ?? 1; s.scale = `${k * (st.sx ?? 1)} ${k * (st.sy ?? 1)}`;
+    s.rotate = `${st.r || 0}deg`;
+    s.opacity = st.o ?? 1;
+    if (a.fk.length) s.filter = a.fk.every(f => (st[f] ?? FD[f]) === FD[f]) ? "none" : a.fk.map(f => FN[f](st[f] ?? FD[f])).join(" ");
+    s.visibility = hide ? "hidden" : "visible";
+  }
+
+  /* one-off effects (Web Animations), cancelled when the cue changes */
+  const FX = [];
+  function fx(el, kf, o) { if (!el) return; const an = el.animate(kf, { fill: "backwards", ...o }); FX.push(an); return an; }
+  function shake(delay, amp, dur) {
+    const k = [], N = 8; for (let i = 0; i <= N; i++) { const f = i === 0 || i === N ? 0 : amp * Math.pow(1 - i / N, 1.5) * (i % 2 ? -1 : 1);
+      k.push({ transform: `translate(${f * .8}px,${f}px)` }); }
+    fx($("#shake"), k, { duration: dur, delay, easing: "linear" });
+  }
+  const DUST = { 0: 1, 1: 1, 2: .8, 3: .2, 4: .15, 5: .55, 6: .6, 7: .6, 8: .5, 9: .8, 10: 1, 11: 1.5 };
+
+  const HOOK = {
+    1: { run() {
+      fx($("#flash"), [{ opacity: 0 }, { opacity: .85, offset: .09 }, { opacity: 0 }], { duration: 1000, easing: "cubic-bezier(.2,.6,.3,1)" });
+      fx($("#gloss"), [{ transform: "translateX(-120%)" }, { transform: "translateX(120%)" }], { duration: 1500, delay: 900, easing: E.soft });
+    } },
+    2: { run() {
+      fx($("#bar1"), [{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { duration: 900, delay: 960, easing: E.out });
+      fx($("#bar2"), [{ transform: "scaleY(0)" }, { transform: "scaleY(.33)", offset: .2 }, { transform: "scaleY(1)" }], { duration: 1700, delay: 1040, easing: E.out });
+    } },
+    3: { run() {
+      $$("#chainA > *").forEach((l, i) => fx(l, [{ opacity: 0 }, { opacity: 1 }], { duration: 140, delay: 380 + i * 55, easing: "linear" }));
+      fx($("#ball .bfx"), [{ transform: "translateY(0)", easing: "cubic-bezier(.2,.7,.4,1)" }, { transform: "translateY(-18px)", offset: .38, easing: "cubic-bezier(.6,0,.8,.4)" },
+        { transform: "translateY(0)", offset: .72, easing: "ease-out" }, { transform: "translateY(-4px)", offset: .86, easing: "ease-in" }, { transform: "translateY(0)" }], { duration: 520, delay: 800 });
+      shake(800, 7, 420);
+    } },
+    4: { run() {
+      fx($("#stampA .sfx"), [{ transform: "scale(2.5)", opacity: 0, easing: "cubic-bezier(.55,0,.85,.3)" }, { opacity: 1, offset: .5 }, { transform: "scale(1)", opacity: 1 }], { duration: 340, delay: 300 });
+      fx($("#stampA .sfx"), [{ transform: "scale(1)" }, { transform: "scale(1.035)", offset: .3 }, { transform: "scale(1)" }], { duration: 380, delay: 640, easing: "ease-out", composite: "add" });
+      shake(640, 11, 520);
+    } },
+    7: {
+      pre() { return [1, 2, 3].map(k => $("#g" + k)).map(g => ({ r: g.getBoundingClientRect(), fs: parseFloat(getComputedStyle(g).fontSize) })); },
+      run(G) {   // BBL -> the initials of Buy the Brand / Leave the debt
+        [1, 2, 3].forEach((k, j) => {
+          const it = $("#i" + k), r = it.getBoundingClientRect(), g = G[j];
+          const ratio = r.height / it.offsetHeight, fs = parseFloat(getComputedStyle(it).fontSize), s = g.fs / fs;
+          const dx = (g.r.left - r.left) / ratio, dy = (g.r.top - r.top) / ratio + (g.r.height / ratio) / 2 - s * it.offsetHeight / 2;
+          fx(it, [{ transform: `translate(${dx}px,${dy}px) scale(${s})`, color: "#f3e6d0" }, { transform: "none", color: "#d9b66c" }],
+            { duration: 1050, delay: j * 70, easing: "cubic-bezier(.75,0,.2,1)" });
+        });
+        $$("#btb .rest").forEach((el, j) => fx(el, [{ clipPath: "inset(-25% 100% -25% -6%)", opacity: 0, transform: "translateX(-30px)" },
+          { clipPath: "inset(-25% -6% -25% -6%)", opacity: 1, transform: "none" }], { duration: 900, delay: 700 + j * 160, easing: "cubic-bezier(.3,0,.15,1)" }));
+        const R = "#f0644a", C = "#f3e6d0", F = "translate(-169px,248px) rotate(9deg)";
+        fx($("#debt"), [
+          { clipPath: "inset(-25% 100% -25% -6%)", opacity: 0, transform: "translateX(-30px)", color: C, easing: "cubic-bezier(.3,0,.15,1)" },
+          { clipPath: "inset(-25% -6% -25% -6%)", opacity: 1, transform: "none", color: C, offset: .3, easing: "ease-in-out" },
+          { clipPath: "inset(-25% -6% -25% -6%)", opacity: 1, transform: "none", color: R, offset: .44 },
+          { clipPath: "inset(-200%)", opacity: 1, transform: "none", color: R, offset: .54, easing: "cubic-bezier(.5,0,.7,.4)" },
+          { clipPath: "inset(-200%)", opacity: 1, transform: "rotate(17deg)", color: R, offset: .67, easing: "cubic-bezier(.45,0,.9,.5)" },
+          { clipPath: "inset(-200%)", opacity: .85, transform: F, color: R, offset: .9, easing: "cubic-bezier(.2,.7,.4,1)" },
+          { clipPath: "inset(-200%)", opacity: .85, transform: "translate(-169px,236px) rotate(8deg)", color: R, offset: .95, easing: "ease-in" },
+          { clipPath: "inset(-200%)", opacity: .85, transform: F, color: R }], { duration: 2300, delay: 1500 });
+      } },
+    8: { run() {
+      fx($("#lab .lfx"), [{ transform: "translate(-246.4px,227.9px) scale(.4714)" }, { transform: "translate(-246.4px,227.9px) scale(.4714)", offset: .59, easing: E.out }, { transform: "none" }], { duration: 2100 });
+      fx($("#gavel .gfx"), [{ transform: "rotate(32deg)" }, { transform: "rotate(32deg)", offset: .62, easing: "cubic-bezier(.2,.7,.3,1)" },
+        { transform: "rotate(46deg)", offset: .78, easing: "cubic-bezier(.7,0,1,.6)" }, { transform: "rotate(-3deg)", offset: .88, easing: "ease-out" }, { transform: "rotate(0deg)" }], { duration: 1400 });
+      fx($("#shock"), [{ opacity: 0, transform: "scale(.6)" }, { opacity: 1, offset: .12 }, { opacity: 0, transform: "scale(1.3)" }], { duration: 650, delay: 1230, easing: "ease-out" });
+      shake(1230, 6, 380);
+    } },
+    10: {
+      pre() { return $("#zero9t").getBoundingClientRect(); },
+      run(g) {   // the $0 from the plan travels to centre stage
+        const z = $("#z0"), r = z.getBoundingClientRect(), ratio = r.height / z.offsetHeight, s = g.height / r.height;
+        const dx = (g.left - r.left) / ratio, dy = (g.top - r.top) / ratio;
+        fx(z, [{ transform: `translate(${dx}px,${dy}px) scale(${s})` }, { transform: "none" }], { duration: 1250, easing: "cubic-bezier(.7,0,.2,1)" });
+        fx($("#z0 .zglow"), [{ opacity: 0, transform: "scale(.8)" }, { opacity: 1, transform: "scale(1)", offset: .4 }, { opacity: .35, transform: "scale(1.05)" }], { duration: 1800, delay: 1050, easing: "ease-in-out", fill: "both" });
+        fx($("#zsp"), [{ clipPath: "inset(-30% 100% -30% -12%)" }, { clipPath: "inset(-30% -12% -30% -12%)" }], { duration: 1100, delay: 760, easing: "cubic-bezier(.3,0,.15,1)" });
+      } },
+    11: { run() {
+      fx($("#fl .ffx"), [{ transform: "rotate(0)" }, { transform: "rotate(5deg)", offset: .35, easing: "ease-in" }, { transform: "rotate(-2deg)", offset: .6, easing: "ease-out" }, { transform: "rotate(0)" }], { duration: 560, delay: 1260 });
+      fx($("#fr .ffx"), [{ transform: "rotate(0)" }, { transform: "rotate(-5deg)", offset: .35, easing: "ease-in" }, { transform: "rotate(2deg)", offset: .6, easing: "ease-out" }, { transform: "rotate(0)" }], { duration: 560, delay: 1260 });
+      fx($("#spark"), [{ opacity: 0, transform: "scale(.5)" }, { opacity: 1, transform: "scale(1.12)", offset: .25 }, { opacity: .85, transform: "scale(1)" }], { duration: 900, delay: 1450, easing: "ease-out" });
+      fx($("#team"), [{ letterSpacing: ".46em" }, { letterSpacing: ".2em" }], { duration: 2200, delay: 1480, easing: E.out });
+    } },
+  };
+  // the sparks stay lit on the end card (base opacity follows the cue)
+  const sparkOn = n => { $("#spark").style.opacity = n === 11 ? .85 : 0; };
+
+  /* ---------- the cue engine ---------- */
+  const LAST = 11; let cur = -1, timer = null, lastNav = 0, dustK = 0, dustT = 1;
+  function go(n, mode) {
     n = Math.max(0, Math.min(LAST, n)); if (n === cur) return;
+    const p = cur, fwd = mode === "fwd";
     clearTimeout(timer);
-    slides.forEach(s => s.classList.remove("on", "play"));
-    document.getAnimations().forEach(a => a.cancel());
-    const s = slides[n];
-    if (play) { void s.offsetWidth; s.classList.add("play"); }
-    s.classList.add("on"); cur = n;
-    if (play && n === 7) punch();
-    if (play && n === 10) timer = setTimeout(() => go(11, true), 2300);
+    FX.splice(0).forEach(an => an.cancel());
+    const hook = fwd ? HOOK[n] : null, ctx = hook && hook.pre ? hook.pre() : null;
+    const list = Object.values(A), plan = [];
+    for (const a of list) {
+      const P = a.steps[p], N = a.steps[n];
+      if (mode === "cut") { plan.push([a, null, N ? N : { o: 0, hide: true }, null]); continue; }
+      if (N && !P) {
+        const off = fwd ? (N.en || a.enter) : (N.ex || a.exit);
+        plan.push([a, merge(N, off), N, fwd ? { ...ENTER, ...(a.enter.t || {}), ...(N.en && N.en.t || {}), ...(N.t || {}), ...(N.te || {}) } : BACK]);
+      } else if (N && P) {
+        plan.push([a, null, N, fwd ? { ...MOVE, ...(N.t || {}), ...(N.tm || {}) } : BACK]);
+      } else if (P && !N) {
+        const off = fwd ? (P.ex || a.exit) : (P.en || a.enter);
+        plan.push([a, null, { ...merge(P, off), hide: true }, fwd ? { ...EXIT, ...(a.exit.t || {}) } : BACK]);
+      }
+    }
+    plan.forEach(([a, from]) => from && apply(a, from, null));
+    void stage.offsetWidth;                                   // commit the "from" frame
+    plan.forEach(([a, , to, tm]) => apply(a, to, tm));
+    cur = n; stage.dataset.step = n; sparkOn(n); dustT = DUST[n];
+    if (hook && hook.run) hook.run(ctx);
+    if (fwd && n === 10) timer = setTimeout(() => go(11, "fwd"), 2500);
     try { history.replaceState(null, "", "#" + n); } catch (e) {}
   }
-  const next = () => { const t = performance.now(); if (t - lastNav < 220) return; lastNav = t; go(cur + 1, true); };
-  const prev = () => { lastNav = performance.now(); go(cur === 11 ? 10 : cur - 1, false); };
+  const next = () => { if (!document.body.dataset.ready) return; const t = performance.now(); if (t - lastNav < 220) return; lastNav = t; go(cur + 1, "fwd"); };
+  const prev = () => { if (!document.body.dataset.ready) return; lastNav = performance.now(); go(cur === 11 ? 10 : cur - 1, "back"); };
   function fs() { if (document.fullscreenElement) document.exitFullscreen && document.exitFullscreen();
     else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen || (() => {})).call(document.documentElement); }
   addEventListener("keydown", e => {
@@ -411,21 +589,51 @@ body.idle{cursor:none}
     if (["ArrowRight", "ArrowDown", " ", "PageDown", "Enter", "n", "N"].includes(k)) { e.preventDefault(); if (!e.repeat) next(); }
     else if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace", "p", "P"].includes(k)) { e.preventDefault(); if (!e.repeat) prev(); }
     else if (k === "f" || k === "F" || k === "F5") { e.preventDefault(); fs(); }
-    else if (k === "Home") { e.preventDefault(); go(0, false); }
-    else if (k === "End") { e.preventDefault(); go(LAST, false); }
+    else if (k === "Home") { e.preventDefault(); go(0, "cut"); }
+    else if (k === "End") { e.preventDefault(); go(LAST, "cut"); }
   });
   addEventListener("click", e => { if (e.button === 0) next(); });
   addEventListener("contextmenu", e => { e.preventDefault(); prev(); });
   let idle; addEventListener("mousemove", () => { document.body.classList.remove("idle"); clearTimeout(idle); idle = setTimeout(() => document.body.classList.add("idle"), 1500); });
 
-  // start once fonts + images are in (max 4 s), so nothing pops in mid-skit
+  /* ---------- champagne dust: slow, sparse, dimmer during the debt ---------- */
+  const cv = $("#dust"), cx = cv.getContext("2d"), P = [];
+  for (let i = 0; i < 46; i++) P.push({ x: Math.random() * 1920, y: Math.random() * 1080, r: .8 + Math.random() * 2.2, v: 6 + Math.random() * 16, w: Math.random() * 6.28, a: .05 + Math.random() * .2 });
+  let lt = performance.now();
+  (function tick(t) {
+    const dt = Math.min(.05, (t - lt) / 1000); lt = t; dustK += (dustT - dustK) * Math.min(1, dt * 1.6);
+    cx.clearRect(0, 0, 1920, 1080);
+    for (const q of P) {
+      q.y -= q.v * dt; q.w += dt * .7; if (q.y < -10) { q.y = 1090; q.x = Math.random() * 1920; }
+      const tw = .55 + .45 * Math.sin(q.w * 2.3);
+      cx.fillStyle = `rgba(246,214,150,${(q.a * tw * dustK).toFixed(3)})`;
+      cx.beginPath(); cx.arc(q.x + Math.sin(q.w) * 14, q.y, q.r, 0, 6.283); cx.fill();
+    }
+    requestAnimationFrame(tick);
+  })(lt);
+
+  /* ---------- start once fonts + images are in (max 4 s), so nothing pops in mid-skit ---------- */
+  Object.values(A).forEach(a => apply(a, { o: 0, hide: true }, null));
   const q = new URLSearchParams(location.search);
-  const start = q.has("still") ? +q.get("still") : (parseInt(location.hash.slice(1)) || 0);
+  const still = q.has("still"), start = still ? +q.get("still") : (parseInt(location.hash.slice(1)) || 0);
   const imgs = $$("img").map(i => i.decode ? i.decode().catch(() => {}) : Promise.resolve());
   const fonts = ["700 100px BM", "italic 400 100px BM", "500 50px Jost"].map(f => document.fonts.load(f));
   Promise.race([Promise.all([...imgs, ...fonts, document.fonts.ready]), new Promise(r => setTimeout(r, 4000))]).then(() => {
-    go(start, false); stage.classList.add("ready"); document.body.dataset.ready = "1";
+    if (still) { dustK = dustT = DUST[start]; stage.style.transition = "none"; go(start, "cut"); stage.classList.add("ready"); document.body.dataset.ready = "1"; return; }
+    // draw every cue once while the stage is still invisible, so big type and filters are ready before the first click
+    const frame = () => new Promise(r => { let ok = false; const f = () => { if (!ok) { ok = true; r(); } };
+      requestAnimationFrame(() => requestAnimationFrame(f)); setTimeout(f, 150); });   // timer fallback: background tabs get no frames
+    stage.style.opacity = ".002"; stage.style.transition = "none";
+    (async () => {
+      while (document.hidden) await new Promise(r => document.addEventListener("visibilitychange", r, { once: true }));
+      for (let n = 0; n <= LAST; n++) { go(n, "cut"); await frame(); }
+      Object.values(A).forEach(a => apply(a, { o: 0, hide: true }, null)); cur = -1; await frame();
+      stage.style.opacity = ""; stage.style.transition = "";
+      if (start === 0) go(0, "fwd"); else go(start, "cut");
+      stage.classList.add("ready"); document.body.dataset.ready = "1";
+    })();
   });
+  window.__deck = { go, get cur() { return cur; } };
 })();
 </script>
 </body></html>
