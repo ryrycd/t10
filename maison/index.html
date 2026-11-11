@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maison Laurent - Team 10</title>
+<!--
+CUE LIST (Team 10 · Maison Laurent · live skit, ~40 s). Advance: click / Space / Right / PageDown. Back: Left / PageUp. F = full screen.
+ 0  (up before we start) Paper 2014 cover ......... Michael: "Len, what's the most valuable thing in this photo?"
+ 1  click: Ryan cover + Kim K.(TM) ................. Ryan: "My name, babe. Kim K."
+ 2  click: bottle + x3 with rising bars ... Kayee: "Same with Maison Laurent..."
+ 3  click: grey bottle, -$1M/yr, $16M ball & chain .. Michael: "But the company loses a million a year and owes sixteen million."
+ 4  click: VALUE TRAP stamp ..... Kayee: "It's a value trap, and we bet it's headed for bankruptcy."
+ 5  click: label glows, lifts off bottle ............. Michael: "So how do we get the name without the debt?"
+ 6  click: BBL? .................................... Ryan: "A BBL."  Kayee: "A Brazilian butt lift?"
+ 7  click: Buy the Brand. Leave the debt. .......... Ryan: "No, babe. Buy the Brand, Leave the debt."
+ 8  click: 2005 bankruptcy law, gavel, label free .. Michael: "Brazil's 2005 bankruptcy law lets the court sell the brand..."
+ 9  click: Now $0 -> Bankruptcy -> Relaunch ........ Kayee: "So we buy nothing now. When it goes bankrupt..."
+10  click: $0 spent. (end card follows by itself after 2.3 s; a click skips ahead)  Ryan: "If it never does, we've spent nothing."
+11  (auto) Cheers, Len. / TEAM 10 · MAISON LAURENT . Ryan: "Cheers, Len."
+-->
+<link rel="preload" href="fonts/bm.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/bmi.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/jost.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="img/kim.jpg" as="image">
+<link rel="preload" href="img/ryan.jpg" as="image">
+<style>
+@font-face{font-family:BM;src:url(fonts/bm.woff2) format("woff2");font-weight:400 900;font-style:normal;font-display:block}
+@font-face{font-family:BM;src:url(fonts/bmi.woff2) format("woff2");font-weight:400 900;font-style:italic;font-display:block}
+@font-face{font-family:Jost;src:url(fonts/jost.woff2) format("woff2");font-weight:100 900;font-display:block}
+:root{--gold:#d9b66c;--goldhi:#f2dca6;--cream:#f3e6d0;--red:#f0644a;--ink:#0e0b09}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;cursor:default;-webkit-user-select:none;user-select:none}
+body.idle{cursor:none}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;opacity:0;transition:opacity .4s;
+  background:radial-gradient(ellipse 58% 62% at 50% 47%,rgb(60,48,35) 0%,rgb(44,35,26) 38%,rgb(26,21,16) 72%,rgb(16,13,10) 100%);
+  font-family:BM,Didot,"Bodoni 72",Georgia,serif;font-variation-settings:"opsz" 34;color:var(--cream)}
+.num{font-variation-settings:"opsz" 7!important}
+#stage.ready{opacity:1}
+.slide{position:absolute;inset:0;visibility:hidden}
+.slide.on{visibility:visible}
+.a{position:absolute}
+.gold{color:var(--gold)} .cream{color:var(--cream)} .red{color:var(--red)}
+.b{font-weight:700;line-height:1;white-space:nowrap;letter-spacing:-.01em}
+.r{font-weight:400;line-height:1.1;white-space:nowrap}
+.i{font-style:italic;font-weight:400;line-height:1.1;white-space:nowrap}
+.sans{font-family:Jost,"Avenir Next",Helvetica,sans-serif;font-weight:500;letter-spacing:.28em;white-space:nowrap}
+.ctr{text-align:center}
+/* cover photos */
+.cover{box-shadow:0 50px 90px rgba(0,0,0,.6),0 6px 18px rgba(0,0,0,.45)}
+.cover img{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* bottle + label */
+.btl{position:absolute;width:300px;height:1000px;transform-origin:150px 1000px}
+.btl>svg{position:absolute;left:0;top:0;overflow:visible}
+.dead>svg{filter:grayscale(1) brightness(2.1) contrast(.88)}
+.lab{position:absolute;width:250px;height:206px;background:#f3e8d2;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#1b1610;text-align:center;font-family:BM,Didot,serif;
+  box-shadow:inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 3px 0 rgba(0,0,0,.25)}
+.btl>.lab{left:25px;top:612px}
+.lab .t1{font:600 15px Jost,sans-serif;letter-spacing:.42em;margin-left:.42em;color:#7d5f2c}
+.lab .t2{font:700 42px BM,Didot,serif;letter-spacing:.01em;line-height:1;margin:6px 0 7px}
+.lab .t3{width:110px;height:1.5px;background:#a9843f;margin:0 auto 7px}
+.lab .t4{font:600 13px Jost,sans-serif;letter-spacing:.38em;margin-left:.38em;color:#7d5f2c}
+.glow{box-shadow:inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 0 70px 16px rgba(246,212,140,.55),0 3px 0 rgba(0,0,0,.25)}
+.ball{position:absolute;width:250px;height:250px}
+.chain{position:absolute;left:0;top:0;overflow:visible}
+#stamp{padding:22px 44px 14px;border:10px double var(--red);border-radius:6px;color:var(--red);font:700 132px BM,Didot,serif;letter-spacing:.05em;line-height:1;white-space:nowrap;filter:url(#rough)}
+.seal{position:absolute;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#f8e6b4,#d6b066 45%,#9b7536 100%);
+  box-shadow:inset 0 0 0 6px rgba(255,240,200,.35),inset 0 0 0 9px rgba(90,60,20,.45),0 12px 26px rgba(0,0,0,.45);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;color:#33230c}
+.seal .s1{font:800 44px Jost,sans-serif;letter-spacing:.03em;line-height:.92;text-align:center}
+.seal .s2{font:600 13px Jost,sans-serif;letter-spacing:.1em;margin-top:6px}
+.node{position:absolute;width:40px;height:40px;border-radius:50%;border:5px solid var(--gold);background:var(--ink)}
+.node.lit{background:var(--gold);box-shadow:0 0 30px 6px rgba(246,212,140,.45)}
+.ini{display:inline-block;color:var(--gold);transform-origin:0 0}
+.rest{display:inline-block}
+#debt{display:inline-block;position:absolute;color:var(--red);transform-origin:20% 90%;transform:translate(-170px,262px) rotate(9deg);opacity:.8}
+.flute{position:absolute;width:200px;height:520px;transform-origin:100px 280px}
+
+/* ---------- entrances: only when a slide is entered going forward (.play). Going back shows the still final state. ---------- */
+@keyframes up{from{opacity:0;transform:translateY(46px)}}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(70px)}}
+@keyframes flash{from{opacity:.85}to{opacity:0}}
+@keyframes out{to{opacity:0}}
+@keyframes coverMove{from{transform:translate(405px,-50px) scale(1.1111)}}
+@keyframes die{from{filter:none}}
+@keyframes drop{0%{opacity:0;transform:translateY(-520px)}70%{opacity:1;transform:translateY(10px)}85%{transform:translateY(-14px)}100%{transform:none}}
+@keyframes slam{0%{opacity:0;transform:rotate(-8deg) scale(2.3)}70%{opacity:1;transform:rotate(-8deg) scale(.94)}100%{transform:rotate(-8deg) scale(1)}}
+@keyframes shake{0%,100%{transform:none}30%{transform:translate(-8px,5px)}60%{transform:translate(6px,-4px)}}
+@keyframes tilt{from{transform:rotate(0)}}
+@keyframes glowIn{from{box-shadow:inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 0 0 0 rgba(246,212,140,0),0 3px 0 rgba(0,0,0,.25)}}
+@keyframes pop{from{opacity:0;transform:scale(1.18)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.88)}}
+@keyframes gavel{0%{transform:rotate(32deg)}75%{transform:rotate(-3deg)}100%{transform:rotate(0)}}
+@keyframes labFree{from{transform:translate(-345px,319px) scale(.47)}}
+@keyframes draw{from{transform:scaleX(0)}}
+@keyframes fluteL{from{opacity:0;transform:translateX(-280px) rotate(-10deg)}}
+@keyframes fluteR{from{opacity:0;transform:translateX(280px) rotate(10deg)}}
+
+.play .k-up{animation:up .5s cubic-bezier(.2,.7,.2,1) both}
+.play .k-fade{animation:fade .45s ease-out both}
+.play .k-rise{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s!important}.d2{animation-delay:.16s!important}.d3{animation-delay:.24s!important}.d4{animation-delay:.32s!important}.d5{animation-delay:.45s!important}
+/* 1: the name */
+.play #flash{animation:flash .4s ease-out both}
+.play #s1 .cover{animation:coverMove .55s cubic-bezier(.4,0,.2,1) both}
+.play #s1 .kimfade{animation:out .45s ease-in .1s both}
+/* 3: debt */
+.play #s3 .btl>svg{animation:die .5s ease-out both}
+.play #s3 .ball{animation:drop .5s cubic-bezier(.5,0,.6,1) .1s both}
+.play #s3 .chain{animation:fade .3s .45s both}
+.play #s3 .lab{animation:glowIn .6s ease-out both}
+/* 4: value trap */
+.play #stamp{animation:slam .32s cubic-bezier(.6,0,.9,.6) both}
+.play #s4 .btl{animation:tilt .55s cubic-bezier(.3,0,.2,1) both}
+.play #s4 .shk{animation:shake .25s .3s both}
+/* 5: the name, without the debt */
+.play #s5 .btl>.lab{animation:lift .6s cubic-bezier(.3,1.3,.5,1) both,glowIn .6s ease-out both}
+#s5 .btl>.lab{transform:translate(46px,-78px) rotate(-9deg) scale(1.12)}
+@keyframes lift{from{transform:none}}
+.bar2{transform-box:fill-box;transform-origin:50% 100%}
+@keyframes grow{from{transform:scaleY(.33)}}
+.play #s2 .bar2{animation:grow .5s cubic-bezier(.3,1.2,.5,1) .25s both}
+.play #s5 .spot{animation:fade .6s both}
+/* 6: BBL? */
+.play #bblw{animation:pop .3s cubic-bezier(.2,.7,.2,1) both}
+/* 8: the law */
+.play #gav{animation:gavel .32s cubic-bezier(.6,0,.9,.6) .05s both}
+.play #s8 .free{animation:labFree .5s cubic-bezier(.3,1.35,.5,1) .32s both}
+.play #s8 .seal{animation:popIn .3s ease-out .7s both}
+.play #s8 .shock{animation:flash .5s ease-out .35s both}
+/* 9: steps */
+.play #s9 .line{animation:draw .6s cubic-bezier(.4,0,.2,1) both}
+/* 10/11 */
+.play #zero{animation:zoomIn .45s cubic-bezier(.2,.7,.2,1) both}
+.play #fl{animation:fluteL .55s cubic-bezier(.2,.7,.2,1) both}
+.play #fr{animation:fluteR .55s cubic-bezier(.2,.7,.2,1) both}
+.play #spark{animation:fade .3s .5s both}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="rough" x="-5%" y="-10%" width="110%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="3" result="n2"/>
+      <feColorMatrix in="n2" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.4 3.4" result="holes"/>
+      <feComposite in="d" in2="holes" operator="in"/>
+    </filter>
+    <linearGradient id="glass" x1="0" x2="1"><stop offset="0" stop-color="#050a07"/><stop offset=".1" stop-color="#10241a"/><stop offset=".28" stop-color="#24493a"/>
+      <stop offset=".42" stop-color="#153223"/><stop offset=".72" stop-color="#0a1810"/><stop offset=".9" stop-color="#14281c"/><stop offset="1" stop-color="#040705"/></linearGradient>
+    <linearGradient id="goldglass" x1="0" x2="1"><stop offset="0" stop-color="#5a4019"/><stop offset=".14" stop-color="#b8924a"/><stop offset=".3" stop-color="#f6e0a4"/>
+      <stop offset=".45" stop-color="#c9a257"/><stop offset=".75" stop-color="#8d6a30"/><stop offset=".9" stop-color="#c49d52"/><stop offset="1" stop-color="#4a3413"/></linearGradient>
+    <linearGradient id="foil" x1="0" x2="1"><stop offset="0" stop-color="#5e441c"/><stop offset=".22" stop-color="#e6cb8b"/><stop offset=".38" stop-color="#b38d48"/>
+      <stop offset=".58" stop-color="#f7e3aa"/><stop offset=".8" stop-color="#97733a"/><stop offset="1" stop-color="#4f3815"/></linearGradient>
+    <linearGradient id="rim" x1="0" x2="1"><stop offset="0" stop-color="#fff1d2" stop-opacity=".85"/><stop offset=".14" stop-color="#fff1d2" stop-opacity="0"/>
+      <stop offset=".86" stop-color="#e9c47a" stop-opacity="0"/><stop offset="1" stop-color="#e9c47a" stop-opacity=".7"/></linearGradient>
+    <linearGradient id="hl" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f3eadb" stop-opacity="0"/><stop offset=".25" stop-color="#f3eadb" stop-opacity=".6"/>
+      <stop offset=".7" stop-color="#f3eadb" stop-opacity=".3"/><stop offset="1" stop-color="#f3eadb" stop-opacity="0"/></linearGradient>
+    <radialGradient id="iron" cx=".36" cy=".3" r=".8"><stop offset="0" stop-color="#8a847c"/><stop offset=".3" stop-color="#47423d"/><stop offset=".75" stop-color="#1c1a18"/><stop offset="1" stop-color="#0b0a09"/></radialGradient>
+    <linearGradient id="wood" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b07a48"/><stop offset=".45" stop-color="#7e5030"/><stop offset="1" stop-color="#4a2a14"/></linearGradient>
+    <linearGradient id="woodh" x1="0" x2="1"><stop offset="0" stop-color="#4a2a14"/><stop offset=".35" stop-color="#b98450"/><stop offset=".6" stop-color="#7e5030"/><stop offset="1" stop-color="#3a200e"/></linearGradient>
+    <linearGradient id="bandg" x1="0" x2="1"><stop offset="0" stop-color="#7a5a26"/><stop offset=".4" stop-color="#f0d696"/><stop offset="1" stop-color="#6d4f20"/></linearGradient>
+    <linearGradient id="fizz" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f6e0a2"/><stop offset="1" stop-color="#c99d48"/></linearGradient>
+    <linearGradient id="reflg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="reflm" maskUnits="userSpaceOnUse" x="-50" y="990" width="400" height="500"><rect x="-50" y="994" width="400" height="420" fill="url(#reflg)"/></mask>
+    <path id="bodyPath" d="M126 40 L174 40 L176 300 C178 380 282 418 284 530 L284 955 Q284 992 248 994 L52 994 Q16 992 16 955 L16 530 C18 418 122 380 124 300 Z"/>
+    <g id="neck">
+      <path d="M120 14 L180 14 L180 300 C181 318 186 330 192 344 L185 351 L178 343 L170 352 L162 344 L154 353 L146 344 L138 352 L130 343 L122 351 L108 345 C114 330 119 318 120 300 Z" fill="url(#foil)"/>
+      <rect x="117" y="10" width="66" height="22" rx="6" fill="url(#foil)"/>
+      <rect x="120" y="236" width="60" height="44" rx="4" fill="#f3e8d2"/>
+      <rect x="120" y="240" width="60" height="2" fill="#a9843f"/><rect x="120" y="274" width="60" height="2" fill="#a9843f"/>
+      <text x="150" y="266" text-anchor="middle" font-family="BM,Didot,serif" font-weight="700" font-size="20" fill="#1b1610">ML</text>
+    </g>
+    <g id="bottleBody">
+      <use href="#bodyPath" fill="url(#glass)"/>
+      <path d="M44 540 C46 470 92 430 116 392" stroke="#f3eadb" stroke-opacity=".25" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <rect x="38" y="560" width="15" height="390" rx="7.5" fill="url(#hl)" opacity=".6"/>
+      <rect x="258" y="580" width="6" height="340" rx="3" fill="url(#hl)" opacity=".3"/>
+      <use href="#bodyPath" fill="none" stroke="url(#rim)" stroke-width="6"/>
+      <use href="#neck"/>
+    </g>
+    <g id="goldBody">
+      <use href="#bodyPath" fill="url(#goldglass)"/>
+      <rect x="38" y="560" width="15" height="390" rx="7.5" fill="url(#hl)" opacity=".8"/>
+      <use href="#bodyPath" fill="none" stroke="#fff3d6" stroke-opacity=".5" stroke-width="4"/>
+      <use href="#neck"/>
+    </g>
+    <g id="bottleArt">
+      <ellipse cx="150" cy="994" rx="175" ry="15" fill="#000" opacity=".55"/>
+      <g mask="url(#reflm)" opacity=".22"><use href="#bottleBody" transform="translate(0 1988) scale(1 -1)"/></g>
+      <use href="#bottleBody"/>
+    </g>
+    <g id="goldArt">
+      <ellipse cx="150" cy="994" rx="175" ry="15" fill="#000" opacity=".55"/>
+      <g mask="url(#reflm)" opacity=".25"><use href="#goldBody" transform="translate(0 1988) scale(1 -1)"/></g>
+      <use href="#goldBody"/>
+    </g>
+    <g id="ballArt"><circle cx="145" cy="145" r="138" fill="url(#iron)"/>
+      <circle cx="145" cy="145" r="138" fill="none" stroke="#fff1d2" stroke-opacity=".28" stroke-width="3"/>
+      <ellipse cx="100" cy="80" rx="34" ry="20" fill="#fff" opacity=".14" transform="rotate(-30 100 80)"/>
+      <text x="145" y="178" text-anchor="middle" font-family="BM,Didot,serif" font-weight="700" font-size="100" fill="#f3e6d0" style="font-variation-settings:'opsz' 7">$16M</text></g>
+    <g id="fluteArt">
+      <path d="M-52 -212 C-52 -110 -36 -16 0 -2 C36 -16 52 -110 52 -212 Z" fill="url(#fizz)"/>
+      <circle cx="-14" cy="-60" r="4" fill="#fff8e2" opacity=".8"/><circle cx="10" cy="-100" r="3" fill="#fff8e2" opacity=".8"/>
+      <circle cx="-6" cy="-140" r="4.5" fill="#fff8e2" opacity=".8"/><circle cx="22" cy="-170" r="3" fill="#fff8e2" opacity=".8"/>
+      <circle cx="-26" cy="-190" r="3.5" fill="#fff8e2" opacity=".8"/><circle cx="4" cy="-30" r="2.5" fill="#fff8e2" opacity=".8"/>
+      <path d="M-62 -262 C-62 -120 -42 -10 0 4 C42 -10 62 -120 62 -262" fill="none" stroke="#e2c27c" stroke-width="7" stroke-linejoin="round"/>
+      <ellipse cx="0" cy="-262" rx="62" ry="11" fill="none" stroke="#f6e2ae" stroke-width="5"/>
+      <path d="M-5 4 L-4 196 L4 196 L5 4 Z" fill="#e2c27c"/>
+      <path d="M-84 210 Q0 182 84 210 Q0 224 -84 210 Z" fill="#e2c27c"/>
+    </g>
+  </defs>
+</svg>
+
+<div id="stage">
+
+  <!-- 0 · the photo (up before we start) -->
+  <section class="slide" id="s0">
+    <div class="a cover" style="left:545px;top:40px;width:831px;height:1000px"><img src="img/kim.jpg" alt=""></div>
+  </section>
+
+  <!-- 1 · the name -->
+  <section class="slide" id="s1">
+    <div class="a cover" style="left:140px;top:90px;width:748px;height:900px;transform-origin:0 0"><img src="img/ryan.jpg" alt=""><img class="kimfade" src="img/kim.jpg" alt="" style="opacity:0"></div>
+    <div class="a ctr k-up d2" style="left:900px;top:400px;width:960px"><span class="b gold" style="font-size:240px">Kim K.</span><span class="r gold" style="font-size:80px;vertical-align:130px;margin-left:8px">™</span></div>
+    <div id="flash" class="a" style="inset:0;background:#fff8ec;opacity:0;pointer-events:none"></div>
+  </section>
+
+  <!-- 2 · the numbers -->
+  <section class="slide" id="s2">
+    <div class="btl k-rise" style="left:300px;top:22px" data-b="green"></div>
+    <div class="a ctr k-up d2" style="left:880px;top:250px;width:680px"><span class="b gold num" style="font-size:440px">×3</span></div>
+    <svg class="a k-fade d2" width="270" height="370" viewBox="0 0 190 260" style="left:1570px;top:340px;overflow:visible">
+      <rect x="8" y="170" width="70" height="80" fill="#f3e6d0" opacity=".45"/><rect class="bar2" x="108" y="10" width="70" height="240" fill="#d9b66c"/>
+      <line x1="0" y1="251" x2="186" y2="251" stroke="#f3e6d0" stroke-opacity=".6" stroke-width="3"/></svg>
+  </section>
+
+  <!-- 3 · the debt -->
+  <section class="slide" id="s3">
+    <svg class="chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
+    <div class="btl dead" style="left:300px;top:22px" data-b="green" data-glow="1"></div>
+    <div class="ball" style="left:690px;top:776px"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
+    <div class="a k-up d3" style="left:990px;top:400px"><span class="b red num" style="font-size:240px">−$1M</span><span class="r red num" style="font-size:120px">/yr</span></div>
+  </section>
+
+  <!-- 4 · value trap -->
+  <section class="slide" id="s4">
+<div class="shk a" style="inset:0">
+    <svg class="chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
+    <div class="btl dead" style="left:300px;top:22px;transform:rotate(8deg)" data-b="green" data-glow="1"></div>
+    <div class="ball" style="left:690px;top:776px"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
+    <div class="a" style="left:900px;top:420px;width:980px;display:flex;justify-content:center"><div id="stamp" style="transform:rotate(-8deg)">VALUE TRAP</div></div>
+  </div>
+  </section>
+
+  <!-- 5 · the name, without the debt? -->
+  <section class="slide" id="s5">
+    <div class="a spot" style="left:130px;top:330px;width:720px;height:720px;background:radial-gradient(circle,rgba(246,212,140,.24),rgba(246,212,140,0) 65%)"></div>
+    <svg class="chain" width="1920" height="1080" data-chain="575,996,712,946,26"></svg>
+    <div class="btl dead" style="left:300px;top:22px;transform:rotate(8deg)" data-b="green" data-glow="2"></div>
+    <div class="ball" style="left:690px;top:776px;opacity:.75"><svg width="250" height="250" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
+  </section>
+
+  <!-- 6 · BBL? -->
+  <section class="slide" id="s6">
+    <div class="a ctr" style="left:0;top:250px;width:1920px"><div id="bblw" style="display:inline-block"><span class="b cream" style="font-size:520px"><span id="g1" style="display:inline-block">B</span><span id="g2" style="display:inline-block">B</span><span id="g3" style="display:inline-block">L</span></span><span class="i gold" style="font-size:470px;line-height:1">?</span></div></div>
+  </section>
+
+  <!-- 7 · PUNCHLINE: Buy the Brand. Leave the debt. -->
+  <section class="slide" id="s7">
+    <div class="a" style="left:0;top:150px;width:1920px;display:flex;justify-content:center">
+      <div class="b cream" style="font-size:196px;line-height:1.06;position:relative">
+        <div><span class="ini" id="i1">B</span><span class="rest">uy the</span></div>
+        <div><span class="ini" id="i2">B</span><span class="rest">rand.</span></div>
+        <div><span class="ini" id="i3">L</span><span class="rest">eave the&nbsp;</span><span id="debt">debt.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · the law -->
+  <section class="slide" id="s8">
+    <div class="a ctr b cream num k-up" style="left:0;top:58px;width:1920px;font-size:112px">Brazil’s 2005 bankruptcy law</div>
+    <div class="a ctr k-up d2" style="left:0;top:200px;width:1920px"><span class="i cream" style="font-size:76px">The court sells the brand on its own, </span><span class="i gold" style="font-size:76px">debt-free.</span></div>
+    <svg class="chain" width="1920" height="1080" data-chain="590,1026,700,990,18" style="opacity:.8"></svg>
+    <div class="btl dead" style="left:470px;top:30px;transform:scale(.66);opacity:.8" data-b="green" data-nolab="1"></div>
+    <div class="ball" style="left:690px;top:880px;width:160px;height:160px;opacity:.8"><svg width="160" height="160" viewBox="0 0 290 290"><use href="#ballArt"/></svg></div>
+    <div class="a free" style="left:840px;top:420px;width:250px;height:206px;transform-origin:50% 50%">
+      <div class="lab glow" style="left:0;top:0;transform:scale(1.4);transform-origin:50% 50%"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div>
+      <div class="seal" style="left:220px;top:150px"><div class="s1">DEBT<br>FREE</div><div class="s2">LEI 11.101/2005</div></div>
+    </div>
+    <div class="a" style="left:1240px;top:960px;width:240px;height:66px"><svg width="240" height="66" viewBox="0 0 240 66"><ellipse cx="120" cy="50" rx="114" ry="14" fill="#000" opacity=".5"/><rect x="12" y="14" width="216" height="34" rx="8" fill="url(#woodh)"/><ellipse cx="120" cy="15" rx="108" ry="10" fill="#8a5833"/></svg></div>
+    <svg class="a shock" width="300" height="120" viewBox="0 0 300 120" style="left:1210px;top:900px;opacity:0;overflow:visible"><g stroke="#f2dca6" stroke-width="6" stroke-linecap="round">
+      <line x1="40" y1="70" x2="-6" y2="44"/><line x1="40" y1="90" x2="-10" y2="98"/><line x1="260" y1="70" x2="306" y2="44"/><line x1="260" y1="90" x2="310" y2="98"/></g></svg>
+    <div id="gav" class="a" style="left:1312px;top:795px;width:420px;height:180px;transform-origin:405px 90px">
+      <svg width="420" height="180" viewBox="0 0 560 240" style="overflow:visible">
+        <rect x="128" y="104" width="420" height="32" rx="16" fill="url(#wood)"/><circle cx="540" cy="120" r="24" fill="url(#wood)"/>
+        <rect x="0" y="0" width="128" height="240" rx="22" fill="url(#woodh)"/>
+        <rect x="-4" y="30" width="136" height="16" rx="5" fill="url(#bandg)"/><rect x="-4" y="194" width="136" height="16" rx="5" fill="url(#bandg)"/></svg>
+    </div>
+  </section>
+
+  <!-- 9 · the plan -->
+  <section class="slide" id="s9">
+    <div class="a line" style="left:330px;top:327px;width:1260px;height:6px;background:var(--gold);transform-origin:0 50%"></div>
+    <svg class="a k-fade d3" width="1920" height="60" style="left:0;top:300px;overflow:visible"><g fill="none" stroke="#d9b66c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M630 312 L652 330 L630 348" transform="translate(0 -300)"/><path d="M1260 312 L1282 330 L1260 348" transform="translate(0 -300)"/></g></svg>
+    <div class="node lit" style="left:310px;top:310px"></div><div class="node lit" style="left:940px;top:310px"></div><div class="node" style="left:1570px;top:310px"></div>
+    <div class="a k-up" style="left:30px;top:160px;width:600px"><div class="ctr b cream" style="font-size:92px">Now</div></div>
+    <div class="a k-up d2" style="left:660px;top:160px;width:600px"><div class="ctr b cream" style="font-size:92px">Bankruptcy</div></div>
+    <div class="a k-up d4" style="left:1290px;top:160px;width:600px"><div class="ctr b gold" style="font-size:92px">Relaunch</div></div>
+    <div class="a k-up d1" style="left:30px;top:410px;width:600px"><div class="ctr b gold num" style="font-size:260px">$0</div></div>
+    <div class="a k-up d1" style="left:30px;top:740px;width:600px"><div class="ctr i cream" style="font-size:76px">buy nothing</div></div>
+    <div class="a k-up d3" style="left:835px;top:450px;width:250px;height:206px"><div class="lab glow" style="left:0;top:0;transform:scale(1.15)"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div></div>
+    <div class="a k-up d3" style="left:660px;top:740px;width:600px"><div class="ctr i cream" style="font-size:76px">bid for the name</div></div>
+    <div class="btl k-fade d5" style="left:1440px;top:40px;transform:scale(.62)" data-b="gold" data-glow="1"></div>
+  </section>
+
+  <!-- 10 · $0 spent. -->
+  <section class="slide" id="s10">
+    <div class="a ctr" style="left:0;top:330px;width:1920px"><div id="zero" style="display:inline-block"><span class="b gold num" style="font-size:400px">$0</span><span class="i cream" style="font-size:220px;margin-left:40px">spent.</span></div></div>
+  </section>
+
+  <!-- 11 · Cheers, Len. -->
+  <section class="slide" id="s11">
+    <div id="fl" class="flute" style="left:740px;top:60px;transform:rotate(14deg)"><svg width="200" height="520" viewBox="-100 -280 200 520" style="overflow:visible"><use href="#fluteArt"/></svg></div>
+    <div id="fr" class="flute" style="left:980px;top:60px;transform:rotate(-14deg)"><svg width="200" height="520" viewBox="-100 -280 200 520" style="overflow:visible"><use href="#fluteArt"/></svg></div>
+    <svg id="spark" class="a" width="1920" height="300" style="left:0;top:0;overflow:visible"><g stroke="#f2dca6" stroke-width="5" stroke-linecap="round" id="sparkg"></g></svg>
+    <div class="a ctr k-up d4" style="left:0;top:575px;width:1920px"><span class="i cream" style="font-size:196px;line-height:1.05">Cheers, Len.</span></div>
+    <div class="a k-fade d5" style="left:870px;top:842px;width:180px;height:3px;background:var(--gold)"></div>
+    <div class="a ctr sans cream k-fade d5" style="left:0;top:872px;width:1920px;font-size:60px;letter-spacing:.2em">TEAM 10 · MAISON LAURENT</div>
+  </section>
+
+</div>
+<script>
+(function () {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const LAB = '<div class="lab"><div class="t1">MAISON</div><div class="t2">LAURENT</div><div class="t3"></div><div class="t4">BRASIL</div></div>';
+  // bottles
+  $$(".btl").forEach(el => {
+    el.innerHTML = `<svg width="300" height="1000" viewBox="0 0 300 1000"><use href="#${el.dataset.b === "gold" ? "goldArt" : "bottleArt"}"/></svg>` + (el.dataset.nolab ? "" : LAB);
+    if (el.dataset.glow) { const l = el.querySelector(".lab"); l.classList.add("glow");
+      if (el.dataset.glow === "2") l.style.boxShadow = "inset 0 0 0 4px #f3e8d2,inset 0 0 0 6px #a9843f,inset 0 0 0 10px #f3e8d2,inset 0 0 0 11.5px #a9843f,0 0 110px 34px rgba(246,212,140,.7),0 3px 0 rgba(0,0,0,.25)"; }
+  });
+  // chains
+  $$(".chain").forEach(svg => {
+    const [ax, ay, bx, by, sag] = svg.dataset.chain.split(",").map(Number);
+    const mx = (ax + bx) / 2, my = Math.max(ay, by) + sag;
+    const pt = u => [(1 - u) * (1 - u) * ax + 2 * (1 - u) * u * mx + u * u * bx, (1 - u) * (1 - u) * ay + 2 * (1 - u) * u * my + u * u * by];
+    let len = 0, prev = pt(0); const N = 60, cum = [0];
+    for (let i = 1; i <= N; i++) { const p = pt(i / N); len += Math.hypot(p[0] - prev[0], p[1] - prev[1]); cum.push(len); prev = p; }
+    const n = Math.floor(len / 26); let h = "";
+    for (let j = 0; j <= n; j++) {
+      const t = j * 26; let i = 1; while (i < N && cum[i] < t) i++;
+      const u = (i - 1 + (t - cum[i - 1]) / Math.max(1e-6, cum[i] - cum[i - 1])) / N, p = pt(u), q = pt(Math.min(1, u + .01));
+      const ang = Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI;
+      h += j % 2 ? `<rect x="${p[0] - 16}" y="${p[1] - 4.5}" width="32" height="9" rx="4.5" fill="#9a948a" transform="rotate(${ang} ${p[0]} ${p[1]})"/>`
+                 : `<ellipse cx="${p[0]}" cy="${p[1]}" rx="18" ry="11" fill="none" stroke="#c2bbb0" stroke-width="6.5" transform="rotate(${ang} ${p[0]} ${p[1]})"/>`;
+    }
+    svg.innerHTML = h;
+  });
+  // clink sparks
+  let sh = ""; for (let i = 0; i < 7; i++) { const a = (-90 + (i - 3) * 26) * Math.PI / 180, r0 = 46, r1 = 92;
+    sh += `<line x1="${960 + Math.cos(a) * r0}" y1="${78 + Math.sin(a) * r0}" x2="${960 + Math.cos(a) * r1}" y2="${78 + Math.sin(a) * r1}"/>`; }
+  $("#sparkg").innerHTML = sh;
+
+  // fit 1920x1080 into the window, letterboxed on black
+  const stage = $("#stage"); let K = 1;
+  function fit() { K = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = `translate(${(innerWidth - 1920 * K) / 2}px,${(innerHeight - 1080 * K) / 2}px) scale(${K})`; }
+  addEventListener("resize", fit); fit();
+
+  const slides = $$(".slide"), LAST = slides.length - 1;
+  let cur = -1, timer = null, lastNav = 0;
+  function punch() {   // BBL -> Buy the Brand. Leave the debt.
+    const ease = "cubic-bezier(.5,0,.15,1)";
+    ["1", "2", "3"].forEach((k, j) => {
+      const g = $("#g" + k).getBoundingClientRect(), it = $("#i" + k), r = it.getBoundingClientRect();
+      const s = g.height / r.height, dx = (g.left - r.left) / K, dy = (g.top - r.top) / K;
+      it.animate([{ transform: `translate(${dx}px,${dy}px) scale(${s})`, color: "#f3e6d0" }, { transform: "none", color: "#d9b66c" }],
+        { duration: 560, delay: j * 40, easing: ease, fill: "backwards" });
+    });
+    $$("#s7 .rest").forEach((el, j) => el.animate([{ clipPath: "inset(-20% 100% -20% 0)", opacity: 0 }, { clipPath: "inset(-20% 0 -20% 0)", opacity: 1 }],
+      { duration: 380, delay: 420 + j * 90, easing: "cubic-bezier(.3,0,.2,1)", fill: "backwards" }));
+    const d = $("#debt");
+    d.animate([{ clipPath: "inset(-20% 100% -20% 0)", opacity: 0, transform: "none", color: "#f3e6d0" },
+               { clipPath: "inset(-20% 0 -20% 0)", opacity: 1, transform: "none", color: "#f3e6d0", offset: .4 },
+               { clipPath: "inset(-20% 0 -20% 0)", opacity: 1, transform: "none", color: "#f0644a", offset: .62 },
+               { clipPath: "inset(-200% -200% -200% -200%)", opacity: .8, transform: "translate(-170px,262px) rotate(9deg)", color: "#f0644a" }],
+      { duration: 1250, delay: 600, easing: "cubic-bezier(.55,0,.75,.45)", fill: "backwards" });
+  }
+  function go(n, play) {
+    n = Math.max(0, Math.min(LAST, n)); if (n === cur) return;
+    clearTimeout(timer);
+    slides.forEach(s => s.classList.remove("on", "play"));
+    document.getAnimations().forEach(a => a.cancel());
+    const s = slides[n];
+    if (play) { void s.offsetWidth; s.classList.add("play"); }
+    s.classList.add("on"); cur = n;
+    if (play && n === 7) punch();
+    if (play && n === 10) timer = setTimeout(() => go(11, true), 2300);
+    try { history.replaceState(null, "", "#" + n); } catch (e) {}
+  }
+  const next = () => { const t = performance.now(); if (t - lastNav < 220) return; lastNav = t; go(cur + 1, true); };
+  const prev = () => { lastNav = performance.now(); go(cur === 11 ? 10 : cur - 1, false); };
+  function fs() { if (document.fullscreenElement) document.exitFullscreen && document.exitFullscreen();
+    else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen || (() => {})).call(document.documentElement); }
+  addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (["ArrowRight", "ArrowDown", " ", "PageDown", "Enter", "n", "N"].includes(k)) { e.preventDefault(); if (!e.repeat) next(); }
+    else if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace", "p", "P"].includes(k)) { e.preventDefault(); if (!e.repeat) prev(); }
+    else if (k === "f" || k === "F" || k === "F5") { e.preventDefault(); fs(); }
+    else if (k === "Home") { e.preventDefault(); go(0, false); }
+    else if (k === "End") { e.preventDefault(); go(LAST, false); }
+  });
+  addEventListener("click", e => { if (e.button === 0) next(); });
+  addEventListener("contextmenu", e => { e.preventDefault(); prev(); });
+  let idle; addEventListener("mousemove", () => { document.body.classList.remove("idle"); clearTimeout(idle); idle = setTimeout(() => document.body.classList.add("idle"), 1500); });
+
+  // start once fonts + images are in (max 4 s), so nothing pops in mid-skit
+  const q = new URLSearchParams(location.search);
+  const start = q.has("still") ? +q.get("still") : (parseInt(location.hash.slice(1)) || 0);
+  const imgs = $$("img").map(i => i.decode ? i.decode().catch(() => {}) : Promise.resolve());
+  const fonts = ["700 100px BM", "italic 400 100px BM", "500 50px Jost"].map(f => document.fonts.load(f));
+  Promise.race([Promise.all([...imgs, ...fonts, document.fonts.ready]), new Promise(r => setTimeout(r, 4000))]).then(() => {
+    go(start, false); stage.classList.add("ready"); document.body.dataset.ready = "1";
+  });
+})();
+</script>
+</body></html>

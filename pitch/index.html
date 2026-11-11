@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edify pitch video · Team 10</title>
+<style>
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+video{position:fixed;inset:0;width:100vw;height:100vh;object-fit:contain;background:#000}
+#hint{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#fff;background:rgba(0,0,0,.55);padding:10px 16px;border-radius:99px;transition:opacity .4s}
+.hide{opacity:0;pointer-events:none}
+body.playing{cursor:none}
+</style></head><body>
+<video id="v" src="pitch.mp4" poster="poster.jpg" preload="auto" playsinline muted></video>
+<div id="hint">Click or press Space on Jeda's “AJ.” · F = full screen · R = restart</div>
+<script>
+const v=document.getElementById('v'),h=document.getElementById('hint');
+function go(){ if(v.paused){ v.play(); document.body.classList.add('playing'); h.classList.add('hide'); } }
+function fs(){ const d=document.documentElement; if(!document.fullscreenElement){ (d.requestFullscreen||d.webkitRequestFullscreen).call(d) } else { document.exitFullscreen() } }
+addEventListener('click',go);
+addEventListener('keydown',e=>{
+  if(e.key===' '||e.key==='Enter'||e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go()}
+  else if(e.key==='f'||e.key==='F'||e.key==='F5'){e.preventDefault();fs()}
+  else if(e.key==='r'||e.key==='R'||e.key==='Home'){v.pause();v.currentTime=0;document.body.classList.remove('playing');h.classList.remove('hide')}
+  else if(e.key==='Escape'&&!document.fullscreenElement){location.href='../'}
+});
+</script></body></html>
