@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0d0b0a">
+<title>Team 10 Remote</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#0d0b0a;color:#f6efe6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overscroll-behavior:none}
+.app{display:flex;flex-direction:column;height:100%;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#b8ab9b}
+.pos{font-weight:800;color:#ff7a4a;letter-spacing:.06em;text-transform:uppercase}
+.st{font-weight:700}.st.ok{color:#5fd38b}.st.bad{color:#ff6b5b}
+.say{flex:1;overflow:auto;margin:10px 0;padding:14px;border-radius:16px;background:#1a1613;border:1px solid #3a312a;font-size:21px;line-height:1.35}
+.say .who{display:block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#d4a24c;margin-bottom:6px}
+.say .ask{display:block;margin-top:12px;padding-top:10px;border-top:1px dashed #4a4036;color:#ffd38a}
+.nextp{font-size:13px;color:#b8ab9b;margin:0 2px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:6px;margin-bottom:8px}
+.chips button{flex:1;padding:9px 4px;border-radius:10px;border:1px solid #3a312a;background:#1a1613;color:#f6efe6;font-weight:700;font-size:13px}
+.chips button.on{border-color:#ff7a4a;color:#ff7a4a}
+.row{display:flex;gap:10px}
+.back{flex:0 0 28%;padding:0;border-radius:18px;border:1px solid #3a312a;background:#1a1613;color:#f6efe6;font-size:28px;font-weight:800}
+.next{flex:1;height:22vh;min-height:120px;border:0;border-radius:18px;background:linear-gradient(135deg,#ff7a3d,#ff3d6e);color:#fff;font-size:34px;font-weight:900;letter-spacing:.02em}
+.next:active,.back:active{transform:scale(.98);filter:brightness(1.1)}
+.yes{display:none;margin-bottom:10px;height:72px;border:0;border-radius:16px;background:#d4a24c;color:#1a1408;font-size:24px;font-weight:900}
+.yes.show{display:block}
+</style></head><body><div class="app">
+<div class="top"><span class="pos" id="pos"></span><span class="st" id="st">Ready</span></div>
+<div class="say" id="say"></div>
+<div class="nextp" id="nextp"></div>
+<button class="yes" id="yes" type="button">✍️ Trigger “Sign it” (HIRED)</button>
+<div class="chips"><button data-j="0">Menu</button><button data-j="1">Gamify</button><button data-j="6">Certify</button><button data-j="12">Verify</button></div>
+<div class="row"><button class="back" id="back" type="button">←</button><button class="next" id="next" type="button">NEXT →</button></div>
+</div>
+<script>
+const CODE = (new URLSearchParams(location.search).get('code') || 't10live').toLowerCase();
+const RURL = 'https://t10-remote.ryrycdryrycd.workers.dev/r/' + CODE;
+const S = [
+ {d:null,i:0,l:'Menu (opener)',who:'Opener',say:'Robert, Ralph: we’ve got three ideas we think would make Edify huge. Gamify it, certify it, and verify it.'},
+ {d:'gamify',i:0,l:'Gamify 1/4 · nudge',who:'Gamify',say:'So Edify has over a thousand CEO interviews. Honestly, founders like AJ are never going to read a thousand interviews. But they will scroll: ten million people keep a 365-day streak on Duolingo. So first: a little nudge every day.'},
+ {d:'gamify',i:1,l:'Gamify 2/4 · the call',who:'Gamify',say:'You open it, and it’s one real CEO decision, thirty seconds. You make the call, then you see how everyone else voted and what the CEO actually did.'},
+ {d:'gamify',i:2,l:'Gamify 3/4 · streak + league',who:'Gamify',say:'Your streak goes up, and you start passing your friends in the league.'},
+ {d:'gamify',i:3,l:'Gamify 4/4 · promoted',who:'Gamify',say:'And you climb, from Intern all the way to CEO. Every time you level up, you earn a question to a real CEO. We’ll come back to that.',ask:'Quick show of hands: has anyone here opened Edify on a day it wasn’t assigned?'},
+ {d:null,i:0,l:'Menu',who:'Transition',say:'Second: certify.'},
+ {d:'certify',i:0,l:'Certify 1/5 · CEO certificate',who:'Certify',say:'Make that rank actually mean something. Hit CEO level, and you’re Edify Certified.'},
+ {d:'certify',i:1,l:'Certify 2/5 · LinkedIn',who:'Certify',say:'One tap and it’s on your LinkedIn, right next to certificates people already trust. The Duolingo English Test is accepted by over six thousand programs. Coursera certificates go straight onto LinkedIn. Edify should be that for business.'},
+ {d:'certify',i:2,l:'Certify 3/5 · blue check',who:'Certify',say:'And that blue check means CEO. It’s not the kind you can just pay for. You can’t buy this one. You have to earn it.'},
+ {d:'certify',i:3,l:'Certify 4/5 · CEO roster',who:'Certify',say:'CEOs get profiles too. When a CEO answered our question on Edify, some of us didn’t even know the company. So every CEO gets a logo and a quick brag sheet.'},
+ {d:'certify',i:4,l:'Certify 5/5 · Ralph',who:'Certify',say:'Like Ralph: forty-two years at AT&T, and he was running AT&T Mobility when the iPhone launched.',ask:'Robert, would you let your top players put “Edify Certified” on LinkedIn? And what would it take for a recruiter to actually trust it?'},
+ {d:null,i:0,l:'Menu',who:'Transition',say:'Last one: verify.'},
+ {d:'verify',i:0,l:'Verify 1/7 · Omar’s question',who:'Verify',say:'This is the real question Omar asked on Edify.'},
+ {d:'verify',i:1,l:'Verify 2/7 · chatbot',who:'Verify',say:'Here’s what a chatbot gives you: “it depends.” No name, no source, no track record.'},
+ {d:'verify',i:2,l:'Verify 3/7 · Barefoot CEO',who:'Verify',say:'And here’s what we actually got, from the co-founding CEO of Barefoot Wines: start small, a few local companies, get testimonials, then use that endorsement to grow.'},
+ {d:'verify',i:3,l:'Verify 4/7 · can’t scrape this',who:'Verify',say:'Now ask a chatbot what Barefoot told us. It can’t. ChatGPT can scrape the internet. It can’t scrape this. Verified CEOs are Edify’s moat.'},
+ {d:'verify',i:4,l:'Verify 5/7 · earn it',who:'Verify',say:'So make people earn it. Every level-up earns you one question to a real CEO.',ask:'Ralph, if a 22-year-old founder earned one question to you, what should they ask?'},
+ {d:'verify',i:5,l:'Verify 6/7 · closer',who:'Everyone',say:'Gamify. Certify. Verify. That’s how you Edify.'},
+ {d:'verify',i:6,l:'Verify 7/7 · THE ASK',who:'The ask',say:'One more thing. Robert, you have the wisdom: almost two thousand CEO interviews. We have the builders: two of us on Team 10 built this app, and it’s live today. And we’re the target market. So we’d love to keep building it with you, paid, on your team.',ask:'So, Robert… want to sign it? (Tap the gold button when he says yes.)'}
+];
+let k = 0; try { const s = parseInt(localStorage.getItem('t10r'), 10); if (s >= 0 && s < S.length) k = s; } catch (e) {}
+const $ = id => document.getElementById(id);
+function render() {
+  const s = S[k]; $('pos').textContent = (k + 1) + '/' + S.length + ' · ' + s.l;
+  $('say').innerHTML = '<span class="who">' + s.who + '</span>' + s.say + (s.ask ? '<span class="ask">Ask: ' + s.ask + '</span>' : '');
+  $('say').scrollTop = 0;
+  $('nextp').textContent = k < S.length - 1 ? 'Next: ' + S[k + 1].l : 'Last screen';
+  $('yes').classList.toggle('show', s.d === 'verify' && s.i === 6);
+  const sec = k < 5 ? 1 : k < 11 ? 6 : 12; document.querySelectorAll('.chips button').forEach(b => b.classList.toggle('on', +b.dataset.j === (k === 0 ? 0 : sec)));
+  try { localStorage.setItem('t10r', k); } catch (e) {}
+}
+async function send(body) {
+  const st = $('st'); st.textContent = 'Sending…'; st.className = 'st';
+  try { const r = await fetch(RURL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); if (!r.ok) throw 0; st.textContent = '✓ Sent'; st.className = 'st ok'; }
+  catch (e) { st.textContent = '⚠ Not sent: tap again'; st.className = 'st bad'; }
+}
+function go(n) { k = Math.max(0, Math.min(S.length - 1, n)); render(); if (navigator.vibrate) navigator.vibrate(12); send({ deck: S[k].d, i: S[k].i }); }
+$('next').onclick = () => go(k + 1); $('back').onclick = () => go(k - 1);
+$('yes').onclick = () => { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); send({ deck: 'verify', i: 6, cmd: 'yes' }); };
+document.querySelectorAll('.chips button').forEach(b => b.onclick = () => go(+b.dataset.j));
+async function wake() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (e) {} }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wake(); }); wake();
+render();
+</script></body></html>
