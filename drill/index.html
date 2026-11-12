@@ -1,0 +1,700 @@
+<title>Rocket Pitch Drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: one centered column like a film card. A still from the pitch film on top, the line in large Bodoni below, controls at the bottom.
+   One dark look on purpose: it matches the film and keeps the screen calm. */
+:root {
+  --ink: #0c0a07;
+  --panel: #17130d;
+  --line: #2e271b;
+  --line2: #5d4e35;
+  --cream: #f4ead7;
+  --mute: #a5967c;
+  --gold: #e1b666;
+  --gold-hi: #ffe3a8;
+  --miss: #ef7e61;
+  --f-display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
+  --f-ui: "Jost", "Avenir Next", Futura, system-ui, sans-serif;
+  --f-note: "Cormorant Garamond", Garamond, Georgia, serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--ink); color: var(--cream); font-family: var(--f-ui); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; padding-block: 0 40px; }
+button { font: inherit; color: inherit; }
+kbd { font-family: var(--f-ui); font-size: .72em; letter-spacing: .06em; padding: .1em .45em; border: 1px solid currentColor; border-radius: 4px; opacity: .7; margin-left: .5em; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.eyebrow { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin: 0; font-weight: 500; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4em; min-height: 50px; padding: 0 1.4em; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: var(--gold-hi); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .86rem; cursor: pointer; transition: background .15s, color .15s, transform .08s; }
+.btn:hover { background: rgba(225, 182, 102, .12); }
+.btn:active { transform: scale(.98); }
+.btn.primary { background: var(--gold); color: var(--ink); }
+.btn.primary:hover { background: var(--gold-hi); }
+.btn.small { min-height: 38px; padding: 0 1em; font-size: .74rem; }
+.btn.quiet { border-color: var(--line2); color: var(--mute); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 22px; }
+
+/* ---------- home ---------- */
+.hero { position: relative; margin: 0 -20px; min-height: 300px; display: grid; align-items: end; overflow: hidden; }
+.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 45%; opacity: .75; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12,10,7,.1) 0%, rgba(12,10,7,.55) 55%, var(--ink) 100%), linear-gradient(90deg, rgba(12,10,7,.85) 0%, rgba(12,10,7,0) 70%); }
+.hero-text { position: relative; z-index: 1; padding: 64px 20px 18px; max-width: 640px; }
+.hero h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(2.4rem, 1.5rem + 4vw, 4.2rem); line-height: 1.02; margin: .25em 0 .3em; letter-spacing: -.01em; text-wrap: balance; }
+.hero p.sub { font-family: var(--f-note); font-style: italic; font-size: 1.35rem; color: var(--cream); margin: 0; max-width: 34ch; }
+.home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 26px 0 34px; }
+.plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.plan button { width: 100%; display: grid; grid-template-columns: 52px 1fr auto; gap: 14px; align-items: center; text-align: left; padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color .15s; }
+.plan button:hover { border-color: var(--line2); }
+.plan .num { font-family: var(--f-display); font-size: 2rem; color: var(--gold); line-height: 1; text-align: center; }
+.plan .nm { font-weight: 600; font-size: 1.05rem; display: block; }
+.plan .ds { color: var(--mute); font-size: .92rem; display: block; min-width: 0; }
+.plan .chip { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; padding: .3em .8em; border-radius: 999px; border: 1px solid var(--line2); color: var(--mute); white-space: nowrap; }
+.plan .chip.done { border-color: var(--gold); color: var(--gold-hi); }
+.tips { display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--mute); font-size: .92rem; margin: 22px 0 0; padding: 0; list-style: none; }
+.tips li::before { content: "◆"; color: var(--gold); font-size: .6em; margin-right: .7em; vertical-align: .25em; }
+details.script { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 18px; }
+details.script summary { cursor: pointer; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .82rem; color: var(--gold-hi); }
+.script-body { margin-top: 16px; display: grid; gap: 18px; }
+.script-body .actgrp p { margin: .2em 0; font-family: var(--f-display); font-size: 1.15rem; line-height: 1.45; max-width: 60ch; }
+
+/* ---------- session ---------- */
+.hud { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: rgba(12,10,7,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.hud-row { max-width: 980px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.hud .stage-name { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); flex: 1 1 200px; min-width: 0; }
+.hud .stage-name b { color: var(--gold-hi); font-weight: 600; }
+.hud .score { font-variant-numeric: tabular-nums; font-size: .9rem; color: var(--cream); display: flex; gap: 14px; }
+.hud .score span b { color: var(--gold-hi); }
+.hud .streak.hot b { color: var(--gold-hi); text-shadow: 0 0 12px rgba(255,210,130,.7); }
+.prog { height: 3px; background: var(--line); }
+.prog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold-hi)); transition: width .3s ease; }
+#stage { padding-top: 22px; min-height: 60vh; }
+.shake { animation: shake .28s; }
+@keyframes shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+
+.still { margin: 0 auto; width: 100%; max-width: min(100%, 46vh * 2.07); border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #000; position: relative; }
+.still img { display: block; width: 100%; aspect-ratio: 800 / 387; object-fit: cover; max-width: 100%; }
+.still figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 14px 8px; font-family: var(--f-note); font-style: italic; font-size: 1.05rem; color: var(--cream); background: linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,0)); }
+.cue-compact .still { max-width: min(100%, 32vh * 2.07); }
+.keyline { display: flex; align-items: baseline; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 18px 0 6px; }
+.keyline .act { font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+.keyline .key { font-family: var(--f-display); font-style: italic; font-size: 1.5rem; color: var(--gold); }
+.line.big { font-family: var(--f-display); font-weight: 500; font-size: clamp(1.5rem, .85rem + 2.5vw, 2.65rem); line-height: 1.32; text-align: center; margin: 12px auto 0; max-width: 30ch; text-wrap: balance; min-height: 1.4em; }
+.line .w { display: inline-block; }
+.line .blank { height: .95em; border-bottom: 2px solid var(--line2); vertical-align: -.12em; }
+.line .blank.cur { border-bottom-color: var(--gold); animation: caret .9s ease-in-out infinite alternate; }
+@keyframes caret { from { opacity: .45; } to { opacity: 1; } }
+.line .ok { color: var(--cream); animation: lit .6s ease-out; }
+@keyframes lit { from { color: var(--gold-hi); text-shadow: 0 0 22px rgba(255,214,140,.9); } to { color: var(--cream); text-shadow: none; } }
+.line .bad { color: var(--miss); }
+.line .hinted { color: var(--mute); font-style: italic; }
+.line .p { color: var(--mute); }
+.ghost i { display: inline-block; height: .85em; border-bottom: 2px solid var(--line2); margin-left: .04em; vertical-align: -.1em; }
+.ghost { color: var(--cream); }
+.hook { font-family: var(--f-note); font-style: italic; font-size: 1.28rem; color: var(--mute); text-align: center; max-width: 46ch; margin: 16px auto 0; }
+.say { text-align: center; margin: 14px 0 0; font-size: .8rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+.prompt { color: var(--mute); font-style: italic; font-family: var(--f-note); }
+.ctx { text-align: center; color: var(--mute); font-family: var(--f-display); font-size: 1.05rem; margin-top: 14px; min-height: 1.5em; max-width: 60ch; margin-inline: auto; }
+.ctx .ok { color: var(--mute); animation: none; }
+.ctx .bad { color: var(--miss); }
+.tmeta { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 20px; color: var(--mute); font-size: .88rem; font-variant-numeric: tabular-nums; flex-wrap: wrap; }
+.tip { text-align: center; color: var(--mute); font-size: .88rem; margin: 10px 0 0; }
+.tap-hint { display: none; }
+@media (hover: none) { .tap-hint { display: block; } .keys-foot { display: none; } }
+.result { text-align: center; margin-top: 18px; }
+.verdict { font-family: var(--f-display); font-style: italic; font-size: 1.8rem; margin: 0; }
+.verdict.good { color: var(--gold-hi); }
+.verdict.bad { color: var(--miss); }
+.fixline { font-family: var(--f-display); font-size: 1.2rem; max-width: 50ch; margin: 10px auto 0; line-height: 1.45; }
+.fixline .ok { color: var(--cream); animation: none; }
+.big-stat { font-family: var(--f-display); font-size: 3rem; color: var(--gold-hi); line-height: 1; }
+
+/* intro card */
+.intro { max-width: 640px; margin: 5vh auto 0; text-align: center; }
+.intro h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(2.2rem, 1.4rem + 3vw, 3.4rem); margin: .2em 0 .25em; line-height: 1.05; text-wrap: balance; }
+.intro .why { font-family: var(--f-note); font-style: italic; font-size: 1.4rem; color: var(--cream); margin: 0 auto; max-width: 36ch; }
+.intro ul { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 8px; color: var(--mute); }
+.intro li b { color: var(--gold-hi); font-weight: 500; }
+
+/* the map */
+.map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+.map .col { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.map .col > .eyebrow { font-size: .7rem; }
+.mtile { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.mtile img { display: block; width: 100%; aspect-ratio: 800 / 387; object-fit: cover; }
+.mtile div { padding: 6px 10px 8px; }
+.mtile b { font-family: var(--f-display); font-style: italic; color: var(--gold); font-size: 1.1rem; font-weight: 500; display: block; }
+.mtile span { color: var(--mute); font-size: .8rem; display: block; line-height: 1.3; }
+.map-say { text-align: center; font-family: var(--f-note); font-style: italic; font-size: 1.3rem; color: var(--cream); margin: 0 auto; max-width: 44ch; }
+@media (max-width: 760px) { .map { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.track { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.track li { min-width: 64px; height: 34px; padding: 0 8px; border: 1px dashed var(--line2); border-radius: 999px; display: grid; place-items: center; color: var(--mute); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.track li.filled { border: 1px solid var(--gold); color: var(--gold-hi); font-family: var(--f-display); font-style: italic; font-size: .95rem; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; padding: 0; cursor: pointer; text-align: left; transition: opacity .2s, border-color .15s; }
+.tile:hover { border-color: var(--gold); }
+.tile img { display: block; width: 100%; aspect-ratio: 800 / 387; object-fit: cover; }
+.tile span { display: block; padding: 6px 10px 8px; font-family: var(--f-display); font-style: italic; color: var(--gold); }
+.tile.used { opacity: .18; pointer-events: none; }
+
+.finale { max-width: 700px; margin: 4vh auto 0; text-align: center; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 26px 0; }
+.stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 8px; }
+.stats b { display: block; font-family: var(--f-display); font-size: 1.9rem; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+.stats span { color: var(--mute); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; }
+@media (max-width: 560px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.next-steps { text-align: left; max-width: 52ch; margin: 0 auto; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: s; }
+.next-steps li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; gap: 8px; }
+.next-steps li::before { content: counter(s); font-family: var(--f-display); color: var(--gold); font-size: 1.3rem; line-height: 1.2; }
+
+.keys-foot { text-align: center; color: var(--mute); font-size: .78rem; margin-top: 36px; letter-spacing: .04em; }
+#hid { position: fixed; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; font-size: 16px; border: 0; padding: 0; }
+@media (max-width: 560px) {
+  .plan button { grid-template-columns: 40px 1fr; }
+  .plan .chip { grid-column: 2; justify-self: start; }
+  .hud .score { gap: 10px; font-size: .82rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div id="app">
+  <section id="home" class="wrap">
+    <div class="hero">
+      <img src="img/b11.jpg" alt="">
+      <div class="hero-text">
+        <p class="eyebrow">Taylor Made · Rocket pitch · 4 PM</p>
+        <h1>Rocket Pitch Drill</h1>
+        <p class="sub">Eleven lines, word for word, in about fifteen minutes.</p>
+      </div>
+    </div>
+    <div class="home-actions" id="homeActions"></div>
+    <ol class="plan" id="plan"></ol>
+    <ul class="tips">
+      <li>Stand up</li>
+      <li>Say every line out loud</li>
+      <li>Notifications off</li>
+      <li>Sound on, low</li>
+    </ul>
+    <details class="script">
+      <summary>Show the full script</summary>
+      <div class="script-body" id="scriptBody"></div>
+    </details>
+  </section>
+
+  <section id="session" hidden>
+    <header class="hud">
+      <div class="hud-row">
+        <div class="stage-name" id="hStage"></div>
+        <div class="score"><span id="hXp"></span><span class="streak" id="hStreak"></span></div>
+        <button class="btn small quiet" id="muteBtn" type="button"></button>
+        <button class="btn small quiet" id="homeBtn" type="button">Home</button>
+      </div>
+      <div class="prog"><i id="hProg"></i></div>
+    </header>
+    <div class="wrap">
+      <main id="stage"></main>
+      <p class="keys-foot">Space: next &nbsp;·&nbsp; Letters: type &nbsp;·&nbsp; ?: hint &nbsp;·&nbsp; X: missed &nbsp;·&nbsp; Esc: home</p>
+    </div>
+  </section>
+</div>
+<input id="hid" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Type the first letter of each word">
+
+<script>
+(() => {
+  // ---------------- the script ----------------
+  const ACTS = [
+    { n: 'I', name: 'You’ve won' },
+    { n: 'II', name: 'The risk' },
+    { n: 'III', name: 'The fix' },
+    { n: 'IV', name: 'The close' },
+  ];
+  const BEATS = [
+    { key: 'Won', act: 0, text: "Mark and Katie, you've already won.", film: 'The first gold horseshoe lands', hook: 'Open on their names. It starts with “won” and ends with “number one.”' },
+    { key: '27×', act: 0, text: "You've topped Keeneland September twenty-seven times,", film: 'Horseshoes stack up to 27×', hook: 'Keeneland September is the big yearling sale. Remember the countdown: 27, 21, 1.' },
+    { key: 'Sire', act: 0, text: "and you stand the nation's leading sire.", film: 'The gold stallion: Not This Time', hook: 'To “stand” a stallion means he breeds at your farm. This line is Not This Time.' },
+    { key: 'Risk', act: 1, text: "The real risk is passing it on.", film: 'Time freezes and the horse blows away', hook: 'Real risk: two R’s. Passing it on means handing it down.' },
+    { key: '21', act: 1, text: "With twenty-one grandchildren,", film: 'Twenty-one blossoms light up', hook: 'The countdown again: 27 times, now 21 grandchildren.' },
+    { key: 'Bill', act: 1, text: "one estate tax bill could split the family or force a sale.", film: 'A red strike splits the tree', hook: 'One bill, two bad endings: split the family, or force a sale.' },
+    { key: 'So', act: 2, text: "So here's what we'd do.", film: 'Dawn breaks over the hills', hook: 'The turn. Then three fixes, in order: Write, Bring, Have.' },
+    { key: 'I · Constitution', act: 2, text: "Write a family constitution, so decisions follow written rules.", film: 'A gold band wraps the trunk', hook: 'Every fix has two halves: do this, so that. Write it down, so decisions follow written rules.' },
+    { key: 'II · Directors', act: 2, text: "Bring in outside directors, so tough calls stay fair.", film: 'Three gold stakes brace the tree', hook: 'Outside eyes keep hard calls fair. Tough calls, stay fair.' },
+    { key: 'III · Heirs', act: 2, text: "And have your heirs work somewhere else first, so they earn their seat.", film: 'Blossoms fly out to other farms, then home', hook: 'The only fix that starts with “And.” Work somewhere else first, then earn the seat.' },
+    { key: 'No. 1', act: 3, text: "Do that, and you stay number one for the next generation.", film: '“No. 1” rises beside the tree', hook: '“Do that” answers “what we’d do.” Won at the start, number one at the end.' },
+  ];
+  BEATS.forEach((b, i) => {
+    b.img = `img/b${String(i + 1).padStart(2, '0')}.jpg`;
+    b.t = b.text.split(' ').map(w => {
+      const m = w.match(/^(.*?)([.,]*)$/);
+      return { w, core: m[1], punct: m[2], c: w.replace(/^[^A-Za-z0-9]+/, '').charAt(0).toLowerCase() };
+    });
+  });
+  const beatsOfAct = a => BEATS.map((b, i) => [b, i]).filter(([b]) => b.act === a).map(([, i]) => i);
+  const nice = s => s.replace(/'/g, '’');
+
+  // ---------------- storage (per browser, optional) ----------------
+  const store = {
+    get() { try { return JSON.parse(localStorage.getItem('rpd1') || '{}'); } catch (e) { return {}; } },
+    set(o) { try { localStorage.setItem('rpd1', JSON.stringify(o)); } catch (e) { /* storage unavailable */ } },
+  };
+  const P = Object.assign({ done: {}, mute: false, bestRun: null, bestStreak: 0 }, store.get());
+  const save = () => store.set(P);
+
+  // ---------------- sound ----------------
+  let AC = null;
+  function ac() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (AC.state === 'suspended') AC.resume().catch(() => {});
+    return AC;
+  }
+  function tone(f, dur = 0.14, type = 'sine', gain = 0.045, when = 0) {
+    if (P.mute) return;
+    const a = ac(); if (!a) return;
+    const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.03);
+  }
+  const PENTA = [0, 2, 4, 7, 9];
+  const note = i => 523.25 * Math.pow(2, (PENTA[i % 5] + 12 * Math.floor(i / 5)) / 12);
+  const sfx = {
+    ok() { const f = note(Math.min(S.streak, 12)); tone(f, 0.16, 'sine', 0.04); tone(f * 2.01, 0.09, 'sine', 0.01); },
+    miss() { tone(146, 0.18, 'triangle', 0.06); },
+    clean() { [0, 4, 7].forEach((s, i) => tone(659.25 * Math.pow(2, s / 12), 0.4, 'sine', 0.03, i * 0.06)); },
+    stage() { [0, 4, 7, 12].forEach((s, i) => tone(523.25 * Math.pow(2, s / 12), 0.6, 'sine', 0.035, i * 0.09)); },
+  };
+
+  // ---------------- elements ----------------
+  const $ = id => document.getElementById(id);
+  const home = $('home'), session = $('session'), stageEl = $('stage'), hid = $('hid');
+  const S = { queue: [], i: 0, cur: null, xp: 0, streak: 0, bestStreak: 0, letters: 0, misses: 0, t0: 0, cleanRuns: 0, runs: 0, timer: 0, on: false };
+
+  const STAGES = [
+    { id: 'map', name: 'The map', min: 2, why: 'Learn the order before the words. Each line gets one film image and one key word, so the words have somewhere to hang.',
+      how: ['Say the eleven keys out loud, in order', 'Then tap the images in order'],
+      build: () => [{ type: 'intro' }, { type: 'mapShow' }, { type: 'mapDrill', round: 1 }] },
+    { id: 'learn', name: 'Learn the lines', min: 7, why: 'Say each line, then watch it fade. Pulling a line back out of memory sticks far better than reading it again.',
+      how: ['<b>Say every line out loud</b>, even when it feels easy', 'Then type the <b>first letter of each word</b> to check yourself', 'After each act, run everything so far'],
+      build: () => {
+        const q = [{ type: 'intro' }];
+        ACTS.forEach((a, ai) => {
+          const bs = beatsOfAct(ai);
+          bs.forEach(b => q.push({ type: 'read', b }, { type: 'fade', b, level: 1 }, { type: 'fade', b, level: 2 }, { type: 'type', b }));
+          q.push({ type: 'chain', from: 0, to: bs[bs.length - 1], label: ai === 0 ? 'Act I from memory' : `Acts I–${a.n} from memory` });
+        });
+        return q;
+      } },
+    { id: 'bridges', name: 'The handoffs', min: 2, why: 'Most blanks happen between lines, not inside them. You get the end of one line and start the next.',
+      how: ['Type the first letters of the <b>opening words</b> of the next line', 'Misses come back at the end'],
+      build: () => [{ type: 'intro' }, ...shuffle(BEATS.slice(1).map((_, k) => ({ type: 'bridge', b: k + 1 })))] },
+    { id: 'runs', name: 'Clean runs', min: 3, why: 'The whole pitch from memory, with no pictures. Two clean runs in a row and it’s locked in.',
+      how: ['First letters only, start to finish', 'A miss sends that line back for a quick fix, then you run it again', 'Beat your best time'],
+      build: () => [{ type: 'intro' }, { type: 'run' }] },
+    { id: 'speak', name: 'Say it', min: 2, why: 'Out loud, the way you’ll do it at 4 PM. The film image is your only cue.',
+      how: ['Say the line, then reveal it and be honest', 'Finish with the whole pitch in one breath'],
+      build: () => [{ type: 'intro' }, ...BEATS.map((_, b) => ({ type: 'speak', b })), { type: 'oneBreath' }] },
+  ];
+
+  function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+  // ---------------- home ----------------
+  function renderHome() {
+    const nextIdx = STAGES.findIndex(s => !P.done[s.id]);
+    const anyDone = STAGES.some(s => P.done[s.id]);
+    const acts = $('homeActions');
+    if (nextIdx === -1) {
+      acts.innerHTML = `<button class="btn primary" type="button" data-start="runs-only">Quick check: one clean run <kbd>Space</kbd></button><button class="btn" type="button" data-start="0">Full drill again</button>`;
+    } else if (anyDone) {
+      acts.innerHTML = `<button class="btn primary" type="button" data-start="${nextIdx}">Continue: ${STAGES[nextIdx].name} <kbd>Space</kbd></button><button class="btn" type="button" data-start="0">Start over</button>`;
+    } else {
+      acts.innerHTML = `<button class="btn primary" type="button" data-start="0">Start the drill <kbd>Space</kbd></button>`;
+    }
+    $('plan').innerHTML = STAGES.map((s, i) => `<li><button type="button" data-start="${i}">
+      <span class="num">${i + 1}</span>
+      <span style="min-width:0"><span class="nm">${s.name}</span><span class="ds">${s.why}</span></span>
+      <span class="chip ${P.done[s.id] ? 'done' : ''}">${P.done[s.id] ? 'Done' : `~${s.min} min`}</span></button></li>`).join('');
+    $('scriptBody').innerHTML = ACTS.map((a, ai) => `<div class="actgrp"><p class="eyebrow">Act ${a.n} · ${a.name}</p>${beatsOfAct(ai).map(b => `<p>${nice(BEATS[b].text)}</p>`).join('')}</div>`).join('');
+  }
+  home.addEventListener('click', e => {
+    const t = e.target.closest('[data-start]'); if (!t) return;
+    ac();
+    const v = t.dataset.start;
+    if (v === 'runs-only') startOnly('runs'); else startFrom(+v);
+  });
+  function primaryStart() { const b = $('homeActions').querySelector('[data-start]'); if (b) b.click(); }
+
+  // ---------------- session control ----------------
+  function resetStats() { Object.assign(S, { quick: false, i: 0, xp: 0, streak: 0, bestStreak: 0, letters: 0, misses: 0, t0: performance.now(), cleanRuns: 0, runs: 0 }); }
+  function startFrom(k) {
+    resetStats(); S.queue = [];
+    STAGES.slice(k).forEach(sg => sg.build().forEach(st => S.queue.push(Object.assign(st, { stage: sg.id }))));
+    S.queue.push({ type: 'finale', stage: 'end' });
+    openSession();
+  }
+  function startOnly(id) {
+    resetStats(); S.quick = true;
+    S.queue = [{ type: 'run', stage: id }, { type: 'finale', stage: 'end' }];
+    openSession();
+  }
+  function openSession() { S.on = true; home.hidden = true; session.hidden = false; window.scrollTo(0, 0); runStep(); }
+  function goHome() {
+    clearInterval(S.timer); S.on = false; S.cur = null; hid.blur();
+    session.hidden = true; home.hidden = false; renderHome(); window.scrollTo(0, 0);
+  }
+  function next() {
+    const cur = S.queue[S.i], nx = S.queue[S.i + 1];
+    if (cur && cur.stage !== 'end' && (!nx || nx.stage !== cur.stage)) { P.done[cur.stage] = true; save(); sfx.stage(); }
+    S.i++; runStep();
+  }
+  function insertNext(steps) { const stage = S.queue[S.i].stage; S.queue.splice(S.i + 1, 0, ...steps.map(s => Object.assign({ stage }, s))); }
+  function runStep() {
+    clearInterval(S.timer);
+    const st = S.queue[S.i];
+    if (!st) return goHome();
+    hud();
+    stageEl.classList.remove('shake');
+    window.scrollTo(0, 0);
+    STEPS[st.type](st);
+  }
+  function hud() {
+    const st = S.queue[S.i]; if (!st) return;
+    const sg = STAGES.find(s => s.id === st.stage);
+    const k = STAGES.indexOf(sg);
+    $('hStage').innerHTML = sg ? `Stage ${k + 1} of 5 · <b>${sg.name}</b>` : '<b>Done</b>';
+    const same = S.queue.filter(q => q.stage === st.stage), pos = same.indexOf(st);
+    $('hProg').style.width = st.stage === 'end' ? '100%' : `${Math.round(100 * pos / Math.max(1, same.length))}%`;
+    $('hXp').innerHTML = `<b>${S.xp}</b> XP`;
+    const sk = $('hStreak'); sk.innerHTML = `streak <b>${S.streak}</b>`; sk.classList.toggle('hot', S.streak >= 10);
+    $('muteBtn').textContent = P.mute ? 'Sound off' : 'Sound on';
+  }
+  $('homeBtn').addEventListener('click', goHome);
+  $('muteBtn').addEventListener('click', () => { P.mute = !P.mute; save(); hud(); focusHid(); });
+
+  function focusHid() { if (S.cur && S.cur.typing) { try { hid.focus({ preventScroll: true }); } catch (e) { hid.focus(); } } }
+  function route(k) { if (S.cur && S.cur.key) S.cur.key(k); }
+  stageEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-k]');
+    if (b) { route(b.dataset.k === 'space' ? ' ' : b.dataset.k); return; }
+    focusHid();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Escape') { if (S.on) { e.preventDefault(); goHome(); } return; }
+    if (!S.on) {
+      if ((e.key === ' ' || e.key === 'Enter') && !e.target.closest('button, summary, a, input')) { e.preventDefault(); primaryStart(); }
+      return;
+    }
+    const typing = S.cur && S.cur.typing;
+    if (e.target === hid) {
+      if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); route(e.key); }
+      return; // letters arrive through the input event
+    }
+    if (e.key === 'Tab' && !typing) return;
+    if (e.key === ' ' || e.key === 'Enter' || e.key === 'Tab') e.preventDefault();
+    if ((e.key === 'm' || e.key === 'M') && !typing) { P.mute = !P.mute; save(); hud(); return; }
+    route(e.key);
+  });
+  hid.addEventListener('input', () => { const v = hid.value; hid.value = ''; for (const ch of v) route(ch); });
+
+  // ---------------- view helpers ----------------
+  const still = b => `<figure class="still"><img src="${BEATS[b].img}" alt="Film still: ${BEATS[b].film}"><figcaption>${BEATS[b].film}</figcaption></figure>`;
+  const keyline = b => `<div class="keyline"><span class="act">Act ${ACTS[BEATS[b].act].n} · ${ACTS[BEATS[b].act].name}</span><span class="key">${BEATS[b].key}</span></div>`;
+  const blankW = w => (Math.max(1, w.replace(/[^A-Za-z0-9]/g, '').length) * 0.5 + 0.25).toFixed(2);
+  function fullLine(b) { return BEATS[b].t.map(x => `<span class="w">${nice(x.w)}</span>`).join(' '); }
+  function fadedLine(b, level) {
+    return BEATS[b].t.map((x, i) => {
+      const hide = level === 2 || i % 2 === 1;
+      if (!hide) return `<span class="w">${nice(x.w)}</span>`;
+      const first = x.core.charAt(0), rest = x.core.slice(1);
+      return `<span class="w ghost">${nice(first)}<i style="width:${blankW(rest || ' ')}em"></i>${x.punct}</span>`;
+    }).join(' ');
+  }
+  function simpleStep(html, onKey, typing = false) { stageEl.innerHTML = html; S.cur = { key: onKey, typing }; if (!typing) hid.blur(); }
+  const spaceOnly = fn => k => { if (k === ' ' || k === 'Enter' || k === 'ArrowRight') fn(); };
+
+  // ---------------- the typing engine ----------------
+  function typer(opts) {
+    const items = [];
+    opts.beats.forEach(b => {
+      const tk = BEATS[b].t, n = opts.limit ? Math.min(opts.limit, tk.length) : tk.length;
+      for (let i = 0; i < n; i++) items.push({ b, i, k: items.length, ...tk[i], st: 0 });
+    });
+    let p = 0, done = false, finished = false, shown = -1, handle;
+    const t0 = performance.now();
+    stageEl.innerHTML = `
+      <div class="typer ${opts.cue === 'image' ? 'cue-compact' : ''}">
+        <div id="tcue"></div>
+        <div class="ctx" id="tctx"></div>
+        <div class="line big" id="tline"></div>
+        <div class="tmeta"><span id="tstat"></span><button class="btn small quiet" id="thint" type="button" data-k="?">Hint <kbd>?</kbd></button></div>
+        <p class="tip" id="ttip">${opts.tip || 'Type the first letter of each word.'}</p>
+        <p class="tip tap-hint" id="ttap">Tap here if the keyboard is hidden.</p>
+        <div class="result" id="tres" hidden></div>
+      </div>`;
+    const cueEl = $('tcue'), ctxEl = $('tctx'), lineEl = $('tline'), statEl = $('tstat'), resEl = $('tres');
+    const ofBeat = b => items.filter(x => x.b === b);
+    const word = (x, cur) => {
+      if (x.st === 0) return `<span class="w blank${cur ? ' cur' : ''}" style="width:${blankW(x.core)}em"></span>${x.punct ? `<span class="p">${x.punct}</span>` : ''}`;
+      const cls = x.st === 1 ? 'ok' : x.st === 2 ? 'bad' : 'hinted';
+      return `<span class="w ${cls}">${nice(x.w)}</span>`;
+    };
+    const doneLine = b => ofBeat(b).map(x => word(x, false)).join(' ');
+    function stat() {
+      const parts = [];
+      if (opts.beats.length > 1) { const cb = items[Math.min(p, items.length - 1)].b; parts.push(`Line ${opts.beats.indexOf(cb) + 1} of ${opts.beats.length}`); }
+      if (opts.timer) parts.push(`${((performance.now() - t0) / 1000).toFixed(1)} s`);
+      if (opts.timer && P.bestRun) parts.push(`best ${P.bestRun.toFixed(1)} s`);
+      return parts.join('  ·  ');
+    }
+    function render() {
+      const cb = items[Math.min(p, items.length - 1)].b;
+      if (cb !== shown) {
+        shown = cb;
+        cueEl.innerHTML = opts.cue === 'none' ? '' : (opts.cue === 'image' ? still(cb) : '') + keyline(cb);
+        const idx = opts.beats.indexOf(cb);
+        ctxEl.innerHTML = opts.context ? opts.context : (idx > 0 ? doneLine(opts.beats[idx - 1]) : '');
+      }
+      lineEl.innerHTML = ofBeat(cb).map(x => word(x, x.k === p)).join(' ');
+      statEl.textContent = stat();
+    }
+    function mark(ok, hinted) {
+      const x = items[p];
+      S.letters++;
+      if (ok) { x.st = 1; S.xp++; S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); sfx.ok(); }
+      else { x.st = hinted ? 3 : 2; S.misses++; S.streak = 0; sfx.miss(); if (!hinted) { stageEl.classList.remove('shake'); void stageEl.offsetWidth; stageEl.classList.add('shake'); } }
+      p++;
+      const nx = items[p];
+      if (!nx || nx.b !== x.b) { if (ofBeat(x.b).every(y => y.st === 1)) { S.xp += 5; if (nx) sfx.clean(); } }
+      hud();
+      if (!nx) complete(); else render();
+    }
+    function complete() {
+      done = true; clearInterval(S.timer);
+      const secs = (performance.now() - t0) / 1000;
+      const bad = items.filter(y => y.st > 1);
+      const res = { misses: bad.length, missBeats: [...new Set(bad.map(y => y.b))], secs };
+      lineEl.innerHTML = doneLine(items[items.length - 1].b);
+      $('thint').hidden = true; $('ttip').hidden = true; $('ttap').hidden = true;
+      const out = (opts.result || defaultResult)(res);
+      resEl.innerHTML = out.html; resEl.hidden = false;
+      if (res.misses === 0) sfx.clean();
+      handle.typing = false;
+      if (out.auto) setTimeout(() => { if (S.cur === handle) finish(); }, out.auto);
+      handle.res = res;
+    }
+    function finish() { if (finished) return; finished = true; opts.done(handle.res); }
+    function defaultResult(res) {
+      if (!res.misses) return { html: `<p class="verdict good">Clean.</p>`, auto: 750 };
+      return { html: `<p class="verdict bad">${res.misses} to fix</p>${res.missBeats.map(b => `<p class="fixline">${doneLine(b)}</p>`).join('')}
+        <div class="actions"><button class="btn primary" type="button" data-k="space">Got it <kbd>Space</kbd></button></div>` };
+    }
+    handle = {
+      typing: true,
+      key(k) {
+        if (done) { if (k === ' ' || k === 'Enter') finish(); return; }
+        if (k === '?' || k === 'Tab') return mark(false, true);
+        if (typeof k !== 'string' || k.length !== 1 || !/[a-z0-9]/i.test(k)) return;
+        mark(k.toLowerCase() === items[p].c, false);
+      },
+    };
+    S.cur = handle;
+    if (opts.timer) S.timer = setInterval(() => { if (!done) statEl.textContent = stat(); }, 200);
+    render(); focusHid();
+    handle.doneLine = doneLine;
+    return handle;
+  }
+
+  // ---------------- steps ----------------
+  const STEPS = {
+    intro(st) {
+      const sg = STAGES.find(s => s.id === st.stage), k = STAGES.indexOf(sg);
+      simpleStep(`<div class="intro">
+          <p class="eyebrow">Stage ${k + 1} of 5 · about ${sg.min} min</p>
+          <h2>${sg.name}</h2>
+          <p class="why">${sg.why}</p>
+          <ul>${sg.how.map(h => `<li>${h}</li>`).join('')}</ul>
+          <div class="actions"><button class="btn primary" type="button" data-k="space">Start <kbd>Space</kbd></button></div>
+        </div>`, spaceOnly(next));
+    },
+
+    mapShow() {
+      simpleStep(`<p class="map-say">Say the keys out loud, in order, twice. Picture each image as you say it.</p>
+        <div class="map">${ACTS.map((a, ai) => `<div class="col"><p class="eyebrow">Act ${a.n} · ${a.name}</p>${beatsOfAct(ai).map(b => `
+          <div class="mtile"><img src="${BEATS[b].img}" alt=""><div><b>${b + 1}. ${BEATS[b].key}</b><span>${BEATS[b].film}</span></div></div>`).join('')}</div>`).join('')}</div>
+        <p class="hook">Three numbers count down through the pitch: 27 times, 21 grandchildren, number 1.</p>
+        <div class="actions"><button class="btn primary" type="button" data-k="space">I’ve got the order <kbd>Space</kbd></button></div>`, spaceOnly(next));
+    },
+
+    mapDrill(st) {
+      const tiles = shuffle(BEATS.map((_, i) => i));
+      let want = 0, slips = 0, done = false;
+      simpleStep(`<p class="eyebrow" style="text-align:center">Round ${st.round} · tap the images in order</p>
+        <ol class="track">${BEATS.map((_, i) => `<li id="slot${i}">${i + 1}</li>`).join('')}</ol>
+        <div class="tiles">${tiles.map(b => `<button class="tile" type="button" data-tile="${b}"><img src="${BEATS[b].img}" alt="${BEATS[b].film}"><span>${BEATS[b].key}</span></button>`).join('')}</div>
+        <div class="result" id="dres"></div>`, k => { if (done && (k === ' ' || k === 'Enter')) finishDrill(); });
+      const handle = S.cur;
+      stageEl.querySelectorAll('[data-tile]').forEach(t => t.addEventListener('click', () => {
+        if (done) return;
+        const b = +t.dataset.tile;
+        if (b === want) {
+          t.classList.add('used'); const s = $('slot' + b); s.classList.add('filled'); s.textContent = BEATS[b].key;
+          S.xp++; S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); sfx.ok(); want++; hud();
+          if (want === BEATS.length) {
+            done = true;
+            $('dres').innerHTML = slips ? `<p class="verdict bad">${slips} slip${slips > 1 ? 's' : ''}. One more round.</p><div class="actions"><button class="btn primary" type="button" data-k="space">Again <kbd>Space</kbd></button></div>`
+                                        : `<p class="verdict good">Perfect order.</p>`;
+            if (!slips) { sfx.clean(); setTimeout(() => { if (S.cur === handle) finishDrill(); }, 900); }
+          }
+        } else {
+          slips++; S.streak = 0; S.misses++; sfx.miss(); hud();
+          t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake');
+        }
+      }));
+      let finished = false;
+      function finishDrill() { if (finished) return; finished = true; if (slips && st.round < 3) insertNext([{ type: 'mapDrill', round: st.round + 1 }]); next(); }
+    },
+
+    read(st) {
+      const b = st.b;
+      simpleStep(`${still(b)}${keyline(b)}<div class="line big">${fullLine(b)}</div>
+        <p class="hook">${BEATS[b].hook}</p><p class="say">Say it out loud</p>
+        <div class="actions"><button class="btn primary" type="button" data-k="space">Said it <kbd>Space</kbd></button></div>`, spaceOnly(next));
+    },
+
+    fade(st) {
+      const b = st.b;
+      let peek = false;
+      const draw = () => { $('fline').innerHTML = peek ? fullLine(b) : fadedLine(b, st.level); };
+      simpleStep(`<div class="cue-compact">${still(b)}</div>${keyline(b)}<div class="line big" id="fline"></div>
+        <p class="say">${st.level === 1 ? 'Half the words are gone. Say the whole line.' : 'Only first letters left. Say the whole line.'}</p>
+        <div class="actions"><button class="btn quiet" type="button" id="peekBtn">Hold to peek</button><button class="btn primary" type="button" data-k="space">Said it <kbd>Space</kbd></button></div>`,
+        k => { if (k === '?') { peek = !peek; draw(); } else if (k === ' ' || k === 'Enter' || k === 'ArrowRight') next(); });
+      draw();
+      const pb = $('peekBtn');
+      const on = e => { e.preventDefault(); peek = true; draw(); }, off = () => { peek = false; draw(); };
+      pb.addEventListener('pointerdown', on); pb.addEventListener('pointerup', off); pb.addEventListener('pointerleave', off); pb.addEventListener('pointercancel', off);
+    },
+
+    type(st) {
+      const b = st.b;
+      const pv = b > 0 ? BEATS[b - 1].t.slice(-5).map(x => nice(x.w)).join(' ') : '';
+      typer({ beats: [b], cue: 'image', context: pv ? `…${pv}` : '', tip: (st.retry ? 'Once more. ' : '') + 'Type the first letter of each word. “y” for you’ve, “t” for twenty-seven.',
+        done: res => {
+          if (res.misses && (st.retry || 0) < 2) insertNext([{ type: 'read', b }, { type: 'type', b, retry: (st.retry || 0) + 1 }]);
+          next();
+        } });
+    },
+
+    chain(st) {
+      const beats = []; for (let b = st.from; b <= st.to; b++) beats.push(b);
+      const h = typer({ beats, cue: 'image', tip: `${st.label}. First letter of each word.`,
+        result: res => res.misses
+          ? { html: `<p class="verdict bad">${res.misses} to fix</p>${res.missBeats.map(b => `<p class="fixline">${h.doneLine(b)}</p>`).join('')}<p class="tip">Those lines come back once more.</p><div class="actions"><button class="btn primary" type="button" data-k="space">Continue <kbd>Space</kbd></button></div>` }
+          : { html: `<p class="verdict good">${st.label}: clean.</p>`, auto: 1100 },
+        done: res => {
+          if (res.misses) insertNext(res.missBeats.flatMap(b => [{ type: 'read', b }, { type: 'type', b, retry: 1 }]));
+          next();
+        } });
+    },
+
+    bridge(st) {
+      const prev = BEATS[st.b - 1].t, tail = prev.slice(-4).map(x => nice(x.w)).join(' ');
+      typer({ beats: [st.b], cue: 'image', limit: 4, context: `…${tail}`, tip: 'What comes next? First letters of the opening words.',
+        done: res => {
+          if (res.misses && !st.retry) {
+            const q = S.queue; let last = S.i; while (q[last + 1] && q[last + 1].stage === st.stage) last++;
+            q.splice(last + 1, 0, { type: 'bridge', b: st.b, retry: true, stage: st.stage });
+          }
+          next();
+        } });
+    },
+
+    run(st) {
+      S.runs++;
+      const h = typer({ beats: BEATS.map((_, i) => i), cue: 'none', timer: true, tip: `Run ${S.runs}. No pictures. First letter of each word, start to finish.`,
+        result: res => {
+          const clean = !res.misses;
+          if (clean) { S.cleanRuns++; if (!P.bestRun || res.secs < P.bestRun) { P.bestRun = res.secs; save(); } } else S.cleanRuns = 0;
+          const locked = S.cleanRuns >= (S.quick ? 1 : 2) || st.stage !== 'runs';
+          if (clean) return { html: `<p class="big-stat">${res.secs.toFixed(1)} s</p><p class="verdict good">${locked ? 'Clean run. Locked in.' : 'Clean run. One more to lock it.'}</p><div class="actions"><button class="btn primary" type="button" data-k="space">${locked ? 'Continue' : 'Run it again'} <kbd>Space</kbd></button></div>` };
+          return { html: `<p class="verdict bad">${res.misses} to fix</p>${res.missBeats.map(b => `<p class="fixline">${h.doneLine(b)}</p>`).join('')}<p class="tip">Quick fix on those lines, then another run.</p><div class="actions"><button class="btn primary" type="button" data-k="space">Fix them <kbd>Space</kbd></button></div>` };
+        },
+        done: res => {
+          const more = st.stage === 'runs' && S.cleanRuns < (S.quick ? 1 : 2) && S.runs < 6;
+          const steps = [];
+          if (res.misses) res.missBeats.forEach(b => steps.push({ type: 'read', b }, { type: 'type', b, retry: 1 }));
+          if (more) steps.push({ type: 'run' });
+          if (steps.length) insertNext(steps);
+          next();
+        } });
+    },
+
+    speak(st) {
+      const b = st.b; let phase = 0;
+      simpleStep(`<div class="cue-compact">${still(b)}</div>${keyline(b)}<div class="line big" id="sline"><span class="prompt">Say the line out loud, then reveal.</span></div>
+        <div class="actions" id="sact"><button class="btn primary" type="button" data-k="space">Reveal <kbd>Space</kbd></button></div>`,
+        k => {
+          if (phase === 0 && (k === ' ' || k === 'Enter')) {
+            phase = 1; $('sline').innerHTML = fullLine(b);
+            $('sact').innerHTML = `<button class="btn" type="button" data-k="x">Missed a word <kbd>X</kbd></button><button class="btn primary" type="button" data-k="space">Nailed it <kbd>Space</kbd></button>`;
+          } else if (phase === 1 && (k === ' ' || k === 'Enter')) { S.xp += 3; S.streak++; hud(); sfx.ok(); next(); }
+          else if (phase === 1 && (k === 'x' || k === 'X' || k === '1')) {
+            S.streak = 0; S.misses++; sfx.miss();
+            const q = S.queue; let at = q.findIndex((s, i) => i > S.i && s.type === 'oneBreath');
+            if (at < 0) at = S.i + 1;
+            q.splice(at, 0, { type: 'speak', b, stage: st.stage });
+            next();
+          }
+        });
+    },
+
+    oneBreath(st) {
+      let phase = 0;
+      simpleStep(`<div class="intro"><p class="eyebrow">Last one</p><h2>The whole pitch, one breath</h2>
+          <p class="why">Stand up. Say it start to finish without looking, like it’s 4 PM. Then reveal and check.</p>
+          <div id="obBody"></div>
+          <div class="actions" id="obAct"><button class="btn primary" type="button" data-k="space">Reveal the script <kbd>Space</kbd></button></div></div>`,
+        k => {
+          if (phase === 0 && (k === ' ' || k === 'Enter')) {
+            phase = 1;
+            $('obBody').innerHTML = `<div class="script-body" style="text-align:left;margin-top:22px">${ACTS.map((a, ai) => `<div class="actgrp"><p class="eyebrow">Act ${a.n}</p>${beatsOfAct(ai).map(b => `<p>${nice(BEATS[b].text)}</p>`).join('')}</div>`).join('')}</div>`;
+            $('obAct').innerHTML = `<button class="btn" type="button" data-k="x">I stumbled <kbd>X</kbd></button><button class="btn primary" type="button" data-k="space">Word perfect <kbd>Space</kbd></button>`;
+          } else if (phase === 1 && (k === ' ' || k === 'Enter')) { S.xp += 20; S.perfectBreath = true; sfx.clean(); next(); }
+          else if (phase === 1 && (k === 'x' || k === 'X')) { S.perfectBreath = false; insertNext([{ type: 'run', stage: 'speak' }]); next(); }
+        });
+    },
+
+    finale() {
+      const sec = Math.round((performance.now() - S.t0) / 1000);
+      const acc = S.letters ? Math.round(100 * (S.letters - S.misses) / S.letters) : 100;
+      P.bestStreak = Math.max(P.bestStreak || 0, S.bestStreak); save();
+      sfx.stage();
+      simpleStep(`<div class="finale">
+          <p class="eyebrow">Drill complete</p>
+          <h2 class="verdict good" style="font-size:clamp(2.2rem,1.4rem+3vw,3.4rem);font-style:normal;font-weight:600">You know this pitch.</h2>
+          <div class="stats">
+            <div><b>${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}</b><span>Time</span></div>
+            <div><b>${acc}%</b><span>Accuracy</span></div>
+            <div><b>${S.bestStreak}</b><span>Best streak</span></div>
+            <div><b>${S.xp}</b><span>XP</span></div>
+          </div>
+          <p class="eyebrow" style="margin-bottom:12px">Before 4 PM</p>
+          <ol class="next-steps">
+            <li>Around 3:30, come back and tap “Quick check.” A second pass after a break is what makes it stick.</li>
+            <li>Say it once over the practice video with captions, speaking over the film.</li>
+            <li>On stage, the film is your cue sheet. Each image starts the next line.</li>
+          </ol>
+          <div class="actions"><button class="btn" type="button" data-k="r">One more clean run <kbd>R</kbd></button><button class="btn primary" type="button" data-k="space">Home <kbd>Space</kbd></button></div>
+        </div>`, k => { if (k === ' ' || k === 'Enter') goHome(); else if (k === 'r' || k === 'R') startOnly('runs'); });
+    },
+  };
+
+  renderHome();
+})();
+</script>
