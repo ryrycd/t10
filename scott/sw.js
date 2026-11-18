@@ -3,8 +3,8 @@
 // (it loads all its modules at start) a Wi-Fi dropout or a reload mid-talk still works.
 // Paths are relative to this file, so it works at the site root (Worker) and in a subfolder
 // (ryrycd.github.io/t10/scott/). The live sync (/ws, /api) always needs the network.
-const CACHE = "scott-harris-intro-v5";
-const PRECACHE = ["deck/", "script/", "assets/js/script-data.js?v=6", "assets/js/sync.js?v=2", "assets/js/sound.js?v=1", "assets/js/sw/main.js?v=2"];
+const CACHE = "scott-harris-intro-v6";
+const PRECACHE = ["deck/", "script/", "assets/js/script-data.js?v=6", "assets/js/sync.js?v=2", "assets/js/sound.js?v=2", "assets/js/sw/main.js?v=2"];
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(PRECACHE.map((u) => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
 });
