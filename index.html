@@ -23,6 +23,8 @@ a.item:hover,a.item:focus{border-color:var(--gold);transform:translateY(-1px);ou
 .remote .t2{font-size:18px;font-weight:700}.remote .t2 em{font-style:normal;color:var(--pink)}
 .remote .d a{color:var(--pink)}
 @media (max-width:600px){.remote{margin-left:0}.remote img{width:84px;height:84px;flex-basis:84px}}
+a.remotes-btn{position:fixed;right:18px;bottom:18px;z-index:20;display:flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:var(--gold);color:#14100a;font-weight:800;font-size:16px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+a.remotes-btn:hover,a.remotes-btn:focus{filter:brightness(1.08);outline:none}
 </style></head><body><main>
 <h1>Team 10 · Nov 18</h1>
 <p class="sub">Click one, or press its number. Then press <b>F</b> for full screen. → or a clicker advances; <b>P</b> shows each screen's line.</p>
@@ -34,6 +36,7 @@ a.item:hover,a.item:focus{border-color:var(--gold);transform:translateY(-1px);ou
 <a class="item" href="scott/"><div class="n">5</div><div><div class="t">Scott Harris intro<span class="tag click">Phone remote</span><span class="tag snd">Sound on</span></div><div class="d">AJ’s 90-second intro when Scott arrives: a live SolidWorks session models his career onto his workshop wall, ending on “Please welcome Scott Harris!” Phone script and remote: <b>ryrycd.github.io/t10/scott/remote</b></div></div></a>
 <a class="item" href="fdu/"><div class="n">6</div><div><div class="t">FDU Q&amp;A · The Warranty Question<span class="tag click">Phone remote</span></div><div class="d">Press play (or use the phone remote). 34-second silent backdrop while Omar asks the question: 22.7% of new nurses leave in year one → $60,090 each → would FDU guarantee its grads? → $294,976 on a CFO's spreadsheet. Ends holding on the question. Phone remote: <b>ryrycd.github.io/t10/fdu/remote</b> · Omar's script: <b>ryrycd.github.io/t10/fdu/script</b></div></div></a>
 <p class="foot">Last class: <a href="nov11/">Nov 11 page</a> · Every screen: R restarts, B blacks out, ← goes back.</p>
+<a class="remotes-btn" href="remotes/">📱 All remotes</a>
 </main>
 <script>
 const links=[...document.querySelectorAll('a.item')];
