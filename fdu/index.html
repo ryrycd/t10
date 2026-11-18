@@ -304,14 +304,15 @@ seek(0);
   function fit() { const s = Math.min(innerWidth / 1920, innerHeight / 1080);
     document.body.style.transform = `translate(${(innerWidth - 1920 * s) / 2}px, ${(innerHeight - 1080 * s) / 2}px) scale(${s})`; }
   addEventListener("resize", fit); fit();
-  let raf = null, start = 0, paused = null;
-  function loop() { const t = Math.min(DUR, (performance.now() - start) / 1000); seek(t); raf = t < DUR ? requestAnimationFrame(loop) : null; }
-  function play(from) { cancelAnimationFrame(raf); start = performance.now() - from * 1000; paused = null; root.classList.add("playing"); hint.style.opacity = 0; loop(); }
-  function reset() { cancelAnimationFrame(raf); raf = null; paused = null; seek(0); root.classList.remove("playing"); hint.style.opacity = 1; }
-  function next() {
-    if (raf) { cancelAnimationFrame(raf); raf = null; paused = (performance.now() - start) / 1000; return; }
-    play(paused !== null ? paused : 0);
-  }
+  let raf = null, start = 0, paused = null, playing = false, lastFrame = 0;
+  const cur = () => Math.min(DUR, (performance.now() - start) / 1000);
+  function step() { const t = cur(); seek(t); lastFrame = performance.now(); if (t >= DUR) { playing = false; cancelAnimationFrame(raf); } }
+  function loop() { if (!playing) return; step(); if (playing) raf = requestAnimationFrame(loop); }
+  setInterval(() => { if (playing && performance.now() - lastFrame > 120) step(); }, 150);   /* keeps time if frames stall */
+  function play(from) { cancelAnimationFrame(raf); start = performance.now() - from * 1000; paused = null; playing = true; root.classList.add("playing"); hint.style.opacity = 0; loop(); }
+  function pause() { if (!playing) return; playing = false; cancelAnimationFrame(raf); paused = cur(); }
+  function reset() { playing = false; cancelAnimationFrame(raf); paused = null; seek(0); root.classList.remove("playing"); hint.style.opacity = 1; }
+  function next() { if (playing) pause(); else play(paused !== null ? paused : 0); }
   const blk = document.createElement("div"); blk.style.cssText = "position:fixed;inset:0;background:#000;z-index:99;display:none"; root.appendChild(blk);
   addEventListener("keydown", e => {
     if (["ArrowRight", " ", "Enter", "PageDown"].includes(e.key)) { e.preventDefault(); next(); }
@@ -333,8 +334,8 @@ seek(0);
       if (last < 0) last = v.seq;
       else if (v.seq !== last) {
         last = v.seq;
-        if (v.cmd === "play") { if (!raf) play(paused !== null ? paused : 0); }
-        else if (v.cmd === "pause") { if (raf) next(); }
+        if (v.cmd === "play") { if (!playing) play(paused !== null ? paused : 0); }
+        else if (v.cmd === "pause") pause();
         else if (v.cmd === "restart") reset();
         else if (v.cmd === "black") blk.style.display = blk.style.display === "none" ? "block" : "none";
       }
