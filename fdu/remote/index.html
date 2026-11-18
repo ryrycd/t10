@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0B111C">
+<meta name="robots" content="noindex,nofollow">
+<title>FDU Remote</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#0B111C;color:#EEF2F7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+.app{display:flex;flex-direction:column;height:100%;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#8b96a8}
+.pos{font-weight:800;color:#F2B544;letter-spacing:.06em}
+.st{font-weight:700}.st.ok{color:#5fd38b}.st.bad{color:#ff6b5b}
+.lines{flex:1;overflow:auto;margin:10px 0;padding:6px 14px;border-radius:16px;background:#141D2B;border:1px solid #243044}
+.l{padding:10px 0;border-bottom:1px solid #1f2a3b;font-size:18px;line-height:1.35;color:#6f7b8e;transition:color .2s}
+.l:last-child{border-bottom:0}
+.l b{display:inline-block;width:42px;font-size:13px;color:#4f5b6e;font-variant-numeric:tabular-nums}
+.l.now{color:#EEF2F7}.l.now b{color:#F2B544}
+.play{width:100%;height:22vh;min-height:120px;border:0;border-radius:18px;background:#F2B544;color:#14100a;font-size:40px;font-weight:900}
+.play.pausing{background:#243044;color:#EEF2F7}
+.mini{display:flex;gap:8px;margin-top:8px}
+.mini button{flex:1;padding:14px 8px;border-radius:12px;border:1px solid #243044;background:#141D2B;color:#c4ccd8;font-weight:700;font-size:15px}
+button:active{transform:scale(.98);filter:brightness(1.1)}
+</style></head><body><div class="app">
+<div class="top"><span class="pos" id="pos">FDU · Ready</span><span class="st" id="st">Ready</span></div>
+<div class="lines" id="lines"></div>
+<button class="play" id="play">▶ PLAY</button>
+<div class="mini"><button id="restart">↺ Back to start</button><button id="blk">■ Black out</button></div>
+</div>
+<script>
+const CODE=(new URLSearchParams(location.search).get('code')||'fdu').toLowerCase().replace(/[^a-z0-9-]/g,'');
+const RURL='https://t10-remote.ryrycdryrycd.workers.dev/r/'+CODE, DUR=34;
+const L=[[-1,'Before: “Hi, I’m Omar from Team 10. Thank you both for coming.” Then PLAY.'],
+ [0,'“FDU’s HealthxHumanics idea is about grads who are good with tech and good with people.”'],
+ [6,'“But a lot of new nurses don’t stay.”'],
+ [8,'“More than one in five leave in their first year,”'],
+ [12,'“and each one costs the hospital about sixty thousand dollars to replace.”'],
+ [16,'“So would FDU ever stand behind its grads? Like, track how long they stay at a hospital, or even guarantee it?”'],
+ [23,'“Kind of like a warranty on the degree.”'],
+ [25,'“Because for the average hospital, cutting nurse turnover by just one point saves almost three hundred thousand dollars a year.”'],
+ [31,'“Is that something FDU would ever do?” The screen holds on the question.']];
+const $=id=>document.getElementById(id);
+$('lines').innerHTML=L.map(([t,s],i)=>'<div class="l" id="l'+i+'"><b>'+(t<0?'':'0:'+String(t).padStart(2,'0'))+'</b>'+s+'</div>').join('');
+// local clock mirrors the screen: elapsed time while playing, frozen while paused
+let playing=false,base=0,startAt=0;
+const el=()=>Math.min(DUR,playing?base+(Date.now()-startAt)/1000:base);
+function tick(){const t=el();let cur=0;L.forEach(([s],i)=>{if(t>=Math.max(0,s)&&(playing||base>0))cur=i});
+  if(!playing&&base===0)cur=0;
+  L.forEach((_,i)=>$('l'+i).classList.toggle('now',i===cur));
+  $('pos').textContent='FDU · '+(playing?'Playing ':base>=DUR?'Ended ':base>0?'Paused ':'Ready ')+(base>0||playing?'0:'+String(Math.floor(t)).padStart(2,'0'):'');
+  if(playing&&t>=DUR){playing=false;base=DUR;setBtn()}
+  requestAnimationFrame(tick)}
+function setBtn(){$('play').textContent=playing?'❚❚ PAUSE':(base>=DUR?'▶ PLAY AGAIN':base>0?'▶ RESUME':'▶ PLAY');$('play').classList.toggle('pausing',playing)}
+async function send(cmd){const st=$('st');st.textContent='Sending…';st.className='st';
+  try{const r=await fetch(RURL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({i:0,cmd})});if(!r.ok)throw 0;st.textContent='✓ Sent';st.className='st ok'}
+  catch(e){st.textContent='⚠ Not sent: tap again';st.className='st bad'}}
+$('play').onclick=()=>{if(navigator.vibrate)navigator.vibrate(12);
+  if(playing){base=el();playing=false;send('pause')}
+  else{if(base>=DUR)base=0;startAt=Date.now();playing=true;send('play')}
+  setBtn()};
+$('restart').onclick=()=>{if(navigator.vibrate)navigator.vibrate(12);playing=false;base=0;setBtn();send('restart')};
+$('blk').onclick=()=>{if(navigator.vibrate)navigator.vibrate([10,30,10]);send('black')};
+async function wake(){try{if('wakeLock' in navigator)await navigator.wakeLock.request('screen')}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake()});wake();
+setBtn();tick();
+</script></body></html>

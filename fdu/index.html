@@ -321,6 +321,27 @@ seek(0);
   });
   addEventListener("click", next);
   document.fonts && document.fonts.ready.then(() => seek(window.__t || 0));
+  // ---------- phone remote: ryrycd.github.io/t10/fdu/remote (relay shared with the other t10 screens) ----------
+  const q = new URLSearchParams(location.search);
+  const CODE = (q.get("remote") || "fdu").toLowerCase().replace(/[^a-z0-9-]/g, "");
+  const RURL = "https://t10-remote.ryrycdryrycd.workers.dev/r/" + CODE;
+  let last = -1;
+  async function poll() {
+    try {
+      const v = await (await fetch(RURL, { cache: "no-store" })).json();
+      hint.textContent = "→ / space / click: play · F: full screen · R: restart · B: black · remote: " + CODE + " ✓";
+      if (last < 0) last = v.seq;
+      else if (v.seq !== last) {
+        last = v.seq;
+        if (v.cmd === "play") { if (!raf) play(paused !== null ? paused : 0); }
+        else if (v.cmd === "pause") { if (raf) next(); }
+        else if (v.cmd === "restart") reset();
+        else if (v.cmd === "black") blk.style.display = blk.style.display === "none" ? "block" : "none";
+      }
+    } catch (e) { hint.textContent = "→ / space / click: play · F: full screen · R: restart · B: black · remote offline"; }
+    setTimeout(poll, 300);
+  }
+  setTimeout(poll, 400);
 })();
 </script>
 </body></html>
