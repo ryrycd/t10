@@ -359,14 +359,16 @@ body.showcursor{cursor:default}
 #hud .k{color:#ff9ccf;font-weight:700}
 #hud .cue{font-size:19px;margin-top:4px}
 .b0hint{position:absolute;left:0;right:0;bottom:60px;text-align:center;color:#3a3a44;font:500 26px/1 var(--ui);letter-spacing:.02em}
-html:fullscreen .b0hint{display:none}
+html:fullscreen .b0hint,html:fullscreen .b0stat{display:none}
+.b0stat{position:absolute;left:0;right:0;bottom:110px;text-align:center;color:#55556a;font:500 22px/1.4 var(--ui);letter-spacing:.02em}
+.b0stat b{color:#3be0b5;font-weight:600}
 </style>
 </head>
 <body>
 <div id="stage">
 
   <!-- 0 STANDBY -->
-  <section class="beat on" id="b0" style="background:#000"><div class="b0hint">Click or press → to start · F for fullscreen</div></section>
+  <section class="beat on" id="b0" style="background:#000"><div class="b0stat" id="b0stat"></div><div class="b0hint" id="b0hint">Click or press → to start · F for fullscreen</div></section>
 
   <!-- 1 STAGE: AJ dances to the Kick It hook -->
   <section class="beat" id="b1">
@@ -500,18 +502,19 @@ html:fullscreen .b0hint{display:none}
 <script>
 // ---------- config ----------
 const MUSIC_START = 0;     // kickit.mp3 = “Yeah… let me introduce you to some new thang” (7.2 s, plays to its own end)
-const FINALE_START = 0;    // finale.mp3 starts at “Bass kick swingin' like a Bruce Lee”
+const FINALE_START = 0;
+const AUTO7 = 5000;        // screen 7 → graph: “…to buy what they use, selling out for months if it's left visible.”    // finale.mp3 starts at “Bass kick swingin' like a Bruce Lee”
 const CUES = [
   "Standby (black). AJ + dancers in place, fans in AJ shirts with signs down. Press → to start: the song starts with the click.",
   "SONG PLAYING (“Let me introduce you to some new thang”). AJ dances the hook (3–4 s).  → click when AJ freezes in the ad pose",
   "AJ (bottle beside his face, wink): “Let me introduce you… to TRESemmé.”  → click on “TRESemmé”",
   "KAYEE (signs up): “Take my money! And my heart!”",
   "JEDA: “Kayee, you already bought ten bottles.”  KAYEE (hugging her sign): “And I'll buy ten more! I want AJ Oppa's hair!”  (no click between these two lines)",
-  "DANCER (steps out of the line, straight to Len): “Len, you think we're exaggerating.”",
-  "SAME DANCER: “But we aren't! Fans will literally zoom in on every hair and skin product in their K-pop idol's livestreams…”",
-  "…“to buy what they use.”  (no click: the posts pile in, then it moves to the 2010 graph by itself after ~3 s)",
-  "NARRATOR: “Asia's the biggest beauty market in the world, and in 2010, K-pop, the biggest thing since Michael Jackson, was only just getting started.”",
-  "NARRATOR: “Since fans in Asia are OBSESSED with the beauty products these pop idols use, we say…”",
+  "DANCER (steps out of the dance line, straight to Len): “Len, you think we're exaggerating.”",
+  "RYAN: “But we're not! Fans will zoom in on every hair and skin product in their K-pop idol's livestreams…”  → click on “to buy”",
+  "RYAN: “…to buy what they use, selling out for months if it's left visible.”  (no click: posts pile in, then the 2010 graph comes in by itself after 5 s)",
+  "RYAN: “Asia's the biggest beauty market in the world and in 2010, K-pop, the biggest thing since Michael Jackson, was only just getting started.”",
+  "RYAN: “Since fans in Asia are OBSESSED with the beauty products these idols use, we say…”  → click on “we say”",
   "ALL: “Invest early, and invest in Asia!”  Freeze. SOLD OUT stamps at ~1.3 s."
 ];
 const IMG = {
@@ -590,8 +593,8 @@ music.addEventListener('error',()=>{hasMusic=false;hud()});
 let fadeT=null;
 function fadeTo(v,ms=600){clearInterval(fadeT);const s=music.volume,st=performance.now();fadeT=setInterval(()=>{const k=Math.min(1,(performance.now()-st)/ms);music.volume=s+(v-s)*k;if(k>=1){clearInterval(fadeT);if(v===0)music.pause()}},30)}
 const finale=document.getElementById('finale');let finT=null;
-function playFrom(t){if(!hasMusic)return;clearInterval(fadeT);finale.pause();music.currentTime=t;music.volume=1;music.play().catch(()=>{})}
-function playFinale(){clearInterval(finT);music.pause();finale.currentTime=FINALE_START;finale.volume=1;finale.play().catch(()=>{})}
+function playFrom(t){if(!hasMusic)return;clearInterval(fadeT);finale.pause();music._real=true;music.muted=false;music.currentTime=t;music.volume=1;music.play().catch(()=>{})}
+function playFinale(){clearInterval(finT);music.pause();finale._real=true;finale.muted=false;finale.currentTime=FINALE_START;finale.volume=1;finale.play().catch(()=>{})}
 function stopFinale(ms=300){clearInterval(finT);const s=finale.volume,st=performance.now();finT=setInterval(()=>{const k=Math.min(1,(performance.now()-st)/ms);finale.volume=s*(1-k);if(k>=1){clearInterval(finT);finale.pause()}},30)}
 function audioFor(n){
   if(n!==N&&!finale.paused) stopFinale(300);
@@ -605,7 +608,7 @@ let tm=[];
 function later(fn,ms){tm.push(setTimeout(fn,ms))}
 function every(fn,ms){tm.push(setInterval(fn,ms))}
 const enter={
-  7:(prev)=>{if(prev===6)later(()=>{if(cur===7)go(8)},3200)},
+  7:(prev)=>{if(prev===6)later(()=>{if(cur===7)go(8)},AUTO7)},
   3:()=>{const c=document.querySelector('#b3 .cn');let k=1;c.textContent=k;later(()=>every(()=>{if(k<9){k++;c.textContent=k}},600),1200)},
   6:()=>{const c=document.getElementById('cartn');c.textContent='0';later(()=>{const t0=performance.now();every(()=>{const p=Math.min(1,(performance.now()-t0)/2200);c.textContent=Math.round(47302*(1-Math.pow(1-p,3))).toLocaleString('en-US')},40)},3800)},
 };
@@ -617,6 +620,7 @@ function go(n){
     b.querySelectorAll('*').forEach(e=>{e.style.animationName='none'});void b.offsetWidth;b.querySelectorAll('*').forEach(e=>{e.style.animationName=''});
     b.classList.add('on')}});
   const prev=cur;cur=n;audioFor(n);hud();if(enter[n])enter[n](prev);
+  if(typeof remoteAt==='function')remoteAt();
 }
 function hud(){document.getElementById('hb').textContent=cur;document.getElementById('hm').textContent=hasMusic?'music: kickit.mp3 loaded (M to stop)':'music: no kickit.mp3, play it from a phone or speaker';document.getElementById('hc').textContent=CUES[cur]}
 let digits='',dT=null;
@@ -631,7 +635,49 @@ addEventListener('keydown',e=>{
   else if(k==='b'||k==='B'||k==='.'){go(0)}
   else if(/^[0-9]$/.test(k)){digits+=k;clearTimeout(dT);dT=setTimeout(()=>{go(+digits);digits=''},350)}
 });
-addEventListener('click',()=>go(cur+1));
+let armClick=false;
+addEventListener('click',()=>{if(armClick){armClick=false;return}go(cur+1)});
+
+// ---------- phone remote: ryrycd.github.io/t10/remote ----------
+// Relay = ntfy.sh (free pub/sub). Messages only carry screen numbers.
+const RELAY='https://ntfy.sh/', ROOM=new URLSearchParams(location.search).get('room')||'kickit-t10-9cc00d1ce4a0';
+const deckId=Math.random().toString(36).slice(2,8);
+let armed=false, lastRemote=0, es=null, relayOK=false;
+function isArmed(){return armed||!!(navigator.userActivation&&navigator.userActivation.hasBeenActive)}
+function send(o){o.from='deck';o.id=deckId;fetch(RELAY+ROOM+'?cache=no',{method:'POST',body:JSON.stringify(o),keepalive:true}).catch(()=>{})}
+function remoteAt(){if(relayOK)send({t:'at',n:cur,armed:isArmed(),fs:!!document.fullscreenElement,music:hasMusic})}
+function updB0(){
+  const el=document.getElementById('b0stat');if(!el)return;
+  const rem=Date.now()-lastRemote<75000;
+  el.innerHTML=(rem?'Phone remote <b>connected ✓</b>':(relayOK?'Phone remote: open ryrycd.github.io/t10/remote':'Phone remote: offline (clicker and keys still work)'))
+    +' &nbsp;·&nbsp; '+(isArmed()?'Sound <b>ready ✓</b>':'Click once here so the song can play');
+  document.getElementById('b0hint').textContent=isArmed()?'Click or press → to start · F for fullscreen':'Click once to get sound ready · F for fullscreen';
+}
+// unlock both songs on the first click/key (Safari needs this; Chrome just needs the click)
+function prime(){
+  if(armed)return;armed=true;
+  [music,finale].forEach(a=>{if(!a.paused)return;a._real=false;a.muted=true;const p=a.play();if(p)p.then(()=>{if(!a._real){a.pause();a.currentTime=0}a.muted=false}).catch(()=>{a.muted=false})});
+  updB0();remoteAt();
+}
+addEventListener('pointerdown',()=>{if(!armed&&cur===0)armClick=true;prime()},true);
+addEventListener('keydown',prime,true);
+document.addEventListener('fullscreenchange',remoteAt);
+function connect(){
+  try{es&&es.close()}catch(e){}
+  es=new EventSource(RELAY+ROOM+'/sse');
+  es.onopen=()=>{relayOK=true;remoteAt();updB0()};
+  es.onerror=()=>{relayOK=false;updB0()};
+  es.onmessage=e=>{let m;try{m=JSON.parse(JSON.parse(e.data).message)}catch(_){return}
+    if(!m||m.from!=='remote')return;
+    lastRemote=Date.now();
+    if(m.t==='go'&&Number.isInteger(m.n)&&m.n>=0&&m.n<=N){if(m.n!==cur)go(m.n);else remoteAt()}
+    else remoteAt();
+    updB0()};
+}
+connect();
+setInterval(()=>{remoteAt();updB0()},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(!es||es.readyState===2))connect()});
+updB0();
 const q=new URLSearchParams(location.search);if(q.has('beat'))go(+q.get('beat'));if(q.has('hud'))document.getElementById('hud').classList.add('show');
 hud();
 </script>
