@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scott Harris.SLDPRT</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='8' width='48' height='48' rx='8' fill='%23D7352C'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/css/sw.css?v=1">
+<link rel="stylesheet" href="../assets/css/onshape.css?v=1">
+<link rel="stylesheet" href="../assets/css/finale.css?v=1">
+<style>
+  #hint { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 45; font: 450 14px/1 "Helvetica Neue", Arial, sans-serif; color: #eee; background: rgba(20,20,22,.86); padding: 10px 14px; border-radius: 999px; transition: opacity .6s; pointer-events: none; white-space: nowrap; }
+  #hint kbd, #panel kbd { font: 500 12px ui-monospace, Menlo, monospace; background: #333; border-radius: 5px; padding: 2px 6px; color: #eee; }
+  #hint.gone { opacity: 0; }
+  #netdot { position: fixed; left: 14px; bottom: 14px; width: 8px; height: 8px; border-radius: 50%; background: #E8A33A; opacity: 0; z-index: 40; }
+  #netdot.show { opacity: .7; }
+  #panel { position: fixed; right: 28px; bottom: 28px; z-index: 50; width: 440px; padding: 22px 24px 20px; background: #1d1d20; color: #f2f2f2; border-radius: 16px; font: 450 15px/1.45 "Helvetica Neue", Arial, sans-serif; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5); display: none; }
+  #panel.open { display: block; }
+  #panel h3 { margin: 0 0 6px; font-size: 20px; }
+  #panel .row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+  #panel .sdot { width: 10px; height: 10px; border-radius: 50%; background: #888; flex: none; }
+  #panel .sdot.on { background: #5FCF8A; } #panel .sdot.warn { background: #E8A33A; }
+  #panel .url { font: 500 14px/1.4 ui-monospace, Menlo, monospace; word-break: break-all; background: #2a2a2e; padding: 10px 12px; border-radius: 10px; }
+  #panel .btns { display: flex; gap: 8px; margin-top: 14px; }
+  #panel button, #panel a.btn { appearance: none; border: 0; cursor: pointer; text-decoration: none; font: 500 14px/1 Arial, sans-serif; padding: 11px 14px; border-radius: 10px; background: #333; color: #f2f2f2; }
+  #panel a.primary { background: #D7352C; color: #fff; }
+  #panel .keys { margin-top: 14px; color: #aaa; font-size: 13px; }
+</style>
+<script type="importmap">{ "imports": { "three": "../vendor/three/build/three.module.js", "three/addons/": "../vendor/three/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="stage">
+  <div id="vpbg"></div>
+  <canvas id="gl" width="1920" height="1080"></canvas>
+  <svg id="ov" viewBox="0 0 1920 1080"></svg>
+  <div id="ovh"></div>
+  <div id="chrome"></div>
+  <div id="onshape"></div>
+  <div id="modify"></div>
+  <div id="dialog"></div>
+  <div id="stamp"></div>
+  <div id="ovtop" style="position:absolute;inset:0;pointer-events:none"></div>
+  <div id="cursor"></div>
+</div>
+<div id="netdot"></div>
+<div id="hint"><kbd>F</kbd> fullscreen &nbsp;·&nbsp; <kbd>→</kbd> next &nbsp;·&nbsp; <kbd>P</kbd> live script link</div>
+<div id="panel">
+  <h3>Live script</h3>
+  <div class="row"><span class="sdot" id="pDot"></span><span id="pStatus">Connecting…</span></div>
+  <div class="url" id="pUrl"></div>
+  <div class="btns"><a class="btn primary" id="pOpen" target="_blank" rel="noopener">Open script</a><button id="pCopy">Copy link</button><button id="pStart">Back to start</button></div>
+  <div class="keys"><kbd>→</kbd> <kbd>Space</kbd> next &nbsp; <kbd>←</kbd> back &nbsp; <kbd>F</kbd> fullscreen &nbsp; <kbd>P</kbd> this panel &nbsp; <kbd>S</kbd> sound &nbsp; <kbd>Home</kbd> start</div>
+</div>
+<script src="../assets/js/script-data.js?v=6"></script>
+<script src="../assets/js/sync.js?v=2"></script>
+<script src="../assets/js/sound.js?v=1"></script>
+<script type="module" src="../assets/js/sw/main.js?v=2"></script>
+<script>if ("serviceWorker" in navigator && !location.search) addEventListener("load", () => navigator.serviceWorker.register("../sw.js").catch(() => {}));</script>
+</body>
+</html>

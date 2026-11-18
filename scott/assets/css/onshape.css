@@ -1,0 +1,98 @@
+/* Onshape browser window + beats 6-10 styles (owned by the beats-b builder). Stage px (1920x1080). */
+#onshape { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: none; font-family: "Roboto", "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #222; pointer-events: none; }
+.os-frame > div, .os-frame > svg { position: absolute; }
+.os-bt { left: 0; top: 0; width: 1920px; height: 50px; background: #DEE1E6; }
+.os-dots { position: absolute; left: 20px; top: 18px; display: flex; gap: 9px; }
+.os-dots i { width: 14px; height: 14px; border-radius: 50%; display: block; }
+.os-tab { position: absolute; left: 96px; bottom: 0; width: 330px; height: 40px; background: #fff; border-radius: 10px 10px 0 0; display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 17px; color: #222; }
+.os-fav { width: 18px; height: 18px; border-radius: 4px; background: #3C4A57; display: inline-block; }
+.os-x { margin-left: auto; color: #666; font-size: 13px; }
+.os-plus { position: absolute; left: 440px; top: 14px; font-size: 22px; color: #555; }
+.os-url { left: 0; top: 50px; width: 1920px; height: 48px; background: #fff; display: flex; align-items: center; gap: 18px; padding: 0 18px; font-size: 20px; color: #666; border-bottom: 1px solid #E3E3E3; }
+.os-box { flex: 1; height: 34px; background: #F1F3F4; border-radius: 17px; display: flex; align-items: center; padding: 0 16px; gap: 10px; color: #222; font-size: 17px; }
+.os-lock { font-size: 13px; color: #777; }
+.os-tb { left: 0; top: 98px; width: 1920px; height: 50px; background: #fff; display: flex; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid #C2C2C2; font-size: 20px; }
+.os-tb img { height: 24px; }
+.os-burger { font-size: 22px; color: #3C4A57; }
+.os-main { font-size: 15px; color: #3C4A57; border: 1px solid #B9C3CC; padding: 2px 8px; border-radius: 3px; }
+.os-right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+.os-avs { display: flex; align-items: center; }
+.os-av { width: 36px; height: 36px; border-radius: 50%; color: #fff; display: grid; place-items: center; font: 700 14px Arial, sans-serif; margin-left: -7px; border: 3px solid #fff; }
+.os-av.ring { box-shadow: 0 0 0 3px #0F9DB0; }
+.os-share { background: #1B7BD6; color: #fff; padding: 8px 22px; border-radius: 3px; font-size: 18px; }
+.os-q { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #3C4A57; display: grid; place-items: center; font-size: 15px; color: #3C4A57; }
+.os-ft { left: 0; top: 148px; width: 1920px; height: 46px; background: #fff; display: flex; align-items: center; gap: 20px; padding: 0 16px; border-bottom: 1px solid #C2C2C2; font-size: 17px; color: #3C4A57; }
+.os-ft i { display: block; width: 24px; height: 24px; }
+.os-sk { border: 1px solid #B9C3CC; border-radius: 3px; padding: 4px 10px; }
+.os-undo { color: #8693A0; }
+.os-search { margin-left: auto; margin-right: 6px; border: 1px solid #C9D1D8; padding: 5px 12px; color: #8693A0; font-size: 15px; border-radius: 3px; }
+.os-fl { left: 0; top: 194px; width: 300px; height: 846px; background: #fff; border-right: 1px solid #C2C2C2; font-size: 19px; padding-top: 8px; }
+.os-flh { display: flex; justify-content: space-between; padding: 6px 16px; color: #333; }
+.os-flh span { color: #8693A0; }
+.os-filter { margin: 4px 14px 10px; border: 1px solid #D5DBE0; padding: 6px 10px; color: #A2ACB6; font-size: 15px; font-style: italic; }
+.os-g { padding: 5px 16px; color: #555; font-size: 17px; }
+.os-d { padding: 4px 16px 4px 44px; color: #A2ACB6; font-size: 17px; }
+.os-f { padding: 6px 12px 6px 18px; display: flex; align-items: center; gap: 10px; font-size: 19px; color: #222; }
+.os-f.sel { background: #DDEBF8; box-shadow: inset 3px 0 0 #70ADE2; }
+.os-fi { width: 20px; color: #5C6B78; font-size: 16px; text-align: center; }
+.os-by { margin-left: auto; color: #fff; font: 700 11px Arial; border-radius: 9px; padding: 3px 6px; }
+.os-parts { margin-top: 18px; border-top: 1px solid #E1E5E9; padding-top: 8px; }
+.os-parts b { display: block; padding: 4px 16px; font-weight: 600; color: #333; }
+.os-bot { left: 0; top: 1040px; width: 1920px; height: 40px; background: #D1D1D1; display: flex; align-items: stretch; gap: 3px; padding-left: 10px; font-size: 17px; }
+.os-bot span { background: #E6E6E6; padding: 9px 18px; color: #333; }
+.os-bot span.on { background: #fff; box-shadow: inset 0 -3px 0 #A5C0DD; }
+.os-bot .os-addtab { background: transparent; font-size: 20px; padding: 6px 14px; }
+.os-cube { left: 1770px; top: 214px; }
+/* dynamic layer */
+#osDyn { position: absolute; inset: 0; }
+.os-cur { position: absolute; width: 0; height: 0; }
+.os-cur svg { position: absolute; left: -2px; top: -2px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
+.os-cur span { position: absolute; left: 20px; top: 26px; color: #fff; font: 600 17px "Segoe UI", Arial, sans-serif; padding: 3px 9px; border-radius: 4px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+.os-cur i { position: absolute; left: -16px; top: -16px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid; }
+.os-chips { position: absolute; left: 301px; right: 0; top: 244px; display: flex; justify-content: center; gap: 18px; }
+.os-chip { font: 600 38px "Segoe UI", "Helvetica Neue", Arial, sans-serif; letter-spacing: -0.5px; padding: 12px 26px; border-radius: 40px; background: #fff; border: 2px solid #D5DBE0; color: #1F2A33; box-shadow: 0 8px 24px rgba(30,50,70,.12); }
+.os-chip em { font-style: normal; color: #8693A0; font-weight: 500; margin-right: 10px; }
+.os-chip.sw { border-color: #D7352C; }
+.os-chip.gd { border-color: #2E86DE; }
+.os-chip.gh { border-color: #3C4A57; }
+.os-vers { position: absolute; left: 1520px; top: 360px; width: 380px; height: 470px; background: #fff; border: 1px solid #C2C2C2; box-shadow: -6px 10px 30px rgba(30,50,70,.15); font-size: 17px; }
+.os-vers .h { padding: 12px 16px; border-bottom: 1px solid #E1E5E9; font-weight: 600; display: flex; justify-content: space-between; }
+.os-bub { position: absolute; background: #fff; border: 2px solid #9AA7B4; border-radius: 18px; padding: 8px 18px; font: 700 34px "Segoe UI", Arial, sans-serif; color: #3C4A57; box-shadow: 0 6px 18px rgba(30,50,70,.15); }
+.os-bub::after { content: ""; position: absolute; left: 22px; bottom: -14px; border: 8px solid transparent; border-top: 10px solid #9AA7B4; }
+.os-cust { position: absolute; width: 46px; height: 46px; border-radius: 50%; background: #B9C3CC; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+.os-cust::before { content: ""; position: absolute; left: 14px; top: 8px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+.os-cust::after { content: ""; position: absolute; left: 8px; top: 23px; width: 25px; height: 13px; border-radius: 13px 13px 0 0; background: #fff; }
+.os-modal { position: absolute; left: 650px; top: 300px; width: 760px; background: #fff; border: 1px solid #B9C3CC; box-shadow: 0 20px 60px rgba(20,40,60,.25); font-size: 20px; }
+.os-modal .h { padding: 18px 24px; border-bottom: 1px solid #E1E5E9; font-weight: 600; font-size: 22px; display: flex; justify-content: space-between; }
+.os-modal .b { padding: 22px 24px; }
+.os-modal .in { border: 2px solid #70ADE2; padding: 10px 14px; font-size: 22px; display: flex; align-items: center; gap: 10px; }
+.os-modal .caret { width: 2px; height: 26px; background: #222; display: inline-block; }
+.os-modal .opts { display: flex; gap: 24px; margin-top: 18px; color: #3C4A57; font-size: 19px; }
+.os-modal .f { padding: 14px 24px 20px; display: flex; justify-content: flex-end; gap: 12px; }
+.os-modal .f span { padding: 9px 22px; border: 1px solid #B9C3CC; border-radius: 3px; font-size: 19px; }
+.os-modal .f span.go { background: #1B7BD6; color: #fff; border-color: #1B7BD6; }
+.os-deploy { position: absolute; left: 301px; top: 194px; width: 1619px; height: 846px; background: #fff; }
+.os-deploy .t { position: absolute; left: 70px; top: 46px; font: 600 40px "Segoe UI", Arial, sans-serif; color: #1F2A33; letter-spacing: -0.5px; }
+.os-deploy .s { position: absolute; left: 72px; top: 104px; font-size: 22px; color: #5C6B78; }
+.os-deploy .clock { position: absolute; right: 80px; top: 30px; font: 600 120px "Segoe UI", Arial, sans-serif; color: #1B7BD6; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
+.os-deploy .bar { position: absolute; left: 72px; right: 80px; top: 176px; height: 10px; background: #E6ECF1; border-radius: 5px; overflow: hidden; }
+.os-deploy .bar i { display: block; height: 100%; background: #1B7BD6; }
+.os-deploy .done { position: absolute; left: 72px; top: 756px; font: 600 32px "Segoe UI", Arial, sans-serif; color: #1E9E57; }
+.os-grid { position: absolute; left: 72px; top: 220px; }
+.os-lap { position: absolute; width: 46px; height: 30px; }
+.os-lap b { position: absolute; left: 4px; top: 0; width: 38px; height: 24px; border-radius: 3px; background: #D5DBE0; }
+.os-lap u { position: absolute; left: 0; top: 24px; width: 46px; height: 5px; border-radius: 0 0 3px 3px; background: #B9C3CC; }
+.os-lap.on b { background: #1B7BD6; }
+.os-lap.on b::after { content: ""; position: absolute; left: 9px; top: 6px; width: 20px; height: 12px; background: #fff; opacity: .85; clip-path: polygon(0 60%, 45% 0, 100% 35%, 55% 100%); }
+.os-lap.aj b { background: #0F9DB0; box-shadow: 0 0 0 4px rgba(15,157,176,.35); }
+.os-ajtag { position: absolute; color: #fff; background: #0F9DB0; font: 700 20px "Segoe UI", Arial, sans-serif; padding: 4px 12px; border-radius: 5px; white-space: nowrap; }
+.os-load { position: absolute; left: 0; top: 97px; height: 3px; background: #1B7BD6; }
+/* SolidWorks-side extras for beats 6-7 */
+.mega { position: absolute; transform: translate(-50%, -50%); font-family: "DimFont", "Century Gothic", Futura, "Avenir Next", sans-serif; color: #000; white-space: nowrap; font-size: 56px; letter-spacing: 0.5px; background: rgba(255,255,255,.0); }
+.mega small { display: block; text-align: center; font-size: 24px; color: #333; margin-top: -4px; }
+.swnote { position: absolute; font-family: "DimFont", "Century Gothic", Futura, sans-serif; color: #000; font-size: 26px; white-space: nowrap; line-height: 1.15; }
+.os-toast { position: absolute; right: 150px; top: 154px; display: flex; align-items: center; gap: 12px; background: #1F2A33; color: #fff; font: 600 22px "Segoe UI", Arial, sans-serif; padding: 10px 18px 10px 10px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+/* v4: Onshape's inline dimension edit box (schneider beat) */
+.os-dimedit { position: absolute; transform: translate(-50%, -50%); background: #fff; border: 2px solid #1B7BD6; border-radius: 4px; padding: 6px 14px; font: 600 34px "Segoe UI", Arial, sans-serif; color: #1F2A33; white-space: nowrap; box-shadow: 0 6px 18px rgba(30,50,70,.2); }
+.os-dimedit .sel { background: #B3D4F5; }
+.os-dimedit .caret { width: 2px; height: 32px; background: #222; display: inline-block; vertical-align: -5px; margin-left: 2px; }

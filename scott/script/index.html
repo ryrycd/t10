@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3EFE7">
+<title>Live script · Scott Harris intro</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='26' fill='%23E0462B'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<style>
+  :root {
+    --bg: #F3EFE7; --fg: #1C1A17; --fg2: #6F695F; --hair: rgba(28,26,23,.14); --card: #FAF8F3; --accent: #E0462B;
+    --serif: "Newsreader", Georgia, serif; --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--sans); }
+  button { font: inherit; color: inherit; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 14px max(20px, env(safe-area-inset-left)) 14px;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--hair);
+  }
+  .status { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--fg2); min-width: 0; }
+  .sdot { width: 10px; height: 10px; border-radius: 50%; background: #B8B0A3; flex: none; }
+  .sdot.on { background: #3DAA6A; }
+  .sdot.warn { background: #E8A33A; }
+  .clock { margin-left: auto; display: flex; align-items: baseline; gap: 14px; font-variant-numeric: tabular-nums; }
+  #elapsed { font: 500 28px/1 var(--sans); letter-spacing: -0.02em; }
+  #pace { font-size: 14px; color: var(--fg2); min-width: 110px; }
+  #pace.behind { color: #B4521F; }
+  #pace.ahead { color: #3B7D57; }
+  #beatNo { font-size: 14px; color: var(--fg2); font-variant-numeric: tabular-nums; }
+  .hbtn { appearance: none; border: 0; background: transparent; color: var(--fg2); font-size: 14px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+  .hbtn:hover { background: var(--hair); color: var(--fg); }
+
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 40px; max-width: 1400px; margin: 0 auto; padding: 0 28px; }
+  #script { padding: 34vh 0 60vh; }
+  aside { position: sticky; top: 76px; align-self: start; padding-top: 24px; }
+
+  .seg {
+    position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 14px;
+    padding: 18px 20px 18px 10px; margin: 2px 0; border-radius: 16px;
+    cursor: pointer; transition: opacity .35s, background-color .35s;
+    opacity: .62;
+  }
+  .seg:hover { background: rgba(28,26,23,.04); }
+  .seg.past { opacity: .28; }
+  .seg.now { opacity: 1; background: var(--card); box-shadow: 0 0 0 1px var(--hair), 0 18px 40px -26px rgba(28,26,23,.35); }
+  .seg.now::before { content: ""; position: absolute; left: -2px; top: 18px; bottom: 18px; width: 5px; border-radius: 4px; background: var(--accent); }
+  .num { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--hair); display: grid; place-items: center; font-size: 13px; color: var(--fg2); margin-top: 8px; font-variant-numeric: tabular-nums; }
+  .seg.now .num { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .say { font: 400 34px/1.38 var(--serif); letter-spacing: -0.01em; }
+  .seg.now .say { font-size: 38px; }
+  .cue { font-size: 15px; color: var(--fg2); margin-top: 6px; line-height: 1.45; }
+  .say:empty { display: none; }
+  .seg.standby .cue { font-size: 18px; margin-top: 10px; }
+  .optional { display: inline-block; font-size: 12px; color: var(--accent); border: 1px solid currentColor; border-radius: 999px; padding: 2px 8px; margin-bottom: 8px; }
+
+  .preview { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 14px; overflow: hidden; background: #E9E4DA; box-shadow: 0 0 0 1px var(--hair); }
+  .preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .previewLabel { font-size: 13px; color: var(--fg2); margin: 10px 2px 0; display: flex; justify-content: space-between; }
+  .nextUp { margin-top: 18px; padding: 16px 18px; border-radius: 14px; background: var(--card); box-shadow: 0 0 0 1px var(--hair); }
+  .nextUp .k { font-size: 13px; color: var(--fg2); }
+  .nextUp .v { font: 400 21px/1.35 var(--serif); margin-top: 6px; }
+  .nav { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 18px; }
+  .nav button {
+    appearance: none; border: 0; cursor: pointer; border-radius: 16px; padding: 22px 16px;
+    font: 500 20px/1 var(--sans); letter-spacing: -0.01em;
+    background: var(--card); box-shadow: 0 0 0 1px var(--hair);
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  .nav button.next { background: var(--fg); color: var(--bg); box-shadow: none; }
+  .nav button:active { transform: scale(.98); }
+  .keys { margin-top: 14px; font-size: 13px; color: var(--fg2); line-height: 1.6; }
+  kbd { font: 500 12px ui-monospace, Menlo, monospace; background: var(--card); box-shadow: 0 0 0 1px var(--hair); border-radius: 5px; padding: 1px 6px; }
+  .links { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .links a, .links button { appearance: none; border: 0; cursor: pointer; text-decoration: none; font-size: 13px; color: var(--fg2); background: transparent; padding: 8px 10px; border-radius: 8px; box-shadow: 0 0 0 1px var(--hair); }
+
+  /* phone */
+  #mobileBar { display: none; }
+  @media (max-width: 980px) {
+    main { grid-template-columns: 1fr; padding: 0 14px; gap: 0; }
+    aside { display: none; }
+    aside.showPreview { display: block; position: static; padding-top: 12px; }
+    aside.showPreview .nav, aside.showPreview .keys, aside.showPreview .nextUp { display: none; }
+    #script { padding: 28vh 0 70vh; }
+    .seg { grid-template-columns: 34px 1fr; gap: 10px; padding: 14px 14px 14px 6px; }
+    .num { width: 26px; height: 26px; font-size: 12px; margin-top: 6px; }
+    .say { font-size: 25px; }
+    .seg.now .say { font-size: 28px; }
+    #elapsed { font-size: 22px; }
+    #pace { min-width: 0; }
+    header { gap: 10px; padding: 10px 14px; }
+    #mobileBar {
+      display: grid; grid-template-columns: 1fr 2fr; gap: 10px;
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: color-mix(in srgb, var(--bg) 94%, transparent);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid var(--hair);
+    }
+    #mobileBar button { appearance: none; border: 0; border-radius: 14px; padding: 20px 10px; font: 500 19px/1 var(--sans); background: var(--card); box-shadow: 0 0 0 1px var(--hair); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    #mobileBar button.next { background: var(--fg); color: var(--bg); box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="status"><span class="sdot" id="sdot"></span><span id="stext">Connecting…</span></div>
+  <div class="clock"><span id="elapsed">0:00</span><span id="pace">target 1:10</span></div>
+  <span id="beatNo">start</span>
+  <button class="hbtn" id="togglePreview">Slide</button>
+  <button class="hbtn" id="resetBtn">Restart</button>
+</header>
+<main>
+  <div id="script"></div>
+  <aside id="aside">
+    <div class="preview"><img id="mirror" alt="Live slide"></div>
+    <div class="previewLabel"><span>What the room sees</span><span id="mirrorBeat"></span></div>
+    <div class="nextUp"><div class="k">Next click shows</div><div class="v" id="nextText"></div></div>
+    <div class="nav">
+      <button id="backBtn" aria-label="Back">← Back</button>
+      <button id="nextBtn" class="next" aria-label="Next">Next →</button>
+    </div>
+    <div class="keys"><kbd>→</kbd> <kbd>Space</kbd> <kbd>Page Down</kbd> next &nbsp;·&nbsp; <kbd>←</kbd> <kbd>Page Up</kbd> back &nbsp;·&nbsp; tap any line to jump</div>
+    <div class="links">
+      <a href="../deck/" id="openDeck" target="_blank" rel="noopener">Open deck</a>
+      <button id="copyDeck">Copy deck link</button>
+    </div>
+  </aside>
+</main>
+<div id="mobileBar">
+  <button id="mBack">← Back</button>
+  <button id="mNext" class="next">Next →</button>
+</div>
+
+<script src="../assets/js/script-data.js?v=6"></script>
+<script src="../assets/js/sync.js?v=2"></script>
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const SCRIPT = window.SCRIPT, N = SCRIPT.length;
+  const WPM = 160, BREATH_EXTRA = 6;
+  let cur = 0, startedAt = null, firstStateSeen = false;
+
+  // expected seconds elapsed when each beat starts (timer starts on beat 1)
+  const expectAt = [];
+  let acc = 0;
+  SCRIPT.forEach((b, i) => {
+    expectAt[i] = acc;
+    if (i >= 1) acc += (b.say.split(/\s+/).filter(Boolean).length / WPM) * 60 + (b.id === "breath" ? BREATH_EXTRA : 0);
+  });
+  const TOTAL = acc;
+
+  const fmt = (s) => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  $("pace").textContent = "target " + fmt(TOTAL);
+
+  // render the script
+  const segs = SCRIPT.map((b, i) => {
+    const d = document.createElement("div");
+    d.className = "seg" + (b.id === "standby" ? " standby" : "");
+    const n = document.createElement("div"); n.className = "num"; n.textContent = i === 0 ? "·" : i;
+    const body = document.createElement("div");
+    if (b.id === "breath" || b.id === "standby") { const o = document.createElement("span"); o.className = "optional"; o.textContent = "optional"; body.appendChild(o); }
+    const say = document.createElement("div"); say.className = "say"; say.textContent = b.say;
+    body.appendChild(say);
+    if (b.cue) { const c = document.createElement("div"); c.className = "cue"; c.textContent = b.cue; body.appendChild(c); }
+    d.append(n, body);
+    d.addEventListener("click", () => local(i));
+    $("script").appendChild(d);
+    return d;
+  });
+
+  function render(scroll = true) {
+    segs.forEach((s, i) => { s.classList.toggle("now", i === cur); s.classList.toggle("past", i < cur); });
+    $("beatNo").textContent = (cur === 0 ? "start" : cur + " / " + (N - 1));
+    $("mirrorBeat").textContent = cur === 0 ? "standby" : "beat " + cur;
+    $("mirror").src = "../media/p" + String(cur).padStart(2, "0") + ".jpg";
+    const nx = SCRIPT[cur + 1];
+    $("nextText").textContent = nx ? (nx.say || nx.cue) : "That’s the end. Enjoy the applause.";
+    if (cur >= 1 && startedAt === null) startedAt = Date.now();
+    if (cur === 0) startedAt = null;
+    if (scroll) {
+      const el = segs[cur];
+      const r = el.getBoundingClientRect();
+      const target = window.scrollY + r.top - window.innerHeight * 0.3;
+      window.scrollTo({ top: target, behavior: "smooth" });
+    }
+    tick();
+  }
+
+  function tick() {
+    if (startedAt === null) { $("elapsed").textContent = "0:00"; $("pace").textContent = "target " + fmt(TOTAL); $("pace").className = ""; return; }
+    const el = (Date.now() - startedAt) / 1000;
+    $("elapsed").textContent = fmt(el);
+    const exp = expectAt[cur];
+    const nextExp = expectAt[cur + 1] ?? TOTAL;
+    // behind only counts once we've overrun this beat's expected window
+    let delta = 0;
+    if (el > nextExp) delta = el - nextExp;
+    else if (el < exp) delta = el - exp;
+    const p = $("pace");
+    if (Math.abs(delta) < 4) { p.textContent = "on pace · " + fmt(TOTAL); p.className = ""; }
+    else if (delta > 0) { p.textContent = fmt(delta) + " behind"; p.className = "behind"; }
+    else { p.textContent = fmt(-delta) + " ahead"; p.className = "ahead"; }
+  }
+  setInterval(tick, 500);
+
+  function local(n) {
+    n = Math.max(0, Math.min(N - 1, n));
+    if (n === cur) return;
+    cur = n;
+    render();
+    sync.go(n);
+  }
+
+  const sync = LiveSync({
+    role: "script",
+    onState: (n) => {
+      if (!firstStateSeen) { firstStateSeen = true; cur = n; render(); return; }
+      if (n !== cur) { cur = n; render(); }
+    },
+    onStatus: (status, presence) => {
+      const live = status === "live";
+      $("sdot").className = "sdot " + (live && presence.deck > 0 ? "on" : "warn");
+      $("stext").textContent = !live ? (status === "connecting" ? "Connecting…" : "Offline, retrying…")
+        : presence.deck > 0 ? "Deck connected" + (presence.deck > 1 ? " (" + presence.deck + " screens)" : "")
+        : "Live · open the deck on the projector";
+    },
+  });
+
+  // controls
+  const next = () => local(cur + 1), back = () => local(cur - 1);
+  $("nextBtn").onclick = next; $("backBtn").onclick = back;
+  $("mNext").onclick = next; $("mBack").onclick = back;
+  $("resetBtn").onclick = () => { if (confirm("Go back to the start and reset the timer?")) { startedAt = null; local(0); render(); } };
+  const deckUrl = new URL("../deck/", location.href).href;
+  $("openDeck").href = deckUrl;
+  $("copyDeck").onclick = async () => { try { await navigator.clipboard.writeText(deckUrl); $("copyDeck").textContent = "Copied"; } catch (e) {} };
+  addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (k === "ArrowRight" || k === " " || k === "PageDown" || k === "ArrowDown" || k === "Enter") { e.preventDefault(); next(); }
+    else if (k === "ArrowLeft" || k === "PageUp" || k === "ArrowUp" || k === "Backspace") { e.preventDefault(); back(); }
+  });
+  // buttons keep focus after a click; stop Space/Enter from double-firing
+  document.querySelectorAll("button").forEach((b) => b.addEventListener("keydown", (e) => { if (e.key === " " || e.key === "Enter") e.preventDefault(); }));
+
+  // what the room sees: a still of each beat (the film itself stays on the deck)
+  const aside = $("aside");
+  $("togglePreview").onclick = () => { aside.classList.toggle("showPreview"); };
+
+  // keep the screen awake while presenting
+  let lock = null;
+  async function wake() { try { if ("wakeLock" in navigator && !lock) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", () => (lock = null)); } } catch (e) {} }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wake(); });
+  addEventListener("pointerdown", wake, { once: true });
+  wake();
+
+  render(false);
+})();
+</script>
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../sw.js").catch(() => {}));</script>
+</body>
+</html>
