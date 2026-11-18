@@ -218,6 +218,6 @@
   Object.assign(window, { R, W, H, key, on, words, seek, play, EASE, bez, cuesOut, warpIn,
                           spring, track, indicator, swapAlpha, rng, SNAP, BASE, HEAVY, layout });
   window.addEventListener("load", () => {
-    document.fonts && document.fonts.ready.then(() => { window.__ready = true; seek(+(q.get("t") || 0));  // page mode: no looping preview; the page player plays once and holds });
+    document.fonts && document.fonts.ready.then(() => { window.__ready = true; seek(+(q.get("t") || 0)); /* page mode: no looping preview; the page player plays once and holds */ });
   });
 })();
