@@ -1,249 +1,80 @@
-<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8">
+<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0c0910">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Kick It · Remote</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0d0b0a">
+<title>Team 10 Remote</title>
 <style>
-:root{--bg:#0c0910;--card:#17121b;--card2:#1f1824;--line:#2e2533;--ink:#f4eef3;--mute:#a69aa6;--dim:#6f6470;--pink:#ff3d9a;--pinkt:rgba(255,61,154,.14);--ok:#3be0b5;--okt:rgba(59,224,181,.13);--warn:#ffc04d;--warnt:rgba(255,192,77,.13);--bad:#ff6b6b;--badt:rgba(255,107,107,.14)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-body{overscroll-behavior:none}
-main{max-width:560px;margin:0 auto;padding:max(12px,env(safe-area-inset-top)) 16px 210px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 12px}
-.brand{font-weight:700;font-size:15px;letter-spacing:.06em;white-space:nowrap}
-.brand em{font-style:normal;color:var(--pink)}
-.pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
-.pill{font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:99px;background:var(--card2);color:var(--mute);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.pill i{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
-.pill.ok{background:var(--okt);color:var(--ok)}.pill.warn{background:var(--warnt);color:var(--warn)}.pill.bad{background:var(--badt);color:var(--bad)}
-.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.now{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.now .thumb{position:relative;aspect-ratio:16/9;background:#000}
-.now .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.now .bar{position:absolute;left:0;bottom:0;height:4px;background:var(--pink);width:0}
-.now .cap{display:flex;justify-content:space-between;align-items:baseline;padding:10px 14px 12px;gap:10px}
-.now .label{font-size:16px;font-weight:600}
-.now .num{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}
-.say{margin:14px 2px 0}
-.ln{margin:0 0 12px}
-.ln .who{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);margin-bottom:3px}
-.ln .t{font-size:22px;line-height:1.32;font-weight:500;letter-spacing:-.01em}
-.ln .t .dir{color:var(--mute);font-style:italic;font-size:17px;font-weight:400}
-.ln .t mark{background:none;color:var(--ink);box-shadow:inset 0 -.42em 0 rgba(255,61,154,.45);border-radius:2px}
-.ln.act .t{font-size:18px;color:var(--mute);font-style:italic;font-weight:400}
-.tap{margin-top:6px;border-radius:14px;padding:12px 14px;background:var(--pinkt);border:1px solid rgba(255,61,154,.35)}
-.tap .cue{font-size:22px;font-weight:700;margin-top:4px;line-height:1.25}
-.tap .note{font-size:14px;color:var(--mute);margin-top:6px;line-height:1.4}
-.tap.auto{background:var(--okt);border-color:rgba(59,224,181,.35)}
-.tap.end{background:var(--card2);border-color:var(--line)}
-.warn{margin-top:8px;font-size:14px;font-weight:600;color:var(--warn)}
-details{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
-summary{font-size:15px;font-weight:600;color:var(--mute);cursor:pointer;list-style:none}
-summary::-webkit-details-marker{display:none}
-.row{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 8px;border-radius:10px;margin:2px 0}
-.row .n{font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums;font-size:14px;padding-top:2px}
-.row .l{font-size:13px;color:var(--mute);margin-bottom:2px}
-.row .s{font-size:15px;line-height:1.4}
-.row .s b{color:var(--pink);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-right:4px}
-.row .c{font-size:13px;color:var(--pink);margin-top:3px;font-weight:600}
-.row.on{background:var(--card2);outline:1px solid var(--pink)}
-.help{font-size:14px;color:var(--mute);line-height:1.55;margin-top:18px}
-.help b{color:var(--ink)}
-.toggle{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:14px;color:var(--mute)}
-.toggle input{width:20px;height:20px;accent-color:var(--pink)}
-footer{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(transparent,var(--bg) 22%);padding:22px 12px max(12px,env(safe-area-inset-bottom))}
-.btns{max-width:560px;margin:0 auto;display:grid;grid-template-columns:64px 1fr;gap:10px}
-button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-#back{border-radius:18px;background:var(--card2);border:1px solid var(--line);font-size:26px;color:var(--mute)}
-#next{border-radius:20px;background:var(--pink);color:#1a0010;height:132px;display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:0 14px 0 20px;gap:12px;transition:transform .08s ease-out,filter .15s}
-#next:active{transform:scale(.98);filter:brightness(.92)}
-#next .big{font-size:34px;font-weight:800;letter-spacing:-.01em;line-height:1}
-#next .sm{font-size:14px;font-weight:600;margin-top:6px;opacity:.85;line-height:1.25}
-#next img{width:112px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
-#next.soft{background:var(--card2);color:var(--mute);border:1px solid var(--line)}
-#next.done{background:var(--card2);color:var(--mute)}
-#next[disabled]{opacity:.55}
-.flash{animation:fl .35s ease-out}
-@keyframes fl{from{box-shadow:0 0 0 4px var(--pink)}to{box-shadow:0 0 0 0 transparent}}
-</style>
-</head>
-<body>
-<main>
-  <div class="top"><div class="brand">KICK IT <em>·</em> REMOTE</div><div class="pills" id="pills"></div></div>
-
-  <section class="now" id="now">
-    <div class="thumb"><img id="thumb" alt=""><div class="bar" id="bar"></div></div>
-    <div class="cap"><div class="label" id="label"></div><div class="num" id="num"></div></div>
-  </section>
-
-  <section class="say" id="say"></section>
-  <section class="tap" id="tap"></section>
-
-  <details id="all"><summary>Full script ▾ &nbsp;<span style="font-weight:400">(tap a line to jump the screen there)</span></summary><div id="list"></div></details>
-
-  <label class="toggle"><input type="checkbox" id="follow"> Follow along only (this phone won't move the screen)</label>
-
-  <div class="help">
-    <b>Setup:</b> laptop opens <b>ryrycd.github.io/t10/kickit</b>, clicks once on the black screen (sound ready), then presses <b>F</b>. The pill above turns green when this phone sees the screen.<br>
-    <b>If anything fails</b>, the laptop's → key or clicker still works, and this phone follows whatever the screen does.
-  </div>
-</main>
-
-<footer><div class="btns">
-  <button id="back" aria-label="Back one screen">‹</button>
-  <button id="next"><div><div class="big" id="nbig">START</div><div class="sm" id="nsm"></div></div><img id="nthumb" alt=""></button>
-</div></footer>
-
+html,body{margin:0;height:100%;background:#0d0b0a;color:#f6efe6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overscroll-behavior:none}
+.app{display:flex;flex-direction:column;height:100%;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#b8ab9b}
+.pos{font-weight:800;color:#ff7a4a;letter-spacing:.06em;text-transform:uppercase}
+.st{font-weight:700}.st.ok{color:#5fd38b}.st.bad{color:#ff6b5b}
+.say{flex:1;overflow:auto;margin:10px 0;padding:14px;border-radius:16px;background:#1a1613;border:1px solid #3a312a;font-size:21px;line-height:1.35}
+.say .who{display:block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#d4a24c;margin-bottom:6px}
+.say .ask{display:block;margin-top:12px;padding-top:10px;border-top:1px dashed #4a4036;color:#ffd38a}
+.nextp{font-size:13px;color:#b8ab9b;margin:0 2px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:6px;margin-bottom:8px}
+.chips button{flex:1;padding:9px 4px;border-radius:10px;border:1px solid #3a312a;background:#1a1613;color:#f6efe6;font-weight:700;font-size:13px}
+.chips button.on{border-color:#ff7a4a;color:#ff7a4a}
+.row{display:flex;gap:10px}
+.back{flex:0 0 28%;padding:0;border-radius:18px;border:1px solid #3a312a;background:#1a1613;color:#f6efe6;font-size:28px;font-weight:800}
+.next{flex:1;height:22vh;min-height:120px;border:0;border-radius:18px;background:linear-gradient(135deg,#ff7a3d,#ff3d6e);color:#fff;font-size:34px;font-weight:900;letter-spacing:.02em}
+.next:active,.back:active{transform:scale(.98);filter:brightness(1.1)}
+.yes{display:none;margin-bottom:10px;height:72px;border:0;border-radius:16px;background:#d4a24c;color:#1a1408;font-size:24px;font-weight:900}
+.yes.show{display:block}
+</style></head><body><div class="app">
+<div class="top"><span class="pos" id="pos"></span><span class="st" id="st">Ready</span></div>
+<div class="say" id="say"></div>
+<div class="nextp" id="nextp"></div>
+<button class="yes" id="yes" type="button">✍️ Trigger “Sign it” (HIRED)</button>
+<div class="chips"><button data-j="0">Menu</button><button data-j="1">Gamify</button><button data-j="6">Certify</button><button data-j="12">Verify</button></div>
+<div class="row"><button class="back" id="back" type="button">←</button><button class="next" id="next" type="button">NEXT →</button></div>
+</div>
 <script>
-const ROOM = new URLSearchParams(location.search).get('room') || 'kickit-t10-9cc00d1ce4a0';
-const RELAY = 'https://ntfy.sh/';
-const AUTO7 = 5000;
-// One entry per big-screen screen. say: [who, line, isAction]; cue = the words to tap on.
+const CODE = (new URLSearchParams(location.search).get('code') || 't10live').toLowerCase();
+const RURL = 'https://t10-remote.ryrycdryrycd.workers.dev/r/' + CODE;
 const S = [
- {label:'Black (standby)', say:[['Everyone','In place: AJ in front with the bottle, dancers behind, Kayee and Jeda in AJ shirts with signs down.',1]],
-  cue:'When everyone is set', note:'This tap starts the song (7 seconds).'},
- {label:'AJ on stage · song playing', say:[['AJ','Dances the “Kick It” hook, ends in a K-beauty ad pose holding the bottle, winks.',1]],
-  cue:'AJ freezes in the ad pose', note:'The song keeps going and stops by itself.'},
- {label:'AJ’s TRESemmé ad', say:[['AJ','“Let me introduce you… to <mark>TRESemmé.</mark>”']],
-  cue:'“…to TRESemmé.”'},
- {label:'Shopping app · BUY NOW', say:[['Kayee','<span class="dir">(signs up)</span> “Take my money! And my <mark>heart!</mark>”']],
-  cue:'“…And my heart!”'},
- {label:'Kayee’s shelf · 10 bottles', say:[['Jeda','“Kayee, you already bought ten bottles.”'],['Kayee','<span class="dir">(hugging her sign)</span> “And I’ll buy ten more! I want AJ Oppa’s <mark>hair!</mark>”']],
-  cue:'“…AJ Oppa’s hair!”', warn:'Don’t tap after Jeda. Both lines stay on this screen.'},
- {label:'Fan feed → AJ’s ad', say:[['Dancer','<span class="dir">(steps out of the dance line, straight to Len)</span> “Len, you think we’re <mark>exaggerating.</mark>”']],
-  cue:'“…exaggerating.”'},
- {label:'Livestream zoom · FOUND IT', say:[['Ryan','“But we’re not! Fans will zoom in on every hair and skin product in their K-pop idol’s livestreams <mark>to buy</mark>…”']],
-  cue:'“…to buy”', note:'Tap as you say “to buy”. The fan posts come in under the rest of the line.'},
- {label:'Fan posts pile in', say:[['Ryan','“…to buy what they use, selling out for months if it’s left visible.”']],
-  auto:true, cue:'No tap. The 2010 graph comes in by itself', note:'5 seconds after the posts start. Tap only if it gets stuck.'},
- {label:'2010 graph', say:[['Ryan','“Asia’s the biggest beauty market in the world and in 2010, K-pop, the biggest thing since Michael Jackson, was only just getting <mark>started.</mark>”']],
-  cue:'“…only just getting started.”'},
- {label:'OBSESSED', say:[['Ryan','“Since fans in Asia are OBSESSED with the beauty products these idols use, <mark>we say…</mark>”']],
-  cue:'“…we say”', note:'The song comes back on this tap. Everyone says the last line.'},
- {label:'INVEST EARLY · INVEST IN ASIA', say:[['All','“Invest early, and invest in Asia!”']],
-  end:true, cue:'Done. Hold the pose until the applause.'}
+ {d:null,i:0,l:'Menu (opener)',who:'Opener',say:'Robert, Ralph: we’ve got three ideas we think would make Edify huge. Gamify it, certify it, and verify it.'},
+ {d:'gamify',i:0,l:'Gamify 1/4 · nudge',who:'Gamify',say:'So Edify has over a thousand CEO interviews. Honestly, founders like AJ are never going to read a thousand interviews. But they will scroll: ten million people keep a 365-day streak on Duolingo. So first: a little nudge every day.'},
+ {d:'gamify',i:1,l:'Gamify 2/4 · the call',who:'Gamify',say:'You open it, and it’s one real CEO decision, thirty seconds. You make the call, then you see how everyone else voted and what the CEO actually did.'},
+ {d:'gamify',i:2,l:'Gamify 3/4 · streak + league',who:'Gamify',say:'Your streak goes up, and you start passing your friends in the league.'},
+ {d:'gamify',i:3,l:'Gamify 4/4 · promoted',who:'Gamify',say:'And you climb, from Intern all the way to CEO. Every time you level up, you earn a question to a real CEO. We’ll come back to that.',ask:'Quick show of hands: has anyone here opened Edify on a day it wasn’t assigned?'},
+ {d:null,i:0,l:'Menu',who:'Transition',say:'Second: certify.'},
+ {d:'certify',i:0,l:'Certify 1/5 · CEO certificate',who:'Certify',say:'Make that rank actually mean something. Hit CEO level, and you’re Edify Certified.'},
+ {d:'certify',i:1,l:'Certify 2/5 · LinkedIn',who:'Certify',say:'One tap and it’s on your LinkedIn, right next to certificates people already trust. The Duolingo English Test is accepted by over six thousand programs. Coursera certificates go straight onto LinkedIn. Edify should be that for business.'},
+ {d:'certify',i:2,l:'Certify 3/5 · blue check',who:'Certify',say:'And that blue check means CEO. It’s not the kind you can just pay for. You can’t buy this one. You have to earn it.'},
+ {d:'certify',i:3,l:'Certify 4/5 · CEO roster',who:'Certify',say:'CEOs get profiles too. When a CEO answered our question on Edify, some of us didn’t even know the company. So every CEO gets a logo and a quick brag sheet.'},
+ {d:'certify',i:4,l:'Certify 5/5 · Ralph',who:'Certify',say:'Like Ralph: forty-two years at AT&T, and he was running AT&T Mobility when the iPhone launched.',ask:'Robert, would you let your top players put “Edify Certified” on LinkedIn? And what would it take for a recruiter to actually trust it?'},
+ {d:null,i:0,l:'Menu',who:'Transition',say:'Last one: verify.'},
+ {d:'verify',i:0,l:'Verify 1/7 · Omar’s question',who:'Verify',say:'This is the real question Omar asked on Edify.'},
+ {d:'verify',i:1,l:'Verify 2/7 · chatbot',who:'Verify',say:'Here’s what a chatbot gives you: “it depends.” No name, no source, no track record.'},
+ {d:'verify',i:2,l:'Verify 3/7 · Barefoot CEO',who:'Verify',say:'And here’s what we actually got, from the co-founding CEO of Barefoot Wines: start small, a few local companies, get testimonials, then use that endorsement to grow.'},
+ {d:'verify',i:3,l:'Verify 4/7 · can’t scrape this',who:'Verify',say:'Now ask a chatbot what Barefoot told us. It can’t. ChatGPT can scrape the internet. It can’t scrape this. Verified CEOs are Edify’s moat.'},
+ {d:'verify',i:4,l:'Verify 5/7 · earn it',who:'Verify',say:'So make people earn it. Every level-up earns you one question to a real CEO.',ask:'Ralph, if a 22-year-old founder earned one question to you, what should they ask?'},
+ {d:'verify',i:5,l:'Verify 6/7 · closer',who:'Everyone',say:'Gamify. Certify. Verify. That’s how you Edify.'},
+ {d:'verify',i:6,l:'Verify 7/7 · THE ASK',who:'The ask',say:'One more thing. Robert, you have the wisdom: almost two thousand CEO interviews. We have the builders: two of us on Team 10 built this app, and it’s live today. And we’re the target market. So we’d love to keep building it with you, paid, on your team.',ask:'So, Robert… want to sign it? (Tap the gold button when he says yes.)'}
 ];
-const N = S.length - 1;
+let k = 0; try { const s = parseInt(localStorage.getItem('t10r'), 10); if (s >= 0 && s < S.length) k = s; } catch (e) {}
 const $ = id => document.getElementById(id);
-let cur = 0, pending = null, deckSeen = 0, deck = {}, relay = 'connecting', locked = false, es = null, autoT = null;
-let follow = false; try { follow = localStorage.getItem('kickitFollow') === '1' } catch (e) {}
-$('follow').checked = follow;
-$('follow').onchange = e => { follow = e.target.checked; try { localStorage.setItem('kickitFollow', follow ? '1' : '0') } catch (_) {} render() };
-S.forEach((_, i) => { const im = new Image(); im.src = `img/s${i}.jpg` });
-
-// ---------- relay ----------
-const myId = Math.random().toString(36).slice(2, 8);
-function send(o) {
-  o.from = 'remote'; o.id = myId;
-  return fetch(RELAY + ROOM + '?cache=no', { method: 'POST', body: JSON.stringify(o) })
-    .then(r => { if (!r.ok) throw r.status; relay = 'ok' })
-    .catch(() => { relay = 'bad'; render() });
+function render() {
+  const s = S[k]; $('pos').textContent = (k + 1) + '/' + S.length + ' · ' + s.l;
+  $('say').innerHTML = '<span class="who">' + s.who + '</span>' + s.say + (s.ask ? '<span class="ask">Ask: ' + s.ask + '</span>' : '');
+  $('say').scrollTop = 0;
+  $('nextp').textContent = k < S.length - 1 ? 'Next: ' + S[k + 1].l : 'Last screen';
+  $('yes').classList.toggle('show', s.d === 'verify' && s.i === 6);
+  const sec = k < 5 ? 1 : k < 11 ? 6 : 12; document.querySelectorAll('.chips button').forEach(b => b.classList.toggle('on', +b.dataset.j === (k === 0 ? 0 : sec)));
+  try { localStorage.setItem('t10r', k); } catch (e) {}
 }
-function connect() {
-  try { es && es.close() } catch (e) {}
-  relay = 'connecting'; render();
-  es = new EventSource(RELAY + ROOM + '/sse');
-  es.onopen = () => { relay = 'ok'; send({ t: 'hello' }); render() };
-  es.onerror = () => { relay = es.readyState === 2 ? 'bad' : 'connecting'; render() };
-  es.onmessage = e => {
-    let m; try { m = JSON.parse(JSON.parse(e.data).message) } catch (_) { return }
-    if (!m || m.from !== 'deck' || !Number.isInteger(m.n)) return;
-    deckSeen = Date.now(); deck = m;
-    if (pending && m.n !== pending.n && Date.now() - pending.t < 1800) { render(); return }  // old message still in flight
-    pending = null;
-    if (m.n !== cur) setCur(m.n); else render();
-  };
+async function send(body) {
+  const st = $('st'); st.textContent = 'Sending…'; st.className = 'st';
+  try { const r = await fetch(RURL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); if (!r.ok) throw 0; st.textContent = '✓ Sent'; st.className = 'st ok'; }
+  catch (e) { st.textContent = '⚠ Not sent: tap again'; st.className = 'st bad'; }
 }
-connect();
-setInterval(() => { if (!document.hidden) send({ t: 'hello' }); render() }, 30000);
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) return;
-  if (!es || es.readyState !== 1) connect(); else send({ t: 'hello' });
-  wake();
-});
-
-// ---------- keep the phone awake ----------
-let wl = null;
-async function wake() { try { if ('wakeLock' in navigator && !wl) { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', () => wl = null) } } catch (e) {} }
-
-// ---------- control ----------
-function deckLive() { return Date.now() - deckSeen < 75000 }
-function jump(n) {
-  n = Math.max(0, Math.min(N, n));
-  if (n === cur && !pending) return;
-  if (!follow) {
-    if (deckLive()) { pending = { n, t: Date.now() }; setTimeout(() => { if (pending && pending.n === n) render() }, 2100) }
-    send({ t: 'go', n });
-  }
-  setCur(n);
-  try { navigator.vibrate && navigator.vibrate(12) } catch (e) {}
-  wake();
-}
-function setCur(n) {
-  const changed = n !== cur; cur = n;
-  clearTimeout(autoT);
-  if (cur === 7) {   // the deck moves on by itself; without a screen, step the script the same way
-    const t0 = Date.now();
-    autoT = setTimeout(() => { if (cur === 7 && !deckLive()) setCur(8) }, AUTO7 + 600);
-    const bar = $('bar'); bar.style.transition = 'none'; bar.style.width = '0'; void bar.offsetWidth;
-    bar.style.transition = `width ${AUTO7}ms linear`; bar.style.width = '100%';
-  } else { $('bar').style.transition = 'none'; $('bar').style.width = '0' }
-  render(changed);
-}
-$('next').onclick = () => { if (locked || follow) return; locked = true; setTimeout(() => locked = false, 650); jump(cur + 1) };
-$('back').onclick = () => { if (follow) return; jump(cur - 1) };
-
-// ---------- render ----------
-function pill(cls, txt) { return `<span class="pill ${cls}"><i></i>${txt}</span>` }
-function render(flash) {
-  const s = S[cur];
-  // status
-  let p = '';
-  if (pending && Date.now() - pending.t > 2000) p += pill('bad', 'Screen didn’t confirm: tap again or use the laptop');
-  else if (relay === 'bad') p += pill('bad', 'Offline: use the laptop keys');
-  else if (deckLive()) {
-    p += pill('ok', 'Screen connected');
-    if (!deck.armed) p += pill('warn', 'Laptop: click once for sound');
-    else if (deck.music === false) p += pill('warn', 'Song didn’t load on laptop');
-  } else if (relay === 'ok') p += pill('warn', 'Waiting for the laptop');
-  else p += pill('', 'Connecting…');
-  if (follow) p += pill('', 'Follow only');
-  $('pills').innerHTML = p;
-  // now
-  $('thumb').src = `img/s${cur}.jpg`;
-  $('label').textContent = s.label;
-  $('num').textContent = cur === 0 ? 'standby' : `screen ${cur} / ${N}`;
-  if (flash) { const n = $('now'); n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash') }
-  $('say').innerHTML = s.say.map(([w, t, a]) => `<div class="ln${a ? ' act' : ''}"><div class="who">${w}</div><div class="t">${t}</div></div>`).join('');
-  const tp = $('tap');
-  tp.className = 'tap' + (s.auto ? ' auto' : '') + (s.end ? ' end' : '');
-  tp.innerHTML = s.end ? `<div class="cue">${s.cue}</div>`
-    : `<div class="eyebrow">${s.auto ? 'Hands off' : 'Tap when you hear'}</div><div class="cue">${s.cue}</div>`
-      + (s.note ? `<div class="note">${s.note}</div>` : '') + (s.warn ? `<div class="warn">⚠ ${s.warn}</div>` : '');
-  // next button
-  const nb = $('next');
-  nb.className = s.auto ? 'soft' : (s.end ? 'done' : '');
-  nb.disabled = !!s.end || follow;
-  if (s.end) { $('nbig').textContent = 'END'; $('nsm').textContent = 'Last screen'; $('nthumb').style.display = 'none' }
-  else {
-    $('nthumb').style.display = ''; $('nthumb').src = `img/s${cur + 1}.jpg`;
-    $('nbig').textContent = cur === 0 ? 'START' : (s.auto ? 'Wait…' : 'NEXT');
-    $('nsm').textContent = cur === 0 ? 'Song + AJ on stage' : (s.auto ? 'Only if it’s stuck' : `→ ${S[cur + 1].label}`);
-  }
-  $('back').disabled = cur === 0 || follow;
-  // full script
-  $('list').innerHTML = S.map((x, i) => `<div class="row${i === cur ? ' on' : ''}" data-i="${i}"><div class="n">${i}</div><div><div class="l">${x.label}</div>`
-    + x.say.map(([w, t]) => `<div class="s"><b>${w}</b>${t.replace(/<\/?mark>/g, '')}</div>`).join('')
-    + (x.end ? '' : `<div class="c">${x.auto ? 'Moves on by itself' : 'Tap on ' + x.cue}</div>`) + `</div></div>`).join('');
-}
-$('list').addEventListener('click', e => {
-  const r = e.target.closest('.row'); if (!r || follow) return;
-  const i = +r.dataset.i; if (i === cur) return;
-  if (confirm(`Jump the screen to ${i}: ${S[i].label}?`)) jump(i);
-});
+function go(n) { k = Math.max(0, Math.min(S.length - 1, n)); render(); if (navigator.vibrate) navigator.vibrate(12); send({ deck: S[k].d, i: S[k].i }); }
+$('next').onclick = () => go(k + 1); $('back').onclick = () => go(k - 1);
+$('yes').onclick = () => { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); send({ deck: 'verify', i: 6, cmd: 'yes' }); };
+document.querySelectorAll('.chips button').forEach(b => b.onclick = () => go(+b.dataset.j));
+async function wake() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (e) {} }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wake(); }); wake();
 render();
-</script>
-</body></html>
+</script></body></html>

@@ -649,7 +649,7 @@ function remoteAt(){if(relayOK)send({t:'at',n:cur,armed:isArmed(),fs:!!document.
 function updB0(){
   const el=document.getElementById('b0stat');if(!el)return;
   const rem=Date.now()-lastRemote<75000;
-  el.innerHTML=(rem?'Phone remote <b>connected ✓</b>':(relayOK?'Phone remote: open ryrycd.github.io/t10/remote':'Phone remote: offline (clicker and keys still work)'))
+  el.innerHTML=(rem?'Phone remote <b>connected ✓</b>':(relayOK?'Phone remote: open ryrycd.github.io/t10/kickit/remote':'Phone remote: offline (clicker and keys still work)'))
     +' &nbsp;·&nbsp; '+(isArmed()?'Sound <b>ready ✓</b>':'Click once here so the song can play');
   document.getElementById('b0hint').textContent=isArmed()?'Click or press → to start · F for fullscreen':'Click once to get sound ready · F for fullscreen';
 }
