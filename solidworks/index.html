@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pencil first · SolidWorks</title>
+<style>
+:root{--ui:#eef0f3;--panel:#f8f9fb;--line:#d5dae1;--ink:#1d2430;--mute:#6b7685;--blue:#2a6df4;--red:#e5383b;--paper:#f4efe4;--graphite:#5a5a5a;--green:#1f9d62}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;cursor:none}
+body.showcursor{cursor:default}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;overflow:hidden;font-family:-apple-system,"SF Pro Text","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#000}
+.beat{position:absolute;inset:0;opacity:0;visibility:hidden}
+.beat.on{opacity:1;visibility:visible}
+.beat *{animation-play-state:paused}.beat.on *{animation-play-state:running}
+.flash{position:absolute;inset:0;background:#fff;z-index:90;pointer-events:none;animation:flash .45s ease-out both}
+@keyframes flash{from{opacity:1}to{opacity:0}}
+.up{animation:up .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+
+/* ---------- CAD window (screens 1-2) ---------- */
+.slot{position:absolute;inset:0}
+.cad{position:absolute;inset:0;background:var(--ui)}
+.cad .top{position:absolute;left:0;right:0;top:0;height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 24px;font:600 20px/1 inherit}
+.cad .top .logo{width:34px;height:34px;border-radius:8px;background:var(--blue)}
+.cad .top .doc{color:var(--mute);font-weight:500}
+.cad .top .tb{margin-left:40px;display:flex;gap:10px}
+.cad .top .tb i{width:40px;height:40px;border-radius:8px;background:var(--ui);display:block}
+.tree{position:absolute;left:0;top:64px;bottom:0;width:430px;background:var(--panel);border-right:1px solid var(--line);padding:22px 0}
+.tree h4{font:700 15px/1 inherit;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding:0 26px 14px}
+.tree .row{display:flex;align-items:center;gap:14px;height:44px;padding:0 26px;font:500 21px/1 inherit;color:var(--ink)}
+.tree .row b{width:22px;height:22px;border-radius:5px;background:#c9d3e2;flex:none}
+.tree .row.sel{background:#e3ecff}
+.view{position:absolute;left:430px;right:0;top:64px;bottom:0;background:radial-gradient(1200px 800px at 55% 45%,#ffffff,#e4e8ee)}
+.view svg{position:absolute;left:50%;top:50%;width:900px;height:720px;margin:-360px 0 0 -450px}
+.dlg{position:absolute;left:520px;top:120px;width:520px;background:#fff;border-radius:16px;box-shadow:0 30px 80px rgba(20,30,50,.25),0 0 0 1px var(--line);padding:26px 28px}
+.dlg h5{font:700 22px/1 inherit;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.dlg h5 i{width:26px;height:26px;border-radius:6px;background:var(--blue)}
+.dlg .lab{font:600 17px/1 inherit;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.dlg .field{margin-top:12px;height:76px;border:2px solid var(--blue);border-radius:12px;display:flex;align-items:center;padding:0 22px;font:600 44px/1 "SF Mono",Menlo,monospace;color:var(--ink)}
+.dlg .field .typed{display:inline-block;overflow:hidden;white-space:nowrap;width:0;animation:type 1.2s steps(7) 1.4s both}
+@keyframes type{to{width:7ch}}
+.dlg .field .q{color:#b6bfcc;animation:fadeq .1s 1.3s both}
+@keyframes fadeq{to{opacity:0;width:0;display:none}}
+.caret{width:3px;height:48px;background:var(--blue);margin-left:4px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.dlg .ok{margin-top:20px;display:flex;justify-content:flex-end;gap:12px}
+.dlg .ok span{padding:12px 22px;border-radius:10px;font:700 18px/1 inherit;background:var(--ui)}
+.dlg .ok span.b{background:var(--blue);color:#fff}
+/* screen 2: errors */
+#s2 .tree .row{animation:err .2s steps(1) both}
+@keyframes err{to{color:var(--red);background:#ffecec}}
+#s2 .tree .row b{animation:errb .2s steps(1) both;animation-delay:inherit}
+@keyframes errb{to{background:var(--red)}}
+#s2 .part{animation:redden .8s ease-out .6s both}
+@keyframes redden{to{filter:sepia(1) saturate(6) hue-rotate(-40deg) brightness(.9)}}
+.badge{position:absolute;right:70px;top:110px;z-index:10;display:flex;align-items:center;gap:22px;padding:24px 34px;border-radius:22px;background:var(--red);color:#fff;box-shadow:0 24px 70px rgba(229,56,59,.45);animation:pop .45s cubic-bezier(.2,1.4,.4,1) .5s both}
+.badge .n{font:800 120px/1 -apple-system,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;min-width:150px;text-align:right}
+.badge .w{font:800 30px/1.1 inherit;letter-spacing:.02em}
+.shake{animation:shake .5s ease-in-out .4s both}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-14px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}80%{transform:translateX(5px)}}
+
+/* ---------- screen 3: the drawing ---------- */
+#s3{background:#d9dde3}
+.sheet{position:absolute;left:180px;top:80px;width:1560px;height:920px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.25);border:2px solid #1d2430;animation:sheetin .8s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sheetin{from{transform:translateY(60px) rotate(-1.5deg);opacity:0}to{transform:rotate(-1deg);opacity:1}}
+.sheet svg{position:absolute;left:60px;top:60px}
+.tblock{position:absolute;right:0;bottom:0;width:560px;height:170px;border-top:2px solid #1d2430;border-left:2px solid #1d2430;display:grid;grid-template-columns:1fr 1fr;font:600 18px/1.3 "SF Mono",Menlo,monospace}
+.tblock div{border-right:1px solid #1d2430;border-bottom:1px solid #1d2430;padding:12px 16px;color:#1d2430}
+.tblock div small{display:block;font-size:12px;color:#6b7685;letter-spacing:.1em}
+.spec{position:absolute;left:820px;top:300px;font:700 64px/1 "SF Mono",Menlo,monospace;color:#1d2430;padding:8px 16px;border-radius:8px;animation:hl .6s ease-out 1.2s both}
+@keyframes hl{to{background:#fff3a6;box-shadow:0 0 0 6px #fff3a6}}
+.stamp{position:absolute;right:120px;top:120px;padding:18px 34px;border:8px solid var(--green);border-radius:16px;color:var(--green);font:900 76px/1 -apple-system,Helvetica,Arial,sans-serif;letter-spacing:.06em;transform:rotate(-10deg);animation:stamp .45s cubic-bezier(.2,1.4,.4,1) .6s both}
+@keyframes stamp{from{opacity:0;transform:rotate(-10deg) scale(2.6)}to{opacity:1;transform:rotate(-10deg) scale(1)}}
+.later{position:absolute;left:220px;bottom:150px;font:700 30px/1 -apple-system,Helvetica,Arial,sans-serif;color:#6b7685;display:flex;gap:16px;align-items:center;animation:up .6s ease-out 2s both}
+.later b{font:900 40px/1 inherit;color:#1d2430}
+
+/* ---------- screens 4-5: pencil ---------- */
+.paper{position:absolute;inset:0;background:var(--paper);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:6px 6px}
+svg.sk{z-index:2;position:absolute;left:50%;top:50%;width:900px;height:720px;margin:-380px 0 0 -560px}
+.sk path,.sk line,.sk polyline{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.draw{stroke-dasharray:3000;stroke-dashoffset:3000;animation:draw 1.6s ease-out both}
+@keyframes draw{to{stroke-dashoffset:0}}
+.dim{position:absolute;font-family:"Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-weight:700}
+.dim.pencil{color:var(--graphite);font-size:58px;opacity:.85;animation:up .5s ease-out both}
+.dim.ink{font:700 46px/1 "SF Mono",Menlo,monospace;color:#10306b;animation:up .5s ease-out both}
+.dim.ink i{font-style:normal;color:var(--green);margin-left:10px}
+.morph{position:absolute;left:1240px;top:520px}
+.morph .a{font-family:"Bradley Hand","Segoe Print",cursive;font-weight:700;font-size:64px;color:var(--graphite);animation:out .4s ease-in 2.4s both}
+@keyframes out{to{opacity:0;transform:scale(.8)}}
+.morph .b{position:absolute;left:0;top:0;white-space:nowrap;font:800 56px/1 "SF Mono",Menlo,monospace;color:#10306b;opacity:0;animation:pop .5s cubic-bezier(.2,1.4,.4,1) 2.6s both}
+.morph .b i{font-style:normal;color:var(--green)}
+.chip{position:absolute;display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:16px;background:#fff;box-shadow:0 14px 40px rgba(0,0,0,.14);font:700 26px/1 -apple-system,Helvetica,Arial,sans-serif;color:#1d2430;animation:fly 1.2s cubic-bezier(.6,0,.3,1) both}
+.chip i{width:40px;height:40px;border-radius:10px;display:block}
+@keyframes fly{0%{opacity:0;transform:translate(0,0) scale(.9)}20%{opacity:1}70%{opacity:1;transform:translate(var(--dx),var(--dy)) scale(.9)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}
+
+/* ---------- screen 6: end ---------- */
+#s6{background:var(--paper)}
+#s6 .end{position:absolute;left:0;right:0;top:330px;text-align:center}
+#s6 .l1{font-family:"Bradley Hand","Segoe Print",cursive;font-weight:700;font-size:150px;color:var(--graphite);animation:up .7s ease-out .1s both}
+#s6 .l2{font:800 140px/1 -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.02em;color:#10306b;margin-top:30px;animation:up .7s ease-out .8s both}
+#s6 .tags{display:flex;justify-content:center;gap:40px;margin-top:70px;font:700 34px/1 -apple-system,Helvetica,Arial,sans-serif;animation:up .6s ease-out 1.4s both}
+#s6 .tags span{padding:18px 30px;border-radius:999px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.1)}
+#s6 .tags .f{color:var(--green)}
+
+#hud{position:fixed;left:0;right:0;bottom:0;padding:14px 22px;background:rgba(0,0,0,.85);color:#fff;font:15px/1.4 -apple-system,Helvetica,Arial,sans-serif;display:none;z-index:999}
+#hud.show{display:block}#hud .k{color:#8fb4ff;font-weight:700}#hud .cue{font-size:19px;margin-top:4px}
+.hint{position:absolute;left:0;right:0;bottom:60px;text-align:center;color:#3a3a44;font:500 26px/1 -apple-system,Helvetica,Arial,sans-serif}
+html:fullscreen .hint{display:none}
+</style></head><body>
+<div id="stage">
+<section class="beat on" id="s0"><div class="hint">Click or press → to start · F for fullscreen</div></section>
+
+<!-- shared CAD window template is cloned into s1 and s2 by script -->
+<template id="cadT">
+  <div class="cad">
+    <div class="top"><span class="logo"></span>Bracket_v1<span class="doc">· Part Studio 1</span><span class="tb"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="tree"><h4>Features (40)</h4><div class="rows"></div></div>
+    <div class="view"><svg viewBox="0 0 900 720" class="part">
+      <defs><linearGradient id="gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfd9ea"/><stop offset="1" stop-color="#b5c3da"/></linearGradient>
+      <linearGradient id="gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb0cb"/><stop offset="1" stop-color="#8396b4"/></linearGradient>
+      <linearGradient id="gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7d90b0"/><stop offset="1" stop-color="#697c9c"/></linearGradient></defs>
+      <!-- L-bracket, isometric -->
+      <polygon points="150,430 450,260 750,430 450,600" fill="url(#gT)" stroke="#4a5a78" stroke-width="3"/>
+      <polygon points="150,430 450,600 450,650 150,480" fill="url(#gL)" stroke="#4a5a78" stroke-width="3"/>
+      <polygon points="450,600 750,430 750,480 450,650" fill="url(#gR)" stroke="#4a5a78" stroke-width="3"/>
+      <polygon points="450,260 750,430 750,170 450,0" fill="url(#gR)" stroke="#4a5a78" stroke-width="3" opacity=".96"/>
+      <polygon points="410,283 450,260 450,0 410,23" fill="url(#gL)" stroke="#4a5a78" stroke-width="3"/>
+      <ellipse cx="300" cy="440" rx="44" ry="25" fill="#5d6f8f" stroke="#33415c" stroke-width="3"/>
+      <ellipse cx="560" cy="440" rx="44" ry="25" fill="#5d6f8f" stroke="#33415c" stroke-width="3"/>
+      <ellipse cx="600" cy="230" rx="30" ry="46" fill="#5d6f8f" stroke="#33415c" stroke-width="3" transform="rotate(-30 600 230)"/>
+    </svg></div>
+  </div>
+</template>
+
+<section class="beat" id="s1">
+  <div class="slot"></div>
+  <div class="dlg up" style="animation-delay:.3s"><h5><i></i>Shell 1</h5><div class="lab">Wall thickness</div>
+    <div class="field"><span class="q">?</span><span class="typed">2.00 mm</span><span class="caret"></span></div>
+    <div class="ok"><span>Cancel</span><span class="b">OK</span></div></div>
+  <div class="flash"></div>
+</section>
+
+<section class="beat" id="s2">
+  <div class="slot shake"></div>
+  <div class="badge"><span class="n" id="errn">0</span><span class="w">REBUILD<br>ERRORS</span></div>
+  <div class="flash" style="background:#ff4d4f"></div>
+</section>
+
+<section class="beat" id="s3">
+  <div class="sheet">
+    <svg width="760" height="600" viewBox="0 0 760 600">
+      <g stroke="#1d2430" stroke-width="3" fill="none">
+        <rect x="60" y="80" width="520" height="70"/><rect x="60" y="150" width="70" height="380"/>
+        <circle cx="240" cy="115" r="18"/><circle cx="420" cy="115" r="18"/><circle cx="95" cy="320" r="18"/>
+      </g>
+      <g stroke="#1d2430" stroke-width="1.5" fill="none"><line x1="60" y1="40" x2="580" y2="40"/><line x1="60" y1="30" x2="60" y2="70"/><line x1="580" y1="30" x2="580" y2="70"/>
+      <line x1="620" y1="80" x2="620" y2="150"/><line x1="610" y1="80" x2="640" y2="80"/><line x1="610" y1="150" x2="640" y2="150"/></g>
+      <text x="290" y="30" font-family="Menlo,monospace" font-size="24" fill="#1d2430">120.00</text>
+      <text x="640" y="122" font-family="Menlo,monospace" font-size="24" fill="#1d2430">18.00</text>
+    </svg>
+    <div class="spec">WALL 2.00 mm</div>
+    <div class="stamp">APPROVED</div>
+    <div class="tblock"><div><small>PART</small>BRACKET</div><div><small>REV</small>F</div><div><small>DRAWN</small>KAI · 2025</div><div><small>RELEASED</small>2026</div></div>
+  </div>
+  <div class="later">a year later ·<b>was 2 mm a guess?</b></div>
+  <div class="flash"></div>
+</section>
+
+<section class="beat" id="s4">
+  <div class="paper"></div>
+  <svg class="sk" viewBox="0 0 900 720">
+    <defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="6"/></filter></defs>
+    <g filter="url(#rough)" stroke="#5a5a5a" stroke-width="5" opacity=".9">
+      <path class="draw" d="M150,430 L450,260 L750,430 L450,600 Z"/>
+      <path class="draw" style="animation-delay:.3s" d="M150,430 L150,480 L450,650 L750,480 L750,430 M450,600 L450,650"/>
+      <path class="draw" style="animation-delay:.6s" d="M450,260 L450,0 L750,170 L750,430 M410,283 L410,23 L450,0"/>
+      <path class="draw" style="animation-delay:.9s" d="M256,440 a44,25 0 1,0 88,0 a44,25 0 1,0 -88,0 M516,440 a44,25 0 1,0 88,0 a44,25 0 1,0 -88,0"/>
+    </g>
+  </svg>
+  <div class="dim pencil" style="left:1240px;top:520px;animation-delay:1.4s">~2 mm ?</div>
+  <div class="dim pencil" style="left:640px;top:180px;animation-delay:1.7s">~40 ?</div>
+  <div class="dim ink" style="left:560px;top:860px;animation-delay:2s">120.00 mm<i>✓</i></div>
+  <div class="dim ink" style="left:1260px;top:300px;animation-delay:2.3s">Ø 12.70<i>✓</i></div>
+  <div class="flash"></div>
+</section>
+
+<section class="beat" id="s5">
+  <div class="paper"></div>
+  <svg class="sk" viewBox="0 0 900 720">
+    <g filter="url(#rough)" stroke="#5a5a5a" stroke-width="5" opacity=".9">
+      <path d="M150,430 L450,260 L750,430 L450,600 Z M150,430 L150,480 L450,650 L750,480 L750,430 M450,600 L450,650 M450,260 L450,0 L750,170 L750,430 M410,283 L410,23 L450,0 M256,440 a44,25 0 1,0 88,0 a44,25 0 1,0 -88,0 M516,440 a44,25 0 1,0 88,0 a44,25 0 1,0 -88,0"/>
+    </g>
+  </svg>
+  <div class="dim ink" style="left:560px;top:860px;animation:none">120.00 mm<i>✓</i></div>
+  <div class="dim ink" style="left:1260px;top:300px;animation:none">Ø 12.70<i>✓</i></div>
+  <div class="dim pencil" style="left:640px;top:180px;animation:none">~40 ?</div>
+  <div class="chip" style="left:120px;top:140px;--dx:1120px;--dy:380px;animation-delay:.3s"><i style="background:#2a6df4"></i>Simulation</div>
+  <div class="chip" style="left:120px;top:520px;--dx:1120px;--dy:0px;animation-delay:.8s"><i style="background:#f59e0b"></i>Test lab</div>
+  <div class="chip" style="left:120px;top:880px;--dx:1120px;--dy:-360px;animation-delay:1.3s"><i style="background:#1f9d62"></i>Factory data</div>
+  <div class="morph"><div class="a">~2 mm ?</div><div class="b">2.40 mm <i>✓</i></div></div>
+  <div class="flash"></div>
+</section>
+
+<section class="beat" id="s6">
+  <div class="end"><div class="l1">Pencil first.</div><div class="l2">Ink later.</div>
+  <div class="tags"><span class="f">✎ Pencil is free</span><span>✒ You pay for ink</span></div></div>
+  <div class="flash"></div>
+</section>
+</div>
+<div id="hud"><span class="k">SCREEN <span id="hb">0</span>/6</span><div class="cue" id="hc"></div></div>
+<script>
+const CUES=[
+ "Standby. Kai at the laptop, AJ with a pen, giant cardboard pencil on the desk. Press → as Kai starts typing.",
+ "KAI (typing): “It wants a wall thickness. No idea yet. Fine, two millimeters.”  AJ (pen up): “Every CAD system since 1984 is a pen. It makes you write an exact number before you know it.”",
+ "KAI: “Then I change my mind.”  MICHAEL: “And forty features break.”  (click on “Then I change my mind”)",
+ "AJ: “So engineers stop changing their minds, and a year later nobody knows two millimeters was a guess.”",
+ "KAI (picks up the giant pencil): “Design needs a pencil: rough where you're unsure, exact where it's proven, and every number knows which it is.”",
+ "MICHAEL: “Why now? AI can remember what you meant and swap guesses for real answers from test and factory data.”",
+ "AJ: “Pencil is free. You pay for ink.”  ALL: “Pencil first. Ink later.”"
+];
+const stage=document.getElementById('stage');
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);fit();
+const feats=["Origin","Sketch 1","Extrude 1","Sketch 2","Extrude 2","Shell 1","Fillet 1","Fillet 2","Hole 1","Hole 2","Hole 3","Chamfer 1","Mirror 1","Rib 1","Rib 2","Pattern 1","Fillet 3","Draft 1"];
+document.querySelectorAll('.slot').forEach((slot,k)=>{
+  slot.appendChild(document.getElementById('cadT').content.cloneNode(true));
+  const rows=slot.querySelector('.rows');
+  feats.forEach((f,i)=>{const r=document.createElement('div');r.className='row'+(k===0&&f==='Shell 1'?' sel':'');r.innerHTML=`<b></b>${f}`;if(k===1&&i>0){r.style.animationDelay=(0.5+i*0.09)+'s'}else if(k===1){r.style.animation='none'}rows.appendChild(r)});
+});
+const beats=[...document.querySelectorAll('.beat')];let cur=0;const N=beats.length-1;let tm=[];
+const enter={2:()=>{const e=document.getElementById('errn');e.textContent='0';const t0=performance.now()+500;tm.push(setInterval(()=>{const p=Math.max(0,Math.min(1,(performance.now()-t0)/1500));e.textContent=Math.round(40*p)},40))}};
+function go(n){n=Math.max(0,Math.min(N,n));tm.forEach(clearInterval);tm=[];
+  beats.forEach((b,i)=>{b.classList.remove('on');if(i===n){b.querySelectorAll('*').forEach(e=>e.style.animationName='none');void b.offsetWidth;b.querySelectorAll('*').forEach(e=>e.style.animationName='');b.classList.add('on')}});
+  cur=n;document.getElementById('hb').textContent=n;document.getElementById('hc').textContent=CUES[n];if(enter[n])enter[n]()}
+addEventListener('keydown',e=>{const k=e.key;
+  if(['ArrowRight','PageDown',' ','Enter','ArrowDown'].includes(k)){e.preventDefault();go(cur+1)}
+  else if(['ArrowLeft','PageUp','ArrowUp','Backspace'].includes(k)){e.preventDefault();go(cur-1)}
+  else if(k==='r'||k==='R'||k==='Home'||k==='b'||k==='B'||k==='.'){go(0)}
+  else if(k==='p'||k==='P'){document.getElementById('hud').classList.toggle('show');document.body.classList.toggle('showcursor')}
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  else if(/^[0-6]$/.test(k)){go(+k)}});
+addEventListener('click',()=>go(cur+1));
+const q=new URLSearchParams(location.search);if(q.has('beat'))go(+q.get('beat'));if(q.has('hud'))document.getElementById('hud').classList.add('show');
+document.getElementById('hc').textContent=CUES[0];
+</script></body></html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIORAI · Made in Public</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;cursor:none}
+body.showcursor{cursor:default}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;overflow:hidden;background:#000;color:#f6f0e6;font-family:"Didot","Bodoni 72",Georgia,serif}
+.beat{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease-in-out;pointer-events:none}
+.beat.on{opacity:1}
+.beat *{animation-play-state:paused}.beat.on *{animation-play-state:running}
+.shot{position:absolute;inset:-4%;background-size:cover;background-position:center;will-change:transform}
+/* camera moves (slow, film-like) */
+.in{animation:in 14s linear both}            @keyframes in{from{transform:scale(1)}to{transform:scale(1.14)}}
+.out{animation:out 14s linear both}          @keyframes out{from{transform:scale(1.16)}to{transform:scale(1.02)}}
+.panl{animation:panl 14s linear both}        @keyframes panl{from{transform:scale(1.1) translateX(3%)}to{transform:scale(1.1) translateX(-3%)}}
+.panr{animation:panr 14s linear both}        @keyframes panr{from{transform:scale(1.1) translateX(-3%)}to{transform:scale(1.1) translateX(3%)}}
+.push-l{animation:pushl 12s linear both}     @keyframes pushl{from{transform:scale(1.02)}to{transform:scale(1.22) translate(6%,2%)}}
+/* city montage inside one beat */
+.seq .shot{opacity:0;animation:cityfade 7.5s linear both, in 7.5s linear both}
+@keyframes cityfade{0%{opacity:0}8%{opacity:1}92%{opacity:1}100%{opacity:0}}
+.seq .shot:nth-child(1){animation-delay:0s,0s}
+.seq .shot:nth-child(2){animation-delay:2.4s,2.4s}
+.seq .shot:nth-child(3){animation-delay:4.8s,4.8s}
+.seq .shot:nth-child(3){animation-name:cityin,in}
+@keyframes cityin{0%{opacity:0}8%{opacity:1}100%{opacity:1}}
+.city{position:absolute;left:84px;bottom:76px;font:400 30px/1 "Didot","Bodoni 72",Georgia,serif;letter-spacing:.42em;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.6);opacity:0;animation:cityfade 2.6s linear both}
+.grade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.5) 100%),linear-gradient(180deg,rgba(0,0,0,.1),transparent 30%,transparent 70%,rgba(0,0,0,.35));pointer-events:none}
+.bars:before,.bars:after{content:"";position:absolute;left:0;right:0;height:64px;background:#000;z-index:5}
+.bars:before{top:0}.bars:after{bottom:0}
+/* sales counter */
+.counter{position:absolute;right:96px;bottom:120px;z-index:6;text-align:right;opacity:0;animation:cin .8s ease-out .5s both}
+@keyframes cin{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.counter .k{font:600 22px/1 "Avenir Next",Helvetica,Arial,sans-serif;letter-spacing:.32em;color:#e9dcc3}
+.counter .v{font:400 120px/1 "Didot","Bodoni 72",Georgia,serif;color:#fff;margin-top:12px;font-variant-numeric:tabular-nums;text-shadow:0 6px 40px rgba(0,0,0,.6)}
+.counter .bar{height:3px;background:rgba(255,255,255,.25);margin-top:22px;position:relative;overflow:hidden}
+.counter .bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:#d8b46a;animation:bar 4.5s cubic-bezier(.3,0,.2,1) .8s both}
+@keyframes bar{to{width:100%}}
+/* end card */
+#b9{background:#0b0a09}
+.endc{position:absolute;left:0;right:0;top:360px;text-align:center}
+.endc .name{font:400 190px/1 "Didot","Bodoni 72",Georgia,serif;letter-spacing:.24em;padding-left:.24em;color:#f6f0e6;opacity:0;animation:cin 1.6s ease-out .3s both}
+.endc .rule{width:0;height:1px;background:#d8b46a;margin:46px auto 0;animation:grow 1.4s ease-out 1.2s both}
+@keyframes grow{to{width:560px}}
+.endc .cities{margin-top:40px;font:500 26px/1 "Avenir Next",Helvetica,Arial,sans-serif;letter-spacing:.38em;color:#cbbfa9;opacity:0;animation:cin 1.2s ease-out 1.8s both}
+.endc .appt{margin-top:30px;font:italic 400 34px/1 "Didot",Georgia,serif;color:#e9dcc3;opacity:0;animation:cin 1.2s ease-out 2.6s both}
+#hud{position:fixed;left:0;right:0;bottom:0;padding:14px 22px;background:rgba(0,0,0,.85);color:#fff;font:15px/1.4 -apple-system,Helvetica,Arial,sans-serif;display:none;z-index:999}
+#hud.show{display:block}#hud .k{color:#d8b46a;font-weight:700}#hud .cue{font-size:19px;margin-top:4px}
+.hint{position:absolute;left:0;right:0;bottom:60px;text-align:center;color:#3a3a44;font:500 26px/1 -apple-system,Helvetica,Arial,sans-serif}
+html:fullscreen .hint{display:none}
+</style></head><body>
+<div id="stage" class="bars">
+  <section class="beat on" id="b0" style="transition:none"><div class="hint">Click or press → to start · F for fullscreen</div></section>
+  <!-- 1 Michael: every major city... -->
+  <section class="beat" id="b1"><div class="seq">
+    <div class="shot" style="background-image:url(img/london.jpg)"></div>
+    <div class="shot" style="background-image:url(img/newyork.jpg)"></div>
+    <div class="shot" style="background-image:url(img/losangeles.jpg)"></div></div>
+    <div class="city" style="animation-delay:0s">LONDON</div><div class="city" style="animation-delay:2.4s">NEW YORK</div><div class="city" style="animation-delay:4.8s;animation-name:cityin;animation-duration:1.4s">LOS ANGELES</div>
+    <div class="grade"></div></section>
+  <!-- 2 Jilles: before SIORAI pays a fortune... we test it -->
+  <section class="beat" id="b2"><div class="shot push-l" style="background-image:url(img/london.jpg)"></div><div class="grade"></div></section>
+  <!-- 3 Michael: first step, one vacant shop -->
+  <section class="beat" id="b3"><div class="shot in" style="background-image:url(img/empty.jpg)"></div><div class="grade"></div></section>
+  <!-- 4 Jilles: inside the window, a master artisan -->
+  <section class="beat" id="b4"><div class="shot in" style="background-image:url(img/artisan.jpg)"></div><div class="grade"></div></section>
+  <!-- 5 Michael: models walk in and disappear -->
+  <section class="beat" id="b5"><div class="shot panl" style="background-image:url(img/models.jpg)"></div><div class="grade"></div></section>
+  <!-- 6 Jilles: people get curious... pop-up -->
+  <section class="beat" id="b6"><div class="shot panr" style="background-image:url(img/inside.jpg)"></div><div class="grade"></div></section>
+  <!-- 7 Michael: we do it ourselves -->
+  <section class="beat" id="b7"><div class="shot out" style="background-image:url(img/storefront.jpg)"></div><div class="grade"></div></section>
+  <!-- 8 Jilles: if the week sells -->
+  <section class="beat" id="b8"><div class="shot in" style="background-image:url(img/artisan2.jpg)"></div><div class="grade"></div>
+    <div class="counter"><div class="k">SALES THIS WEEK</div><div class="v" id="sales">£0</div><div class="bar"><i></i></div></div></section>
+  <!-- 9 Both: first the street falls in love -->
+  <section class="beat" id="b9"><div class="endc"><div class="name">SIORAI</div><div class="rule"></div>
+    <div class="cities">LONDON · NEW YORK · LOS ANGELES · DUBAI · HONG KONG</div><div class="appt">By appointment.</div></div></section>
+</div>
+<div id="hud"><span class="k">SCREEN <span id="hb">0</span>/9</span><div class="cue" id="hc"></div></div>
+<script>
+const CUES=[
+ "Standby. Embroiderer in the red square, models at the door, carpet down. Press → on Michael's first word.",
+ "MICHAEL: “Every major city has a major art museum. In Boston, it's the MFA. SIORAI's story is rooted in Indian craftsmanship and India's artisans.”  (London → New York → LA play by themselves)",
+ "JILLES: “So before SIORAI pays a fortune for a store in a new city, we test it.”",
+ "MICHAEL: “First step: one vacant shop, rented for a week. Vacant shops rent cheaply. The perfect stage for guerrilla marketing.”",
+ "JILLES: “Inside the window, a master artisan from Bangalore, embroidering SIORAI by hand.”",
+ "MICHAEL: “Every now and then, models and small influencers in SIORAI walk in and disappear.”  (models walk the carpet; one hands Len the card)",
+ "JILLES: “People get curious, walk in, and find themselves in a SIORAI pop-up.”",
+ "MICHAEL: “We do it ourselves. Our only partner is the landlord.”",
+ "JILLES: “If the week sells, that city gets a store.”  (sales counter ticks up)",
+ "BOTH: “First the street falls in love. Then we sign the lease.”  Embroiderer stands and holds up the piece."
+];
+const stage=document.getElementById('stage');
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);fit();
+// preload
+['storefront','london','newyork','losangeles','empty','artisan','models','inside','artisan2'].forEach(n=>{const i=new Image();i.src=`img/${n}.jpg`});
+const beats=[...document.querySelectorAll('.beat')];let cur=0;const N=beats.length-1;let tm=[];
+const enter={8:()=>{const el=document.getElementById('sales');el.textContent='£0';const t0=performance.now()+800;tm.push(setInterval(()=>{const p=Math.max(0,Math.min(1,(performance.now()-t0)/4500));const e=1-Math.pow(1-p,3);el.textContent='£'+Math.round(48600*e).toLocaleString('en-GB')},40))}};
+function go(n){n=Math.max(0,Math.min(N,n));tm.forEach(clearInterval);tm=[];
+  beats.forEach((b,i)=>{if(i===n){b.querySelectorAll('*').forEach(e=>e.style.animationName='none');void b.offsetWidth;b.querySelectorAll('*').forEach(e=>e.style.animationName='');b.classList.add('on')}else b.classList.remove('on')});
+  cur=n;document.getElementById('hb').textContent=n;document.getElementById('hc').textContent=CUES[n];if(enter[n])enter[n]()}
+addEventListener('keydown',e=>{const k=e.key;
+  if(['ArrowRight','PageDown',' ','Enter','ArrowDown'].includes(k)){e.preventDefault();go(cur+1)}
+  else if(['ArrowLeft','PageUp','ArrowUp','Backspace'].includes(k)){e.preventDefault();go(cur-1)}
+  else if(k==='r'||k==='R'||k==='Home'||k==='b'||k==='B'||k==='.'){go(0)}
+  else if(k==='p'||k==='P'){document.getElementById('hud').classList.toggle('show');document.body.classList.toggle('showcursor')}
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  else if(/^[0-9]$/.test(k)){go(+k)}});
+addEventListener('click',()=>go(cur+1));
+const q=new URLSearchParams(location.search);if(q.has('beat'))go(+q.get('beat'));if(q.has('hud'))document.getElementById('hud').classList.add('show');
+document.getElementById('hc').textContent=CUES[0];
+</script></body></html>
